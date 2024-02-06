@@ -15,3 +15,11 @@ CREATE TABLE Driver(
     driverNumTrips			INTEGER,
     driverMilesDriven		INTEGER
 );
+
+CREATE TABLE About (
+	teamNum INT,
+    teamName VARCHAR(20),
+    versionNum FLOAT,
+    releaseDate DATE,
+    productName VARCHAR(50)
+);
