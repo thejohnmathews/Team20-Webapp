@@ -8,12 +8,15 @@ export default function LoginPage() {
 
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  
+
   const navigate = useNavigate();
 
   function login(){
     console.log("Username: " + username + "\nPassword: " + password)
     navigate('/about');
+  }
+  function forgot(){
+    navigate('/forgot');
   }
 
   return (
@@ -55,8 +58,8 @@ export default function LoginPage() {
 
         {/* Forgot password and create account buttons*/}
         <CardActions sx={{ alignSelf: 'flex-start' }}>
-          <Button size="small">Forgot Password</Button>
-          <Button size="small">Create Account</Button>
+          <Button size="small" onClick={forgot}>Forgot Username/Password</Button>
+          <Button size="small">Driver Application</Button>
         </CardActions>
       </Card>
     </Grid>
