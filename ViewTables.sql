@@ -6,3 +6,4 @@
 USE DriverApp;
 
 -- Display all tables
+SELECT * FROM Driver;

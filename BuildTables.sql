@@ -7,3 +7,11 @@ CREATE SCHEMA IF NOT EXISTS DriverApp;
 USE DriverApp;
 
 -- Create tables
+CREATE TABLE Driver(
+
+	driverID				INTEGER,
+    driverStartDate			DATE,
+    driverEndDate			DATE DEFAULT NULL,
+    driverNumTrips			INTEGER,
+    driverMilesDriven		INTEGER
+);

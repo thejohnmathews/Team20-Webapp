@@ -6,5 +6,7 @@
 USE DriverApp;
 
 -- Drop all tables
+DROP TABLE IF EXISTS Driver;
+
 
 DROP SCHEMA IF EXISTS DriverApp;
