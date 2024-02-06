@@ -2,15 +2,18 @@ import React, { useState } from 'react';
 import { Button, Grid, TextField, Card, CardHeader, CardActions, CardContent, InputAdornment } from '@mui/material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import LockIcon from '@mui/icons-material/Lock';
+import { useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
 
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  
+  const navigate = useNavigate();
 
   function login(){
     console.log("Username: " + username + "\nPassword: " + password)
-
+    navigate('/about');
   }
 
   return (
