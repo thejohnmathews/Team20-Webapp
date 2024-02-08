@@ -16,3 +16,6 @@ SELECT * FROM SponsorUser;
 SELECT * FROM AdminUser;
 SELECT * FROM PasswordChange;
 SELECT * FROM LoginAttempt;
+SELECT * FROM UserInfo;
+SELECT * FROM Purchase;
+SELECT * FROM SponsorOrganization;

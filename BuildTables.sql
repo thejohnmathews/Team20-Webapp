@@ -6,7 +6,7 @@
 CREATE SCHEMA IF NOT EXISTS DriverApp;
 USE DriverApp;
 
--- Create User(Info) Tablw
+-- Create User(Info) table
 CREATE TABLE UserInfo(
 
 	userID 					INTEGER						PRIMARY KEY,
@@ -18,7 +18,7 @@ CREATE TABLE UserInfo(
     userType				VARCHAR(10)
 );
 
--- Create Driver tables
+-- Create Driver(User) table
 CREATE TABLE DriverUser(
 	
     userID					INTEGER						PRIMARY KEY,
@@ -40,7 +40,7 @@ CREATE TABLE DriverApplication(
     FOREIGN KEY (userID) REFERENCES DriverUser(userID)
 );
 
--- Create Sponsor Table
+-- Create Sponsor(User) table
 CREATE TABLE SponsorUser(
 
 	userID 					INTEGER 					PRIMARY KEY,
@@ -48,10 +48,28 @@ CREATE TABLE SponsorUser(
     FOREIGN KEY (userID) REFERENCES UserInfo(userID)
 );
 
+-- Create Admin(User) table
 CREATE TABLE AdminUser(
 	
     userID					INTEGER						PRIMARY KEY,
     FOREIGN KEY (userID) REFERENCES UserInfo(userID)
+);
+
+-- Create SponsorOrganization table
+CREATE TABLE SponsorOrganization(
+	
+    sponsorOrgID			INTEGER						PRIMARY KEY,
+    sponsorOrgName			VARCHAR(75)
+);
+
+-- Create Purchase table
+CREATE TABLE Purchase(
+
+	purchaseID				INTEGER						AUTO_INCREMENT PRIMARY KEY,
+    purchaseDate			DATE,
+    purchaseCost			NUMERIC(5,2),
+    driverID				INTEGER,
+    FOREIGN KEY (driverID) REFERENCES DriverUser(userID)
 );
 
 -- Create About table
