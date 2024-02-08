@@ -6,7 +6,18 @@
 CREATE SCHEMA IF NOT EXISTS DriverApp;
 USE DriverApp;
 
--- Create tables
+-- Create DriverApplication table
+CREATE TABLE DriverApplication(
+
+	applicationID			INTEGER PRIMARY KEY,
+    dateOfApplication		DATE,
+    applicationStatus		VARCHAR(20)			DEFAULT "In-Progress",
+    statusReason			VARCHAR(50),
+    driverID				INTEGER,
+    FOREIGN KEY (driverID) REFERENCES Driver(driverID)
+);
+
+-- Create Driver tables
 CREATE TABLE Driver(
 
 	driverID				INTEGER,
