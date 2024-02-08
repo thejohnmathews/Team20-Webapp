@@ -6,6 +6,18 @@
 CREATE SCHEMA IF NOT EXISTS DriverApp;
 USE DriverApp;
 
+-- Create User(Info) Tablw
+CREATE TABLE UserInfo(
+
+	userID 					INTEGER						PRIMARY KEY,
+    firstName				VARCHAR(30),
+    lastName				VARCHAR(50),
+    email 					VARCHAR(75),
+    userUsername			VARCHAR(50),
+    userPassword			VARCHAR(50),
+    userType				VARCHAR(10)
+);
+
 -- Create DriverApplication table
 CREATE TABLE DriverApplication(
 
