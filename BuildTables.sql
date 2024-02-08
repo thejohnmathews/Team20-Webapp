@@ -56,9 +56,9 @@ CREATE TABLE PointChange(
     changeDate DATE DEFAULT CURRENT_TIMESTAMP,
 	changePointAmt INT,
     changeReasonID INT,
-    FOREIGN KEY (driverID) REFERENCES Driver,
-    FOREIGN KEY (changeReasonID) REFERENCES Reason,
-    FOREIGN KEY (sponsorID) REFERENCES Sponsor
+    FOREIGN KEY (driverID) REFERENCES Driver(driverID),
+    FOREIGN KEY (changeReasonID) REFERENCES Reason(reasonID),
+    FOREIGN KEY (sponsorID) REFERENCES Sponsor(sponsorID)
 );
 
 -- Create Password Change table
