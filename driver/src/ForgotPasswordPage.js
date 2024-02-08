@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Grid, TextField, Card, CardHeader, CardContent, InputAdornment } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 
-export default function ForgotPage() {
+export default function ForgotPasswordPage() {
 	const [email, setEmail] = useState("");
 
 	function resetPassword(){
@@ -13,7 +13,7 @@ export default function ForgotPage() {
 		<Grid container alignItems="center" justifyContent="center" sx={{ mt: 10 }} >
 		  {/* card that everything is placed in */}
 		  <Card sx={{ minWidth: 275, p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}> 
-			<CardHeader title="Forgot Username/Password"> </CardHeader>
+			<CardHeader title="Reset Password"> </CardHeader>
 	
 			{/* everything in the card */}
 			<CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

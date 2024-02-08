@@ -4,8 +4,6 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import LockIcon from '@mui/icons-material/Lock';
 import { useNavigate } from 'react-router-dom';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import AboutPage from './AboutPage';
-
 
 export default function LoginPage() {
 
@@ -27,8 +25,11 @@ export default function LoginPage() {
     console.log("Username: " + username + "\nPassword: " + password)
     navigate('/about');
   }
-  function forgot(){
-    navigate('/forgot');
+  function forgotPassword(){
+    navigate('/forgotPassword');
+  }
+  function forgotUsername(){
+    navigate('/forgotUsername');
   }
 
   return (
@@ -68,9 +69,10 @@ export default function LoginPage() {
           <Button variant="contained" onClick={login}>Login</Button>
         </CardContent>
 
-        {/* Forgot password and create account buttons*/}
+        {/* Forgot password and Driver Application buttons*/}
         <CardActions sx={{ alignSelf: 'flex-start' }}>
-          <Button size="small" onClick={forgot}>Forgot Username/Password</Button>
+          <Button size="small" onClick={forgotPassword}>Forgot Password</Button>
+          <Button size="small" onClick={forgotUsername}>Forgot Username</Button>
           <Button size="small">Driver Application</Button>
         </CardActions>
       </Card>
