@@ -60,3 +60,22 @@ CREATE TABLE PointChange(
     FOREIGN KEY (changeReasonID) REFERENCES Reason,
     FOREIGN KEY (sponsorID) REFERENCES Sponsor
 );
+
+-- Create Password Change table
+CREATE TABLE PasswordChange(
+    passwordChangeID INT AUTO_INCREMENT PRIMARY KEY,
+    userID INT,
+    FOREIGN KEY (userID) REFERENCES UserInfo(userID),
+    changeDate DATE,
+    oldPassword VARCHAR(200),
+    newPassword VARCHAR(200)
+);
+
+-- Create Login Attempt table
+CREATE TABLE LoginAttempt(
+    loginAttemptID INT AUTO_INCREMENT PRIMARY KEY,
+    userID INT,
+    FOREIGN KEY (userID) REFERENCES UserInfo(userID),
+    loginAttemptDate DATE,
+    loginSuccess BOOLEAN
+);
