@@ -18,6 +18,17 @@ CREATE TABLE UserInfo(
     userType				VARCHAR(10)
 );
 
+-- Create Driver tables
+CREATE TABLE DriverUser(
+	
+    userID					INTEGER						PRIMARY KEY,
+    driverStartDate			DATE,
+    driverEndDate			DATE DEFAULT NULL,
+    driverNumTrips			INTEGER,
+    driverMilesDriven		INTEGER,
+    FOREIGN KEY (userID) REFERENCES UserInfo(userID)
+);
+
 -- Create DriverApplication table
 CREATE TABLE DriverApplication(
 
@@ -25,25 +36,22 @@ CREATE TABLE DriverApplication(
     dateOfApplication		DATE,
     applicationStatus		VARCHAR(20)					DEFAULT "In-Progress",
     statusReason			VARCHAR(50),
-    driverID				INTEGER,
-    FOREIGN KEY (driverID) REFERENCES Driver(driverID)
+    userID					INTEGER,
+    FOREIGN KEY (userID) REFERENCES DriverUser(userID)
 );
 
 -- Create Sponsor Table
-CREATE TABLE Sponsor(
+CREATE TABLE SponsorUser(
 
-	sponsorID 				INTEGER 					AUTO_INCREMENT PRIMARY KEY,
-    sponsorOrgID			INTEGER
+	userID 					INTEGER 					PRIMARY KEY,
+    sponsorOrgID			INTEGER,
+    FOREIGN KEY (userID) REFERENCES UserInfo(userID)
 );
 
--- Create Driver tables
-CREATE TABLE Driver(
-
-	driverID				INTEGER						AUTO_INCREMENT PRIMARY KEY,
-    driverStartDate			DATE,
-    driverEndDate			DATE DEFAULT NULL,
-    driverNumTrips			INTEGER,
-    driverMilesDriven		INTEGER
+CREATE TABLE AdminUser(
+	
+    userID					INTEGER						PRIMARY KEY,
+    FOREIGN KEY (userID) REFERENCES UserInfo(userID)
 );
 
 -- Create About table
@@ -65,12 +73,12 @@ CREATE TABLE Reason (
 CREATE TABLE PointChange(
 	driverID INT,
     sponsorID INT,
-    changeDate DATE DEFAULT CURRENT_TIMESTAMP,
+    changeDate DATE,
 	changePointAmt INT,
     changeReasonID INT,
-    FOREIGN KEY (driverID) REFERENCES Driver(driverID),
+    FOREIGN KEY (driverID) REFERENCES DriverUser(userID),
     FOREIGN KEY (changeReasonID) REFERENCES Reason(reasonID),
-    FOREIGN KEY (sponsorID) REFERENCES Sponsor(sponsorID)
+    FOREIGN KEY (sponsorID) REFERENCES SponsorUser(userID)
 );
 
 -- Create Password Change table

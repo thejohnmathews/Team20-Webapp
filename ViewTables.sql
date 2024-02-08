@@ -6,4 +6,13 @@
 USE DriverApp;
 
 -- Display all tables
-SELECT * FROM Driver;
+SELECT * FROM DriverUser;
+SELECT * FROM PointChange;
+SELECT * FROM About;
+SELECT * FROM Reason;
+SELECT * FROM UserInfo;
+SELECT * FROM DriverApplication;
+SELECT * FROM SponsorUser;
+SELECT * FROM AdminUser;
+SELECT * FROM PasswordChange;
+SELECT * FROM LoginAttempt;
