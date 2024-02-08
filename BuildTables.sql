@@ -9,28 +9,54 @@ USE DriverApp;
 -- Create DriverApplication table
 CREATE TABLE DriverApplication(
 
-	applicationID			INTEGER PRIMARY KEY,
+	applicationID			INTEGER 					AUTO_INCREMENT PRIMARY KEY,
     dateOfApplication		DATE,
-    applicationStatus		VARCHAR(20)			DEFAULT "In-Progress",
+    applicationStatus		VARCHAR(20)					DEFAULT "In-Progress",
     statusReason			VARCHAR(50),
     driverID				INTEGER,
     FOREIGN KEY (driverID) REFERENCES Driver(driverID)
 );
 
+-- Create Sponsor Table
+CREATE TABLE Sponsor(
+
+	sponsorID 				INTEGER 					AUTO_INCREMENT PRIMARY KEY,
+    sponsorOrgID			INTEGER
+);
+
 -- Create Driver tables
 CREATE TABLE Driver(
 
-	driverID				INTEGER,
+	driverID				INTEGER						AUTO_INCREMENT PRIMARY KEY,
     driverStartDate			DATE,
     driverEndDate			DATE DEFAULT NULL,
     driverNumTrips			INTEGER,
     driverMilesDriven		INTEGER
 );
 
+-- Create About table
 CREATE TABLE About (
 	teamNum INT,
     teamName VARCHAR(20),
     versionNum FLOAT,
     releaseDate DATE,
     productName VARCHAR(50)
+);
+
+-- Create Reason Table
+CREATE TABLE Reason (
+	reasonID INT PRIMARY KEY AUTO_INCREMENT,
+    reasonString VARCHAR(200)
+);
+
+-- Create PointChange table (related to reason, driver, and sponsor)
+CREATE TABLE PointChange(
+	driverID INT,
+    sponsorID INT,
+    changeDate DATE DEFAULT CURRENT_TIMESTAMP,
+	changePointAmt INT,
+    changeReasonID INT,
+    FOREIGN KEY (driverID) REFERENCES Driver,
+    FOREIGN KEY (changeReasonID) REFERENCES Reason,
+    FOREIGN KEY (sponsorID) REFERENCES Sponsor
 );
