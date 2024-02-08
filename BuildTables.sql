@@ -9,18 +9,25 @@ USE DriverApp;
 -- Create DriverApplication table
 CREATE TABLE DriverApplication(
 
-	applicationID			INTEGER PRIMARY KEY,
+	applicationID			INTEGER 					AUTO_INCREMENT PRIMARY KEY,
     dateOfApplication		DATE,
-    applicationStatus		VARCHAR(20)			DEFAULT "In-Progress",
+    applicationStatus		VARCHAR(20)					DEFAULT "In-Progress",
     statusReason			VARCHAR(50),
     driverID				INTEGER,
     FOREIGN KEY (driverID) REFERENCES Driver(driverID)
 );
 
+-- Create Sponsor Table
+CREATE TABLE Sponsor(
+
+	sponsorID 				INTEGER 					AUTO_INCREMENT PRIMARY KEY,
+    sponsorOrgID			INTEGER
+);
+
 -- Create Driver tables
 CREATE TABLE Driver(
 
-	driverID				INTEGER,
+	driverID				INTEGER						AUTO_INCREMENT PRIMARY KEY,
     driverStartDate			DATE,
     driverEndDate			DATE DEFAULT NULL,
     driverNumTrips			INTEGER,
