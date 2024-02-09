@@ -23,7 +23,7 @@
 3. run "npm install dotenv"
     this will allow us to use environment variables so that we are not storing our database information within our actual program
 
-4. put the .env file i sent in your backend folder, and make sure that .env is also in your .gitignore file (so that we do not upload our .env file to our repo).
+4. create a file named '.env' in your backend folder, and copy paste the text i sent in teams into that file. make sure that .env is also in your .gitignore file (so that we do not upload our .env file to our repo).
 
 ### in theory, this should allow us to work with the database! now, to get this working fully together, here are the steps:
 
