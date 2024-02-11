@@ -26,8 +26,8 @@ export default function AboutPage() {
             <div>
               <p  className="about-info">Team: #{data.teamNum}, {data.teamName}</p>
               <p  className="about-info">Version:{data.versionNum}</p>
-              <p  className="about-info">Release Date: </p>
-              <p  className="about-info">Product Name: </p>
+              <p  className="about-info">Release Date:{data.releaseDate}</p>
+              <p  className="about-info">Product Name:{data.productName}</p>
             </div>
           <p  className="about-info">
             Product Description: A "Truck Driver Incentive Program" where truck drivers can earn points for good driving behavior.
