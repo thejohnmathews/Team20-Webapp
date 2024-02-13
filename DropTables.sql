@@ -1,5 +1,5 @@
 -- Team20 "Bezos Bunch" CPSC 4910
--- DriverApp - DropTables.sql
+-- DriverApp - DropTables.sql x 
 -- Script that drops all tables in database
 
 -- Use Schema
