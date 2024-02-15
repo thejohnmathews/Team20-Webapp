@@ -5,6 +5,7 @@ import AboutPage from './AboutPage.js';
 import ForgotPasswordPage from './ForgotPasswordPage.js'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ForgotUsernamePage from './ForgotUsernamePage.js';
+import DriverApplicationPage from './DriverApplicationPage.js';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route exact path="/about" element={<AboutPage />} />
         <Route exact path="/forgotPassword" element={<ForgotPasswordPage/>} />
         <Route exact path="/forgotUsername" element={<ForgotUsernamePage/>} />
+        <Route exact path="/driverApplication" element={<DriverApplicationPage/>} />
       </Routes>
     </Router>
   );
