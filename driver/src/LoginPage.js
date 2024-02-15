@@ -32,6 +32,10 @@ export default function LoginPage() {
     navigate('/forgotUsername');
   }
 
+  function driverApplication(){
+    navigate('/driverApplication');
+  }
+
   return (
     <Grid container alignItems="center" justifyContent="center" sx={{ mt: 10 }} >
       {/* card that everything is placed in */}
@@ -73,7 +77,7 @@ export default function LoginPage() {
         <CardActions sx={{ alignSelf: 'flex-start' }}>
           <Button size="small" onClick={forgotPassword}>Forgot Password</Button>
           <Button size="small" onClick={forgotUsername}>Forgot Username</Button>
-          <Button size="small">Driver Application</Button>
+          <Button size="small" onClick={driverApplication}>Driver Application</Button>
         </CardActions>
       </Card>
 
