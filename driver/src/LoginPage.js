@@ -22,8 +22,7 @@ export default function LoginPage() {
 
 
   function login(){
-    console.log("Username: " + username + "\nPassword: " + password)
-    navigate('/about');
+    navigate('/driverApplicationStatus');
   }
   function forgotPassword(){
     navigate('/forgotPassword');

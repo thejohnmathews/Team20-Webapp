@@ -6,6 +6,7 @@ import ForgotPasswordPage from './ForgotPasswordPage.js'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ForgotUsernamePage from './ForgotUsernamePage.js';
 import DriverApplicationPage from './DriverApplicationPage.js';
+import DriverApplicationStatusPage from './DriverApplicationStatusPage';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route exact path="/forgotPassword" element={<ForgotPasswordPage/>} />
         <Route exact path="/forgotUsername" element={<ForgotUsernamePage/>} />
         <Route exact path="/driverApplication" element={<DriverApplicationPage/>} />
+        <Route exact path="/driverApplicationStatus" element={<DriverApplicationStatusPage/>} />
       </Routes>
     </Router>
   );
