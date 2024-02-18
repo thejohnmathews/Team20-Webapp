@@ -1,0 +1,7 @@
+type About @model @auth(rules: [{allow: public, operations: [read]}]) {
+  id: ID!
+  teamName: String
+  teamNumber: Int
+  versionNumber: Float
+  productName: String
+}
