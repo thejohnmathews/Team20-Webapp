@@ -1,10 +1,10 @@
 {
   "version": "1",
   "cognitoConfig": {
-    "identityPoolName": "team20webapp9685658e_identitypool_9685658e",
+    "identityPoolName": "team20appfccd4fdb_identitypool_fccd4fdb",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "team209685658e",
-    "userPoolName": "team20webapp9685658e_userpool_9685658e",
+    "resourceNameTruncated": "team20fccd4fdb",
+    "userPoolName": "team20appfccd4fdb_userpool_fccd4fdb",
     "autoVerifiedAttributes": [
       "email"
     ],
@@ -31,20 +31,15 @@
     "userpoolClientReadAttributes": [
       "email"
     ],
-    "userpoolClientLambdaRole": "team209685658e_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "team20fccd4fdb_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "9685658e",
-    "resourceName": "team20webapp9685658e",
+    "sharedId": "fccd4fdb",
+    "resourceName": "team20appfccd4fdb",
     "authSelections": "identityPoolAndUserPool",
     "useDefault": "default",
     "usernameAttributes": [
       "email"
     ],
-    "triggers": {
-      "PostConfirmation": [
-        "add-to-group"
-      ]
-    },
     "userPoolGroupList": [],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,

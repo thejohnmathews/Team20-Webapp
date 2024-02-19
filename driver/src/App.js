@@ -7,12 +7,12 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ForgotUsernamePage from './ForgotUsernamePage.js';
 import DriverApplicationPage from './DriverApplicationPage.js';
 import DriverApplicationStatusPage from './DriverApplicationStatusPage';
-
+ 
 //test
-// 
+//
 /* <Router>
 <Routes>
-  <Route exact path="/" render={() => <h1>Home</h1>} /> 
+  <Route exact path="/" render={() => <h1>Home</h1>} />
   <Route exact path="/" element={<LoginPage />} />
   <Route exact path="/about" element={<AboutPage />} />
   <Route exact path="/forgotPassword" element={<ForgotPasswordPage/>} />
@@ -21,14 +21,14 @@ import DriverApplicationStatusPage from './DriverApplicationStatusPage';
   <Route exact path="/driverApplicationStatus" element={<DriverApplicationStatusPage/>} />
 </Routes>
 </Router> */
-
+ 
 import { Amplify } from 'aws-amplify';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import config from './amplifyconfiguration.json';
 Amplify.configure(config);
-
-
+ 
+ 
 function App({signOut, user}) {
   return (
     <>
@@ -37,6 +37,6 @@ function App({signOut, user}) {
     </>
   );
 }
-
+ 
 //export default App;
 export default withAuthenticator(App);

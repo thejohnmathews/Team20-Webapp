@@ -2,7 +2,7 @@
   "providers": [
     "awscloudformation"
   ],
-  "projectName": "Team20Webapp",
+  "projectName": "Team20App",
   "version": "3.1",
   "frontend": "javascript",
   "javascript": {
