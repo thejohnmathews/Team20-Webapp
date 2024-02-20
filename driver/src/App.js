@@ -31,10 +31,21 @@ Amplify.configure(config);
  
 function App({signOut, user}) {
   return (
-    <>
-    <h1>Hello {user.username}</h1>
-    <button onClick={signOut}>Sign out</button>
-    </>
+  <Router>
+    <Routes>
+    {/* <Route exact path="/" render={() => <h1>Home</h1>} /> */}
+    <Route exact path="/" element={<LoginPage />} />
+    <Route exact path="/about" element={<AboutPage />} />
+    <Route exact path="/forgotPassword" element={<ForgotPasswordPage/>} />
+    <Route exact path="/forgotUsername" element={<ForgotUsernamePage/>} />
+    <Route exact path="/driverApplication" element={<DriverApplicationPage/>} />
+    <Route exact path="/driverApplicationStatus" element={<DriverApplicationStatusPage/>} />
+    </Routes>
+  </Router>
+    // <>
+    // <h1>Hello {user.username}</h1>
+    // <button onClick={signOut}>Sign out</button>
+    // </>
   );
 }
  
