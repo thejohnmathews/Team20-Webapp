@@ -30,7 +30,7 @@ function App({signOut, user}) {
     <Route exact path="/forgotUsername" element={<ForgotUsernamePage/>} />
     <Route exact path="/driverApplication" element={<DriverApplicationPage/>} />
     <Route exact path="/driverApplicationStatus" element={<DriverApplicationStatusPage/>} />
-    <Route exact path="/profile" element={<Profile />} />
+    <Route exact path="/profile" element={<ProfilePage/>} />
 
     </Routes>
   </Router>
