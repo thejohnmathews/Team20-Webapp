@@ -32,6 +32,6 @@ app.get('/About', (req, res) => {
     })
 })
 
-app.listen(443, ()=> {
+app.listen(80, ()=> {
     console.log("listening")
 })
