@@ -34,6 +34,9 @@ export default function LoginPage() {
   function driverApplication(){
     navigate('/driverApplication');
   }
+  function profile(){
+    navigate('/profile');
+  }
 
   return (
     <Grid container alignItems="center" justifyContent="center" sx={{ mt: 10 }} >
@@ -92,8 +95,10 @@ export default function LoginPage() {
           About Page</Button>
         </Link>
       </div>
-      
-
+      <Button onClick={profile} variant="contained" style={{cursor: 'pointer', fontSize: '16px', position: 'absolute', top: '10px', left: '50%', transform: 'translate(-50%)' }}>
+          Profile Page
+      </Button>  
+    
       
     </Grid>
   );
