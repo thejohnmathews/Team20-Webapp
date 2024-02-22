@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ForgotUsernamePage from './ForgotUsernamePage.js';
 import DriverApplicationPage from './DriverApplicationPage.js';
 import DriverApplicationStatusPage from './DriverApplicationStatusPage';
-import Profile from './Profile.js'
+import Profile from './ProfilePage.js'
  
 // Amplify/UI/Cognito imports
 import { Amplify } from 'aws-amplify';
@@ -24,7 +24,6 @@ function App({signOut, user}) {
     <Routes>
     {/* <Route exact path="/" render={() => <h1>Home</h1>} /> */}
     <Route exact path="/" element={<LoginPage />} />
-    <Route exact path="/profile" element={<Profile />} />
     <Route exact path="/about" element={<AboutPage />} />
     <Route exact path="/forgotPassword" element={<ForgotPasswordPage/>} />
     <Route exact path="/forgotUsername" element={<ForgotUsernamePage/>} />
