@@ -1,0 +1,27 @@
+Follow these Instructions to setup you're local repo if you nuke and re-clone it. 
+
+1. Setup Mirrored Github: 
+	git remote set-url --add --push origin https://S24-Team20@dev.azure.com/S24-Team20/S24-Team20/_git/S24-Team20
+	git remote set-url --add --push origin https://github.com/thejohnmathews/Team20-Webapp.git
+	** Run "git remote show origin" to double check 
+	
+	the above command should have this snippit:
+	Fetch URL: https://S24-Team20@dev.azure.com/S24-Team20/S24-Team20/_git/S24-Team20
+  	Push  URL: https://github.com/thejohnmathews/Team20-Webapp.git
+  	Push  URL: https://S24-Team20@dev.azure.com/S24-Team20/S24-Team20/_git/S24-Team20
+
+4. Install react-scripts if not installed:
+	npm install react-scripts
+
+5. npm install -g @aws-amplify/cli
+
+6. Use the amplify pull command listed under our app in Amplify
+-  Will be under backend Backend Environments -> Local Setup Instructions 
+
+
+7. npm start will work locally now
+
+Other Issues I came across: 
+- Need to change access to a few folders (it will tell you the folders)
+- Some errors give you linux commands to run 
+- Otherwise, pray its an easy fix or chatgpt has the answers
