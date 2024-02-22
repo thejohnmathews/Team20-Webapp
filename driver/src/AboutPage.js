@@ -11,7 +11,8 @@ export default function AboutPage() {
   
   const [data, setData] = useState([])
   useEffect(() => {
-    fetch("http://localhost:8081/About")
+    fetch("http://ec2-54-242-201-6.compute-1.amazonaws.com/About", {
+    })
     .then(res => res.json())
     .then(data => setData(data[0]))
     .catch(err => console.log(err));
