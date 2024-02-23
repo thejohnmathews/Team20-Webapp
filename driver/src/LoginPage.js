@@ -87,18 +87,23 @@ export default function LoginPage() {
       {/*About Button*/}
       {/*Everything below here is for the About Button*/}
       
-      <div style={{ textAlign: 'center', paddingTop: '300px' }}>
+      <div style={{ textAlign: 'center', paddingTop: '500px', margin: '0 10px'}}>
         {/* Button to navigate to About page */}
         <Link to="/about" style={{ textDecoration: 'none' }}>
         {/*<button style={{ backgroundColor: 'white', cursor: 'pointer', fontSize: '16px', position: 'absolute', top: '10px', left: '50%', transform: 'translate(-50%)' }}>About Page</button>*/}
-        <Button variant="contained" style={{cursor: 'pointer', fontSize: '16px', position: 'absolute', top: '10px', left: '50%', transform: 'translate(-50%)' }}>
+        <Button variant="contained" style={{cursor: 'pointer', fontSize: '16px', position: 'absolute', top: '20px', left: '60%', transform: 'translate(-50%)' }}>
           About Page</Button>
         </Link>
+
+        <Link to="/profilePage" style={{ textDecoration: 'none' }}>
+        {/*<button style={{ backgroundColor: 'white', cursor: 'pointer', fontSize: '16px', position: 'absolute', top: '10px', left: '50%', transform: 'translate(-50%)' }}>About Page</button>*/}
+        <Button variant="contained" style={{cursor: 'pointer', fontSize: '16px', position: 'absolute', top: '20px', left: '40%', transform: 'translate(-50%)' }}>
+          Profile Page</Button>
+        </Link>
+        
       </div>
-      <Button onClick={profile} variant="contained" style={{cursor: 'pointer', fontSize: '16px', position: 'absolute', top: '10px', left: '50%', transform: 'translate(-50%)' }}>
-          Profile Page
-      </Button>  
-    
+      
+
       
     </Grid>
   );

@@ -11,7 +11,7 @@ export default function ProfilePage() {
   
   const [data, setData] = useState([])
   useEffect(() => {
-    fetch("http://localhost:8081/ProfilePage")
+    fetch("http://localhost:8081/profilePage")
     .then(res => res.json())
     .then(data => setData(data[0]))
     .catch(err => console.log(err));
@@ -22,16 +22,22 @@ export default function ProfilePage() {
   console.log(data)
   return (
         <div>
-          <h1 className="about-header">Profile</h1>
+          <h1 className="profile-header">(Username)'s Profile</h1>
             <div>
-              <p  className="about-info">Team: #{data.teamNum}, {data.teamName}</p>
-              <p  className="about-info">Version:{data.versionNum}</p>
-              <p  className="about-info">Release Date:{data.releaseDate}</p>
-              <p  className="about-info">Product Name:{data.productName}</p>
+              <p  className="profile-info">Sponsor: </p>
+              <p  className="profile-info">First Name: </p>
+              <p  className="profile-info">Last Name: </p>
+              <p  className="profile-info">Username: </p>
+              <p  className="profile-info">Password: </p>
+              <p  className="profile-info">Email: </p>
+              <p  className="profile-info">Phone Number: </p>
+              <p  className="profile-info">Address Line 1: </p>
+              <p  className="profile-info">Address Line 2: </p>
+              <p  className="profile-info">City: </p>
+              <p  className="profile-info">State: </p>
+              <p  className="profile-info">Zip: </p>
             </div>
-          <p  className="about-info">
-            Product Description: A "Truck Driver Incentive Program" where truck drivers can earn points for good driving behavior.
-          </p>
+          
           <Button variant="contained" onClick={back} style={{bottom: '-300px', fontSize: '18px', left: '20px'}}>back</Button>
         </div>
   );
