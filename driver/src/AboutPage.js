@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import "./App.css"
+import DriverAppBar from './DriverAppBar';
 
 export default function AboutPage() {
   const navigate = useNavigate();
@@ -21,6 +22,8 @@ export default function AboutPage() {
 
   console.log(data)
   return (
+    <div>
+      <DriverAppBar/>
         <div>
           <h1 className="about-header">ABOUT</h1>
             <div>
@@ -34,5 +37,6 @@ export default function AboutPage() {
           </p>
           <Button variant="contained" onClick={back} style={{bottom: '-300px', fontSize: '18px', left: '20px'}}>back</Button>
         </div>
+      </div>
   );
 }

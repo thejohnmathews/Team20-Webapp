@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import "./App.css"
+import DriverAppBar from './DriverAppBar';
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -21,6 +22,8 @@ export default function ProfilePage() {
 
   console.log(data)
   return (
+    <div>
+      <DriverAppBar/>
         <div>
           <h1 className="profile-header">(Username)'s Profile</h1>
             <div>
@@ -40,5 +43,6 @@ export default function ProfilePage() {
           
           <Button variant="contained" onClick={back} style={{bottom: '-300px', fontSize: '18px', left: '20px'}}>back</Button>
         </div>
+    </div>
   );
 }
