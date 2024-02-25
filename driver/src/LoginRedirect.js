@@ -1,39 +1,55 @@
-import React, { useState, useEffect } from 'react';
-import { CircularProgress  } from '@mui/material';
+import React, { useState } from 'react';
+import { Grid, Card, CardHeader, Button, CardContent } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 export default function LoginRedirect() {
-
-	const navigate = useNavigate();
 
 	const [isDriver, setIsDriver] = useState(false);
   	const [isAccepted, setIsAccepted] = useState(false);
 	const [isAdmin, setIsAdmin] = useState(false);
 	const [isSponsor, setIsSponsor] = useState(false);
 
-	// TODO: replace with backend logic to get user type
-	useEffect(() => {
+	const navigate = useNavigate();
+
+	const handleDriverClick = () => {
 		setIsDriver(true);
 		setIsAccepted(true);
-	}, []);
-
+	  };
 	
+	  const handleAdminClick = () => {
+		setIsAdmin(true);
+	  };
+	
+	  const handleSponsorClick = () => {
+		setIsSponsor(true);
+	  };
+
 	if(isDriver){
 		if(isAccepted){
-			navigate('/profile');
+			navigate('/driverProfile');
 		}
 		else{
 			navigate('/driverApplicationStatus');
 		}
 	}
 	else if (isAdmin){
-
+		navigate('/adminProfile');
 	}
 	else if(isSponsor){
-
+		navigate('/sponsorProfile');
 	}
 
 	return(
-		<CircularProgress/>
+		<Grid container alignItems="center" justifyContent="center" sx={{ mt: 10 }} >
+			<Card sx={{ minWidth: 275, p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+				<CardHeader title="Temp manual login"></CardHeader>
+				<CardContent>
+				<Button onClick={handleDriverClick}>Driver</Button>
+				<Button onClick={handleAdminClick}>Admin</Button>
+				<Button onClick={handleSponsorClick}>Sponsor</Button>
+				</CardContent>
+			</Card>
+		</Grid>
+		// <CircularProgress/>
 	);
 }

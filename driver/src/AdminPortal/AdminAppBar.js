@@ -1,13 +1,11 @@
 import * as React from 'react';
-import {AppBar, Box, Toolbar, Typography, IconButton, MenuItem, Menu, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider, Drawer} from '@mui/material';
+import {AppBar, Box, Toolbar, Typography, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider, Drawer} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import InfoIcon from '@mui/icons-material/Info';
 import { useNavigate } from 'react-router-dom';
 
-export default function DriverAppBar() {
-  const [auth, setAuth] = React.useState(true);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+export default function AdminAppBar() {
   const [open, setOpen] = React.useState(false);
 
   const toggleDrawer = (newOpen) => () => {
@@ -16,7 +14,7 @@ export default function DriverAppBar() {
   const navigate = useNavigate();
 
   const handleProfile = () => {
-    navigate('/profile');
+    navigate('/adminProfile');
   };
 
   const handleAbout = () => {
@@ -56,7 +54,7 @@ export default function DriverAppBar() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Driver Portal
+            Admin Portal
           </Typography>
               <IconButton
                 size="large"
