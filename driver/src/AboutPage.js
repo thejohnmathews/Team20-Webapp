@@ -12,7 +12,7 @@ export default function AboutPage() {
   
   const [data, setData] = useState([])
   useEffect(() => {
-    fetch("http://localhost:8081/About")
+    fetch("https://team20.cpsc4911.com/About")
     .then(res => res.json())
     .then(data => setData(data[0]))
     .catch(err => console.log(err));
