@@ -32,9 +32,6 @@ export default function ProfilePage() {
   console.log(data)
 
   // use amplify api call to Cognito to fetch userAttributes
-  // NOTE: To prevent the API fetch from getting rejected,
-  //        I had to edit the Trust Relationship for the 
-  //        authRole
   const [userAttributes, setUserAttributes] = useState(null);
   useEffect(() => {
     async function handleFetchUserAttributes() {
@@ -51,7 +48,7 @@ export default function ProfilePage() {
   }, []);
 
   
-
+  // use amplify api call to Cognito to update user atribtues
   async function handleUpdateUserAttribute(attributeKey, value) {
     try {
       const output = await updateUserAttribute({
@@ -66,6 +63,7 @@ export default function ProfilePage() {
     }
   }
 
+  // helper function forupdate user attributes
   function handleUpdateUserAttributeNextSteps(output) {
     const { nextStep } = output;
 
@@ -83,7 +81,7 @@ export default function ProfilePage() {
     }
   }
 
-
+  // {userAttributes.attributes['custom:Sponsor']}
   return (
     <div>
       <DriverAppBar/>
@@ -92,7 +90,7 @@ export default function ProfilePage() {
           <div>
             <h1 className="profile-header">({userAttributes.preferred_username})'s Profile</h1>
               <div>
-                <p  className="profile-info">Sponsor: {userAttributes.attributes['custom:Sponsor']}</p>
+                <p  className="profile-info">Sponsor: </p>
                 <p  className="profile-info">First Name: {userAttributes.given_name}</p>
                 <p  className="profile-info">Last Name: {userAttributes.family_name}</p>
                 <p  className="profile-info">Username: {userAttributes.preferred_username}</p>
