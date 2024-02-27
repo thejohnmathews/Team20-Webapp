@@ -23,8 +23,13 @@ export default function SponsorAppBar() {
   };
 
   const handleAccountManage = () => {
-    navigate('/accountManagement');
+    navigate('/sponsorAccountManagement');
   };
+
+  const handleOrgManage = () => {
+    navigate('/sponsorOrganizationManagement');
+  };
+  
 
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
@@ -35,6 +40,14 @@ export default function SponsorAppBar() {
               <ManageAccountsIcon/>
             </ListItemIcon>
             <ListItemText primary={"Account Management"} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem key={"Organization Management"} disablePadding>
+          <ListItemButton onClick={handleOrgManage}>
+            <ListItemIcon>
+              <ManageAccountsIcon/>
+            </ListItemIcon>
+            <ListItemText primary={"Organization Management"} />
           </ListItemButton>
         </ListItem>
         <ListItem key={"About"} disablePadding>

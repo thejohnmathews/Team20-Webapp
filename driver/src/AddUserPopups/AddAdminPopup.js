@@ -21,7 +21,7 @@ export default function DriverProfilePopUp({ open, handleClose }) {
       aria-describedby="alert-dialog-description"
     >
       <DialogTitle id="alert-dialog-title">
-        Create A Driver
+        Create An Admin
       </DialogTitle>
       <br />
       <DialogContent>

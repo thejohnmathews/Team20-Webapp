@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import SponsorAppBar from './SponsorAppBar';
 
-export default function AccountManagementPage() {
+export default function SponsorManagementPage() {
   
 
   const [toggleForm, setToggleForm] = useState(false)
