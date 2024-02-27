@@ -12,6 +12,9 @@ import LoginRedirect from './LoginRedirect.js';
 import SponsorProfilePage from './SponsorPortal/SponsorProfilePage.js';
 import AdminProfilePage from './AdminPortal/AdminProfilePage.js';
 import AccountManagementPage from './SponsorPortal/AccountManagementPage.js';
+import AdminAbout from './AdminPortal/AdminAbout.js';
+import SponsorAbout from './SponsorPortal/SponsorAbout.js';
+import DriverAbout from './DriverPortal/DriverAbout.js';
  
 // Amplify/UI/Cognito imports
 import { Amplify } from 'aws-amplify';
@@ -26,7 +29,9 @@ function App({signOut, user}) {
   <Router>
     <Routes>
       <Route exact path="/" element={<LoginRedirect />} />
-      <Route exact path="/about" element={<AboutPage />} />
+      <Route exact path="/adminAbout" element={<AdminAbout />} />
+      <Route exact path="/sponsorAbout" element={<SponsorAbout />} />
+      <Route exact path="/driverAbout" element={<DriverAbout />} />
       <Route exact path="/forgotPassword" element={<ForgotPasswordPage/>} />
       <Route exact path="/forgotUsername" element={<ForgotUsernamePage/>} />
       <Route exact path="/driverApplication" element={<DriverApplicationPage/>} />

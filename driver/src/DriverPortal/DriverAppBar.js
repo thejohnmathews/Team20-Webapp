@@ -17,11 +17,11 @@ export default function DriverAppBar() {
   const navigate = useNavigate();
 
   const handleProfile = () => {
-    navigate('/profile');
+    navigate('/driverProfile');
   };
 
   const handleAbout = () => {
-    navigate('/about');
+    navigate('/driverAbout');
   };
 
   const DrawerList = (
@@ -32,7 +32,7 @@ export default function DriverAppBar() {
             <ListItemIcon>
               <StoreIcon/>
             </ListItemIcon>
-            <ListItemText primary={"Catalog"} />
+            <ListItemText primary={"Item Catalog"} />
           </ListItemButton>
         </ListItem>
         <ListItem key={"Past Purchases"} disablePadding>
@@ -40,7 +40,7 @@ export default function DriverAppBar() {
             <ListItemIcon>
               <HistoryIcon/>
             </ListItemIcon>
-            <ListItemText primary={"Purchases"} />
+            <ListItemText primary={"Past Purchases"} />
           </ListItemButton>
         </ListItem>
         <ListItem key={"Driving Points"} disablePadding>
@@ -48,7 +48,7 @@ export default function DriverAppBar() {
             <ListItemIcon>
               <LoyaltyIcon/>
             </ListItemIcon>
-            <ListItemText primary={"Points"} />
+            <ListItemText primary={"Driving Points"} />
           </ListItemButton>
         </ListItem>
         <ListItem key={"About"} disablePadding>

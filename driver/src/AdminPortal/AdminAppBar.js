@@ -18,7 +18,7 @@ export default function AdminAppBar() {
   };
 
   const handleAbout = () => {
-    navigate('/about');
+    navigate('/adminAbout');
   };
 
   const DrawerList = (

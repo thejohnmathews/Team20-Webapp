@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import "./App.css"
-import DriverAppBar from './DriverPortal/DriverAppBar';
 
 export default function AboutPage() {
   const navigate = useNavigate();
@@ -23,7 +22,6 @@ export default function AboutPage() {
   console.log(data)
   return (
     <div>
-      <DriverAppBar/>
         <div>
           <h1 className="about-header">ABOUT</h1>
             <div>

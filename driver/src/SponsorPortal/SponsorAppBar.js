@@ -19,7 +19,7 @@ export default function SponsorAppBar() {
   };
 
   const handleAbout = () => {
-    navigate('/about');
+    navigate('/sponsorAbout');
   };
 
   const handleAccountManage = () => {
