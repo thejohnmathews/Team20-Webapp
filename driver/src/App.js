@@ -1,7 +1,6 @@
 // React App imports
 import React from 'react';
 import './App.css';
-import AboutPage from './AboutPage.js';
 import ForgotPasswordPage from './ForgotPasswordPage.js'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ForgotUsernamePage from './ForgotUsernamePage.js';
@@ -15,6 +14,7 @@ import AccountManagementPage from './SponsorPortal/AccountManagementPage.js';
 import AdminAbout from './AdminPortal/AdminAbout.js';
 import SponsorAbout from './SponsorPortal/SponsorAbout.js';
 import DriverAbout from './DriverPortal/DriverAbout.js';
+import AdminAccountManagement from './AdminPortal/AccountManagement.js'
  
 // Amplify/UI/Cognito imports
 import { Amplify } from 'aws-amplify';
@@ -40,6 +40,7 @@ function App({signOut, user}) {
       <Route exact path="/adminProfile" element={<AdminProfilePage/>} />
       <Route exact path="/sponsorProfile" element={<SponsorProfilePage/>} />
       <Route exact path="/accountManagement" element={<AccountManagementPage/>} />
+      <Route exact path="/adminAccountManagement" element={<AdminAccountManagement />} />
     </Routes>
   </Router>
   );
