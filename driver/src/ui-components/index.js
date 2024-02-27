@@ -4,6 +4,5 @@
  * Any changes to this file will be overwritten when running amplify pull. *
  **************************************************************************/
 
-export { default as AboutCreateForm } from "./AboutCreateForm";
-export { default as AboutUpdateForm } from "./AboutUpdateForm";
+export { default as DriverApplication } from "./DriverApplication";
 export { default as studioTheme } from "./studioTheme";

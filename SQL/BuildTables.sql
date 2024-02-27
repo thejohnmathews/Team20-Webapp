@@ -59,7 +59,8 @@ CREATE TABLE AdminUser(
 CREATE TABLE SponsorOrganization(
 	
     sponsorOrgID			INTEGER						PRIMARY KEY,
-    sponsorOrgName			VARCHAR(75)
+    sponsorOrgName			VARCHAR(75),
+    sponsorOrgDescription   VARCHAR(500)
 );
 
 -- Create Purchase table

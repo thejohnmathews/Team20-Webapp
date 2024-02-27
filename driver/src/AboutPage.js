@@ -11,8 +11,7 @@ export default function AboutPage() {
   
   const [data, setData] = useState([])
   useEffect(() => {
-    fetch("http://ec2-54-242-201-6.compute-1.amazonaws.com/About", {
-    })
+    fetch("https://team20.cpsc4911.com/About")
     .then(res => res.json())
     .then(data => setData(data[0]))
     .catch(err => console.log(err));
@@ -22,6 +21,7 @@ export default function AboutPage() {
 
   console.log(data)
   return (
+    <div>
         <div>
           <h1 className="about-header">ABOUT</h1>
             <div>
@@ -35,5 +35,6 @@ export default function AboutPage() {
           </p>
           <Button variant="contained" onClick={back} style={{bottom: '-300px', fontSize: '18px', left: '20px'}}>back</Button>
         </div>
+      </div>
   );
 }
