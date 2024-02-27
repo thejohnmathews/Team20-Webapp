@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import "../App.css"
 import DriverAppBar from './DriverAppBar';
 
+// here are amplify imports, not sure we need all of them.
 import { Amplify } from 'aws-amplify';
 import '@aws-amplify/ui-react/styles.css';
 import config from '../amplifyconfiguration.json';
@@ -27,8 +28,9 @@ export default function ProfilePage() {
   }, [])
 
   // use amplify api call to Cognito to fetch userAttributes
-  // NOTE: To prevent the API from getting rejected, I had to
-  //       edit the Trust Relationship for the authRole
+  // NOTE: To prevent the API fetch from getting rejected,
+  //        I had to edit the Trust Relationship for the 
+  //        authRole
   const [userAttributes, setUserAttributes] = useState(null);
   useEffect(() => {
     async function handleFetchUserAttributes() {
@@ -64,6 +66,12 @@ export default function ProfilePage() {
               </div>
             </div>
           )}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', height: '100vh' }}>
+            <Button variant="contained"> Change Username</Button>
+            <Button variant="contained"> Change Password</Button>
+            <Button variant="contained">Change E-Mail</Button>
+            <Button variant="contained">Change Address</Button>
+          </div>
           <Button variant="contained" onClick={back} style={{bottom: '-300px', fontSize: '18px', left: '20px'}}>back</Button>
         </div>
     </div>
