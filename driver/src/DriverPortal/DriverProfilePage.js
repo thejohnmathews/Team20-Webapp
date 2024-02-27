@@ -27,6 +27,8 @@ export default function ProfilePage() {
   }, [])
 
   // use amplify api call to Cognito to fetch userAttributes
+  // NOTE: To prevent the API from getting rejected, I had to
+  //       edit the Trust Relationship for the authRole
   const [userAttributes, setUserAttributes] = useState(null);
   useEffect(() => {
     async function handleFetchUserAttributes() {
@@ -49,20 +51,16 @@ export default function ProfilePage() {
       <div>
         {userAttributes && (
           <div>
-            <h1 className="profile-header">({userAttributes.sub})'s Profile</h1>
+            <h1 className="profile-header">({userAttributes.preferred_username})'s Profile</h1>
               <div>
-                <p  className="profile-info">Sponsor: </p>
-                <p  className="profile-info">First Name: </p>
-                <p  className="profile-info">Last Name: </p>
+                <p  className="profile-info">Sponsor: {userAttributes.Sponsor}</p>
+                <p  className="profile-info">First Name: {userAttributes.given_name}</p>
+                <p  className="profile-info">Last Name: {userAttributes.family_name}</p>
                 <p  className="profile-info">Username: {userAttributes.preferred_username}</p>
-                <p  className="profile-info">Password: </p>
+                <p  className="profile-info">Server Username: {userAttributes.sub}</p>
                 <p  className="profile-info">Email: {userAttributes.email}</p>
-                <p  className="profile-info">Phone Number: </p>
-                <p  className="profile-info">Address Line 1: </p>
-                <p  className="profile-info">Address Line 2: </p>
-                <p  className="profile-info">City: </p>
-                <p  className="profile-info">State: </p>
-                <p  className="profile-info">Zip: </p>
+                <p  className="profile-info">Phone Number: {userAttributes.phone_number}</p>
+                <p  className="profile-info">Address Line 1: {userAttributes.address}</p>
               </div>
             </div>
           )}
