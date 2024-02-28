@@ -3,8 +3,23 @@ import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import "../App.css"
 import SponsorAppBar from './SponsorAppBar';
+import SponsorProfilePopUp from '../ProfilePopUps/SponsorProfilePopup';
 
 export default function SponsorProfilePage() {
+
+  const [open, setOpen] = React.useState(false);
+  const [userID, setUserID] = React.useState(-1);
+
+  const handleClickOpen = (userID) => {
+		setUserID(userID);
+		setOpen(true);
+	};
+	
+	const handleClose = () => {
+		setOpen(false);
+		setUserID(-1);
+	};
+
   const navigate = useNavigate();
   function back(){
     navigate(-1);
@@ -39,6 +54,8 @@ export default function SponsorProfilePage() {
               <p  className="profile-info">City: </p>
               <p  className="profile-info">State: </p>
               <p  className="profile-info">Zip: </p>
+              <Button variant="contained" onClick={handleClickOpen}>Edit Profile</Button>
+              { open && <SponsorProfilePopUp userID={userID} open={open} handleClose={handleClose} permission={"sponsor"}/> }
             </div>
           
           <Button variant="contained" onClick={back} style={{bottom: '-300px', fontSize: '18px', left: '20px'}}>back</Button>

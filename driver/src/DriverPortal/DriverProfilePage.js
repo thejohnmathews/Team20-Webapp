@@ -121,7 +121,7 @@ export default function ProfilePage() {
             <Button variant="contained">Change E-Mail</Button>
             <Button variant="contained">Change Address</Button>
             <Button variant="contained" onClick={handleClickOpen}>Edit Profile</Button>
-            { open && <ProfilePopup userID={userID} open={open} handleClose={handleClose}/> }
+            { open && <ProfilePopup userID={userID} open={open} handleClose={handleClose} permission={"driver"}/> }
           </div>
           <Button variant="contained" onClick={back} style={{bottom: '-300px', fontSize: '18px', left: '20px'}}>back</Button>
         </div>
