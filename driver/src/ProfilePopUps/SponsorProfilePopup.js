@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextField, Select, MenuItem } from '@mui/material';
 
-export default function SponsorProfilePopUp({ userID, open, handleClose }) {
+export default function SponsorProfilePopUp({ userID, open, handleClose, permission }) {
   const [editMode, setEditMode] = useState(false);
   const [firstName, setFirstName] = useState('Fname');
   const [lastName, setLastName] = useState('Lname');
@@ -88,6 +88,7 @@ export default function SponsorProfilePopUp({ userID, open, handleClose }) {
               disabled={!editMode}
             />
           </Grid>
+          {permission.permission == "admin" &&
           <Grid item xs={6}>
             <Select
               value={sponsor}
@@ -100,6 +101,7 @@ export default function SponsorProfilePopUp({ userID, open, handleClose }) {
               <MenuItem value="Sponsor 3">Sponsor 3</MenuItem>
             </Select>
           </Grid>
+          }
         </Grid>
       </DialogContent>
       <DialogActions>

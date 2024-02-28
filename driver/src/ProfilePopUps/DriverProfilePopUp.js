@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextField, Select, MenuItem } from '@mui/material';
 
-export default function DriverProfilePopUp({ userID, open, handleClose }) {
+export default function DriverProfilePopUp({ userID, open, handleClose, permission }) {
   const [editMode, setEditMode] = useState(false);
   const [firstName, setFirstName] = useState('Fname');
   const [lastName, setLastName] = useState('Lname');
@@ -89,7 +89,8 @@ export default function DriverProfilePopUp({ userID, open, handleClose }) {
               disabled={!editMode}
             />
           </Grid>
-          <Grid item xs={6}>
+          {/* only allow sponsor change by an admin */}
+          {permission.permission === "admin" && <Grid item xs={6}>
             <Select
               value={sponsor}
               onChange={(e) => setSponsor(e.target.value)}
@@ -100,7 +101,9 @@ export default function DriverProfilePopUp({ userID, open, handleClose }) {
               <MenuItem value="Sponsor 2">Sponsor 2</MenuItem>
               <MenuItem value="Sponsor 3">Sponsor 3</MenuItem>
             </Select>
-          </Grid>
+          </Grid>}
+          {/* only allow application status change by sponsor or admin */}
+          {(permission.permission === "admin" || permission.permission === "sponsor") && 
           <Grid item xs={6}>
             <Select
               value={applicationStatus}
@@ -113,6 +116,7 @@ export default function DriverProfilePopUp({ userID, open, handleClose }) {
               <MenuItem value="Rejected">Rejected</MenuItem>
             </Select>
           </Grid>
+        }
         </Grid>
       </DialogContent>
       <DialogActions>

@@ -15,7 +15,7 @@ const rows = [
   createData(5, "uname5", "Sponsor3", "Rejected" ,"email5", 0),
 ];
 
-export default function DriverTable() {
+export default function DriverTable(permission) {
   const [open, setOpen] = React.useState(false);
 	const [userID, setUserID] = React.useState(-1);
   const [addDriverOpen, setAddDriverOpen] = React.useState(false);
@@ -75,7 +75,7 @@ export default function DriverTable() {
           </TableBody>
         </Table>
       </TableContainer>
-      { open && <ProfilePopup userID={userID} open={open} handleClose={handleClose}/> }
+      { open && <ProfilePopup userID={userID} open={open} handleClose={handleClose} permission={permission}/> }
 
       <Button variant="contained" color="primary" onClick={handleAddDriver} style={{ marginTop: '20px' }}>Add Driver</Button>
       { addDriverOpen && <AddDriver open={addDriverOpen} handleClose={handleCloseAddDriver}/> }

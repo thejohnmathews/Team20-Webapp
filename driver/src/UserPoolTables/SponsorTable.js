@@ -16,7 +16,7 @@ const rows = [
   createData(5, "uname5", "Sponsor3", "email5"),
 ];
 
-export default function SponsorTable() {
+export default function SponsorTable(permission) {
 	const [open, setOpen] = React.useState(false);
 	const [userID, setUserID] = React.useState(-1);
 	const [addSponsorOpen, setAddSponsorOpen] = React.useState(false);
@@ -72,7 +72,7 @@ export default function SponsorTable() {
         </TableBody>
       </Table>
     </TableContainer>
-	{ open && <ProfilePopUp userID={userID} open={open} handleClose={handleClose}/> }
+	{ open && <ProfilePopUp userID={userID} open={open} handleClose={handleClose} permission={permission} /> }
 	
 	<Button variant="contained" color="primary" onClick={handleAddSponsor} style={{ marginTop: '20px' }}>Add Sponsor</Button>
     { addSponsorOpen && <AddSponsor open={addSponsorOpen} handleClose={handleCloseAddSponsor}/> }

@@ -45,10 +45,10 @@ function App() {
 				</Tabs>
 			</Box>
 			<TabPanel value={value} index={0}>
-				<DriverTable/>
+				<DriverTable permission={"admin"}/>
 			</TabPanel>
 			<TabPanel value={value} index={1}>
-				<SponsorTable/>
+				<SponsorTable permission={"admin"}/>
 			</TabPanel>
 			<TabPanel value={value} index={2}>
 				<AdminTable/>

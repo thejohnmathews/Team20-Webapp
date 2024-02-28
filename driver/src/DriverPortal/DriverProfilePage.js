@@ -3,6 +3,7 @@ import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import "../App.css"
 import DriverAppBar from './DriverAppBar';
+import ProfilePopup from '../ProfilePopUps/DriverProfilePopUp'
 
 // here are amplify imports, not sure we need all of them; may only need fetchUserAttributes import
 import { Amplify } from 'aws-amplify';
@@ -14,6 +15,19 @@ Amplify.configure(config);
 
 
 export default function ProfilePage() {
+  const [open, setOpen] = React.useState(false);
+  const [userID, setUserID] = React.useState(-1);
+
+  const handleClickOpen = (userID) => {
+		setUserID(userID);
+		setOpen(true);
+	};
+	
+	const handleClose = () => {
+		setOpen(false);
+		setUserID(-1);
+	};
+
 
   const navigate = useNavigate();
   
@@ -106,6 +120,8 @@ export default function ProfilePage() {
             <Button variant="contained">Change Password</Button>
             <Button variant="contained">Change E-Mail</Button>
             <Button variant="contained">Change Address</Button>
+            <Button variant="contained" onClick={handleClickOpen}>Edit Profile</Button>
+            { open && <ProfilePopup userID={userID} open={open} handleClose={handleClose}/> }
           </div>
           <Button variant="contained" onClick={back} style={{bottom: '-300px', fontSize: '18px', left: '20px'}}>back</Button>
         </div>

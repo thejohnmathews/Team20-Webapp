@@ -42,10 +42,10 @@ function App() {
 				</Tabs>
 			</Box>
 			<TabPanel value={value} index={0}>
-				<DriverTable/>
+				<DriverTable permission={"sponsor"}/>
 			</TabPanel>
 			<TabPanel value={value} index={1}>
-				<SponsorTable/>
+				<SponsorTable permission={"sponsor"}/>
 			</TabPanel>
 		</Container>
 	</div>
