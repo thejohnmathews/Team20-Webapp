@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextField, Select, MenuItem } from '@mui/material';
+import { useFetchUserAttributes } from '../CognitoAPI';
 
 export default function SponsorProfilePopUp({ userID, open, handleClose }) {
   const [editMode, setEditMode] = useState(false);
