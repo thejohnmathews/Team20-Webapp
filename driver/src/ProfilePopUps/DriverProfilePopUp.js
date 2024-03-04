@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextField, Select, MenuItem } from '@mui/material';
 import { useFetchUserAttributes, handleUpdateUserAttributes } from '../CognitoAPI';
-//import { updateUserAttributes } from 'aws-amplify/auth';
 
 export default function DriverProfilePopUp({ userID, open, handleClose, permission }) {
   const [editMode, setEditMode] = useState(false);
@@ -98,7 +97,7 @@ export default function DriverProfilePopUp({ userID, open, handleClose, permissi
               disabled={!editMode}
             />
           </Grid>
-          <Grid item xs={6}>
+          {/* <Grid item xs={6}>
             <TextField
               type="password"
               label="Password"
@@ -107,7 +106,7 @@ export default function DriverProfilePopUp({ userID, open, handleClose, permissi
               onChange={(e) => setPassword(e.target.value)}
               disabled={!editMode}
             />
-          </Grid>
+          </Grid> */}
           <Grid item xs={6}>
             <TextField
               label="Phone Number"
