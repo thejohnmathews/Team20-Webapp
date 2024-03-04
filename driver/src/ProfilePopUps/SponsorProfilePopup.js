@@ -24,8 +24,9 @@ export default function SponsorProfilePopUp({ userID, open, handleClose, permiss
       setFirstName(userAttributes.given_name || 'Given Name');
       setLastName(userAttributes.family_name || 'Family Name');
       setUsername(userAttributes.preferred_username || 'Preferred Username');
-      setSponsor(userAttributes["custom.Sponsor"] || 'Sponsor');
-      setPhoneNumber(userAttributes["custom.Phone"] || '1111111111');
+      setSponsor(userAttributes["custom:Sponsor"] || 'Sponsor');
+      setPhoneNumber(userAttributes["custom:Phone"] || '1111111111');
+      console.log(userAttributes);
     }
   }, [userAttributes]);
 

@@ -4,15 +4,14 @@ import { useFetchUserAttributes } from '../CognitoAPI';
 
 export default function SponsorProfilePopUp({ userID, open, handleClose }) {
   const [editMode, setEditMode] = useState(false);
-  const [firstName, setFirstName] = useState('Fname');
-  const [lastName, setLastName] = useState('Lname');
-  const [username, setUsername] = useState('Uname');
+  const [firstName, setFirstName] = useState('Given Name');
+  const [lastName, setLastName] = useState('Family Name');
+  const [username, setUsername] = useState('Preferred Username');
   const [password, setPassword] = useState('PSWD');
   const [phoneNumber, setPhoneNumber] = useState('1111111111');
 
   // get cognito attributes
   const userAttributes = useFetchUserAttributes();
-  // https://docs.amplify.aws/react/build-a-backend/auth/manage-user-profile/
 
   // CALL FROM COGNITO TO SET USER USESTATE ATTRIBUTES ABOVE
   useEffect(() => {
@@ -22,7 +21,7 @@ export default function SponsorProfilePopUp({ userID, open, handleClose }) {
       setFirstName(userAttributes.given_name || 'Given Name');
       setLastName(userAttributes.family_name || 'Family Name');
       setUsername(userAttributes.preferred_username || 'Preferred Username');
-      setPhoneNumber(userAttributes["custom.Phone"] || '1111111111');
+      setPhoneNumber(userAttributes["custom:Phone"] || '1111111111');
     }
   }, [userAttributes]);
 

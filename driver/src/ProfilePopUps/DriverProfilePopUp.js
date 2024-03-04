@@ -1,19 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextField, Select, MenuItem } from '@mui/material';
+import { useFetchUserAttributes } from '../CognitoAPI';
 
 export default function DriverProfilePopUp({ userID, open, handleClose, permission }) {
   const [editMode, setEditMode] = useState(false);
-  const [firstName, setFirstName] = useState('Fname');
-  const [lastName, setLastName] = useState('Lname');
-  const [username, setUsername] = useState('Uname');
+  const [firstName, setFirstName] = useState('Given Name');
+  const [lastName, setLastName] = useState('Family Name');
+  const [username, setUsername] = useState('Preferred Username');
   const [password, setPassword] = useState('PSWD');
-  const [sponsor, setSponsor] = useState('Sponsor 1');
+  const [sponsor, setSponsor] = useState('Sponsor');
   const [phoneNumber, setPhoneNumber] = useState('1111111111');
   const [applicationStatus, setApplicationStatus] = useState('Pending');
 
+  // get cognito attributes
+  const userAttributes = useFetchUserAttributes();
+
+  // CALL FROM COGNITO TO SET USER USESTATE ATTRIBUTES ABOVE
   useEffect(() => {
-    // CALL FROM COGNITO TO SET USER USESTATE ATTRIBUTES ABOVE
-  });
+
+    // when Cognito sends information back, update useState attributes
+    if (userAttributes) {
+      setFirstName(userAttributes.given_name || 'Given Name');
+      setLastName(userAttributes.family_name || 'Family Name');
+      setUsername(userAttributes.preferred_username || 'Preferred Username');
+      setSponsor(userAttributes["custom:Sponsor"] || 'Sponsor');
+      setPhoneNumber(userAttributes["custom:Phone"] || '1111111111');
+      console.log(userAttributes);
+    }
+  }, [userAttributes]);
 
   const handleEdit = () => {
     setEditMode(true);
