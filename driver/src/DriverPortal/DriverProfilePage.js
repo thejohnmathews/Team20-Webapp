@@ -3,10 +3,10 @@
 // imports
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import "../App.css"
 import DriverAppBar from './DriverAppBar';
 import ProfilePopup from '../ProfilePopUps/DriverProfilePopUp'
-import { useFetchUserAttributes } from '../CognitoAPI';
+import "../App.css"
+import '../CognitoAPI';
 
 // ProfilePage logic
 export default function ProfilePage() {

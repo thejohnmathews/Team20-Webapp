@@ -20,7 +20,7 @@ export function useFetchUserAttributes(){
         }
       }
     
-      handleFetchUserAttributes();
+      andleFetchUserAttributes();
     }, []);
 
     return userAttributes;

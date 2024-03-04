@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import "../App.css"
 import SponsorAppBar from './SponsorAppBar';
 import SponsorProfilePopUp from '../ProfilePopUps/SponsorProfilePopup';
-import { useFetchUserAttributes } from '../CognitoAPI';
+import '../CognitoAPI';
 
 export default function SponsorProfilePage() {
 
