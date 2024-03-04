@@ -9,9 +9,22 @@ export default function SponsorProfilePopUp({ userID, open, handleClose }) {
   const [password, setPassword] = useState('PSWD');
   const [phoneNumber, setPhoneNumber] = useState('1111111111');
 
+  // get cognito attributes
+  const userAttributes = useFetchUserAttributes();
+  // https://docs.amplify.aws/react/build-a-backend/auth/manage-user-profile/
+
+  // CALL FROM COGNITO TO SET USER USESTATE ATTRIBUTES ABOVE
   useEffect(() => {
-    // CALL FROM COGNITO TO SET USER USESTATE ATTRIBUTES ABOVE
-  });
+
+    // when Cognito sends information back, update useState attributes
+    if (userAttributes) {
+      setFirstName(userAttributes.given_name || 'Given Name');
+      setLastName(userAttributes.family_name || 'Family Name');
+      setUsername(userAttributes.preferred_username || 'Preferred Username');
+      setSponsor(userAttributes["custom.Sponsor"] || 'Sponsor');
+      setPhoneNumber(userAttributes["custom.Phone"] || '1111111111');
+    }
+  }, [userAttributes]);
 
   const handleEdit = () => {
     setEditMode(true);
