@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextField, Select, MenuItem } from '@mui/material';
-import { useFetchUserAttributes } from '../CognitoAPI';
+import { useFetchUserAttributes, handleUpdateUserAttributes } from '../CognitoAPI';
+//import { updateUserAttributes } from 'aws-amplify/auth';
 
 export default function DriverProfilePopUp({ userID, open, handleClose, permission }) {
   const [editMode, setEditMode] = useState(false);
@@ -11,8 +12,9 @@ export default function DriverProfilePopUp({ userID, open, handleClose, permissi
   const [sponsor, setSponsor] = useState('Sponsor');
   const [phoneNumber, setPhoneNumber] = useState('1111111111');
   const [applicationStatus, setApplicationStatus] = useState('Pending');
+  const [saving, setSaving] = useState(false);
 
-  // get cognito attributes
+  // get Cognito attributes
   const userAttributes = useFetchUserAttributes();
 
   // CALL FROM COGNITO TO SET USER USESTATE ATTRIBUTES ABOVE
@@ -38,11 +40,23 @@ export default function DriverProfilePopUp({ userID, open, handleClose, permissi
     handleClose();
   };
 
-  const handleSave = () => {
-    handleClose();
-    setEditMode(false);
-    // MAKE COGNITO CALLS HERE TO UPDATE WITH THE NEW USER INFO
+  // update all attributes in edit profile screen everytime
+  const handleSave = async () => {
+    try {
+      await handleUpdateUserAttributes(
+        firstName,
+        lastName,
+        phoneNumber,
+        username,
+      );
+    } catch (error) {
+      console.log(error);
+    } finally {
+      handleClose();
+      setEditMode(false);
+    }
   };
+
 
   return (
     <Dialog
@@ -144,7 +158,7 @@ export default function DriverProfilePopUp({ userID, open, handleClose, permissi
         ) : (
           <Button onClick={handleEdit}>Edit</Button>
         )}
-        <Button onClick={handleSave} disabled={!editMode}>Save</Button>
+        <Button onClick={handleSave} disabled={!editMode}> Save</Button>
       </DialogActions>
     </Dialog>
   );

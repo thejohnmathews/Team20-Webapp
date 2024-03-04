@@ -64,10 +64,6 @@ export default function ProfilePage() {
             </div>
           )}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', height: '100vh' }}>
-            <Button variant="contained">Change Username</Button>
-            <Button variant="contained">Change Password</Button>
-            <Button variant="contained">Change E-Mail</Button>
-            <Button variant="contained">Change Address</Button>
             <Button variant="contained" onClick={handleClickOpen}>Edit Profile</Button>
             { open && <ProfilePopup userID={userID} open={open} handleClose={handleClose} permission={"driver"}/> }
           </div>
