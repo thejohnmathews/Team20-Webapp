@@ -1,9 +1,10 @@
+import React, { useEffect, useState } from 'react';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import "../App.css"
 import SponsorAppBar from './SponsorAppBar';
 import SponsorProfilePopUp from '../ProfilePopUps/SponsorProfilePopup';
-import '../CognitoAPI';
+import { useFetchUserAttributes } from '../CognitoAPI';
 
 export default function SponsorProfilePage() {
 

@@ -1,5 +1,5 @@
 // imports 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Amplify } from 'aws-amplify';
 import '@aws-amplify/ui-react/styles.css';
 import config from './amplifyconfiguration.json'; 
@@ -20,7 +20,7 @@ export function useFetchUserAttributes(){
         }
       }
     
-      andleFetchUserAttributes();
+      handleFetchUserAttributes();
     }, []);
 
     return userAttributes;

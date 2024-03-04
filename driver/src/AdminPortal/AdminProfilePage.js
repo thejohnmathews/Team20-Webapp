@@ -1,9 +1,10 @@
+import React, { useEffect, useState } from 'react';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import "../App.css"
 import AdminAppBar from './AdminAppBar';
 import ProfilePopup from '../ProfilePopUps/AdminProfilePopup'
-import '../CognitoAPI';
+import { useFetchUserAttributes } from '../CognitoAPI';
 
 export default function AdminProfilePage() {
 

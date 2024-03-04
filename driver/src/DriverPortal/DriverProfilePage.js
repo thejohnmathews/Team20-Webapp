@@ -1,12 +1,13 @@
 // DriverProfilePage.js
 
 // imports
+import React, { useEffect, useState } from 'react';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import DriverAppBar from './DriverAppBar';
 import ProfilePopup from '../ProfilePopUps/DriverProfilePopUp'
 import "../App.css"
-import '../CognitoAPI';
+import { useFetchUserAttributes } from '../CognitoAPI';
 
 // ProfilePage logic
 export default function ProfilePage() {
