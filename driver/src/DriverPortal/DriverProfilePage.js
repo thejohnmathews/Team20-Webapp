@@ -1,19 +1,14 @@
-import React, { useEffect, useState } from 'react';
+// DriverProfilePage.js
+
+// imports
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import "../App.css"
 import DriverAppBar from './DriverAppBar';
 import ProfilePopup from '../ProfilePopUps/DriverProfilePopUp'
+import { useFetchUserAttributes } from '../CognitoAPI';
 
-// here are amplify imports, not sure we need all of them; may only need fetchUserAttributes import
-import { Amplify } from 'aws-amplify';
-import '@aws-amplify/ui-react/styles.css';
-import config from '../amplifyconfiguration.json';
-import { fetchUserAttributes } from 'aws-amplify/auth';
-import { updateUserAttribute } from 'aws-amplify/auth';
-Amplify.configure(config);
-
-
+// ProfilePage logic
 export default function ProfilePage() {
   const [open, setOpen] = React.useState(false);
   const [userID, setUserID] = React.useState(-1);
@@ -45,55 +40,8 @@ export default function ProfilePage() {
 
   console.log(data)
 
-  // use amplify api call to Cognito to fetch userAttributes
-  const [userAttributes, setUserAttributes] = useState(null);
-  useEffect(() => {
-    async function handleFetchUserAttributes() {
-      try {
-        const userAttributes = await fetchUserAttributes();
-        setUserAttributes(userAttributes);
-        console.log(userAttributes);
-      } catch (error) {
-        console.log("Error fetching Cognito User Attributes");
-      }
-    }
-
-    handleFetchUserAttributes();
-  }, []);
-
-  
-  // use amplify api call to Cognito to update user atribtues
-  async function handleUpdateUserAttribute(attributeKey, value) {
-    try {
-      const output = await updateUserAttribute({
-        userAttribute: {
-          attributeKey,
-          value
-        }
-      });
-      handleUpdateUserAttributeNextSteps(output);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  // helper function forupdate user attributes
-  function handleUpdateUserAttributeNextSteps(output) {
-    const { nextStep } = output;
-
-    switch (nextStep.updateAttributeStep) {
-      case 'CONFIRM_ATTRIBUTE_WITH_CODE':
-        const codeDeliveryDetails = nextStep.codeDeliveryDetails;
-        console.log(
-          `Confirmation code was sent to ${codeDeliveryDetails?.deliveryMedium}.`
-        );
-        // Collect the confirmation code from the user and pass to confirmUserAttribute.
-        break;
-      case 'DONE':
-        console.log(`attribute was successfully updated.`);
-        break;
-    }
-  }
+  // get Cognito attributes
+  const userAttributes = useFetchUserAttributes();
 
   return (
     <div>
