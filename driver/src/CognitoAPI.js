@@ -6,7 +6,7 @@ import '@aws-amplify/ui-react/styles.css';
 import config from './amplifyconfiguration.json'; 
 import { fetchUserAttributes } from 'aws-amplify/auth';
 import { updateUserAttributes } from 'aws-amplify/auth';
-// import { AmplifyAuthenticator, AmplifySignOut, AmplifySignIn, AmplifySignUp, AmplifyChangePassword } from '@aws-amplify/ui-react';
+import { confirmUserAttribute } from 'aws-amplify/auth';
 Amplify.configure(config);
 
 
@@ -59,9 +59,9 @@ export async function handleUpdateUserAttributes(
   }
 }
 
+
+
 // https://docs.amplify.aws/react/build-a-backend/auth/manage-passwords/
-
-
 export async function handleUpdatePassword(oldPassword, newPassword) {
   try {
     await updatePassword({ oldPassword, newPassword });

@@ -52,7 +52,12 @@ export default function DriverProfilePopUp({ userID, open, handleClose, permissi
       await handleUpdateUserAttributes(email,firstName,lastName,phoneNumber,username,address,);
 
       // change password
-      // await handleUpdatePassword(oldPassword, newPassword);
+      // if password value changes:
+        // await handleUpdatePassword(oldPassword, newPassword);
+
+      // change verification for email change
+      // if (email value changes):
+        // await handleCongfirmUserAttribute(userAttributeKey, confirmattionCode);
 
     } catch (error) {
       console.log(error);
