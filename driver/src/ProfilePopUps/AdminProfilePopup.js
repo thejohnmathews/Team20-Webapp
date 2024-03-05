@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextField, Select, MenuItem } from '@mui/material';
-import { useFetchUserAttributes } from '../CognitoAPI';
+import { useFetchUserAttributes, handleUpdateUserAttributes } from '../CognitoAPI';
 
 export default function SponsorProfilePopUp({ userID, open, handleClose }) {
   const [editMode, setEditMode] = useState(false);
@@ -34,10 +34,21 @@ export default function SponsorProfilePopUp({ userID, open, handleClose }) {
     handleClose();
   };
 
-  const handleSave = () => {
-    handleClose();
-    setEditMode(false);
-    // MAKE COGNITO CALLS HERE TO UPDATE WITH THE NEW USER INFO
+  // update all attributes in edit profile screen everytime
+  const handleSave = async () => {
+    try {
+      await handleUpdateUserAttributes(
+        firstName,
+        lastName,
+        phoneNumber,
+        username,
+      );
+    } catch (error) {
+      console.log(error);
+    } finally {
+      handleClose();
+      setEditMode(false);
+    }
   };
 
   return (
@@ -80,7 +91,7 @@ export default function SponsorProfilePopUp({ userID, open, handleClose }) {
               disabled={!editMode}
             />
           </Grid>
-          <Grid item xs={6}>
+          {/* <Grid item xs={6}>
             <TextField
               type="password"
               label="Password"
@@ -89,7 +100,7 @@ export default function SponsorProfilePopUp({ userID, open, handleClose }) {
               onChange={(e) => setPassword(e.target.value)}
               disabled={!editMode}
             />
-          </Grid>
+          </Grid> */}
           <Grid item xs={6}>
             <TextField
               label="Phone Number"
