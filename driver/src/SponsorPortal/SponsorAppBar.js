@@ -3,9 +3,9 @@ import {AppBar, Box, Toolbar, Typography, IconButton, List, ListItem, ListItemBu
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import InfoIcon from '@mui/icons-material/Info';
+import StoreIcon from '@mui/icons-material/Store';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { useNavigate } from 'react-router-dom';
-import StoreIcon from '@mui/icons-material/Store';
 
 
 export default function SponsorAppBar() {
@@ -70,6 +70,14 @@ export default function SponsorAppBar() {
               <InfoIcon/>
             </ListItemIcon>
             <ListItemText primary={"About"} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem key={"Catalog"} disablePadding>
+          <ListItemButton onClick={handleCatalog}>
+            <ListItemIcon>
+              <StoreIcon/>
+            </ListItemIcon>
+            <ListItemText primary={"Catalog"} />
           </ListItemButton>
         </ListItem>
       </List>

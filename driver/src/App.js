@@ -14,12 +14,11 @@ import SponsorOrgManagementPage from './SponsorPortal/OrganizationManagementPage
 import AdminAbout from './AdminPortal/AdminAbout.js';
 import SponsorAbout from './SponsorPortal/SponsorAbout.js';
 import DriverAbout from './DriverPortal/DriverAbout.js';
-import AdminAccountManagement from './AdminPortal/AccountManagement.js';
-import SponsorAccountManagement from './SponsorPortal/AccountManagement.js';
-import DriverCatalog from './DriverPortal/DriverCatalog.js';
-import SponsorCatalog from './SponsorPortal/SponsorCatalog.js';
+import AdminAccountManagement from './AdminPortal/AccountManagement.js'
+import SponsorAccountManagement from './SponsorPortal/AccountManagement.js'
+import DriverCatalog from './DriverPortal/DriverCatalog.js'
+import SponsorCatalog from './SponsorPortal/SponsorCatalog';
 
- 
 // Amplify/UI/Cognito imports
 import '@aws-amplify/ui-react/styles.css';
 import { Amplify } from 'aws-amplify';
