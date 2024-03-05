@@ -14,9 +14,11 @@ import SponsorOrgManagementPage from './SponsorPortal/OrganizationManagementPage
 import AdminAbout from './AdminPortal/AdminAbout.js';
 import SponsorAbout from './SponsorPortal/SponsorAbout.js';
 import DriverAbout from './DriverPortal/DriverAbout.js';
-import AdminAccountManagement from './AdminPortal/AccountManagement.js'
-import SponsorAccountManagement from './SponsorPortal/AccountManagement.js'
-import DriverCatalog from './DriverPortal/DriverCatalog.js'
+import AdminAccountManagement from './AdminPortal/AccountManagement.js';
+import SponsorAccountManagement from './SponsorPortal/AccountManagement.js';
+import DriverCatalog from './DriverPortal/DriverCatalog.js';
+import SponsorCatalog from './SponsorPortal/SponsorCatalog.js';
+
  
 // Amplify/UI/Cognito imports
 import '@aws-amplify/ui-react/styles.css';
@@ -112,6 +114,7 @@ export default function App() {
             <Route exact path="/adminAccountManagement" element={<AdminAccountManagement />} />
             <Route exact path="/sponsorOrganizationManagement" element={<SponsorOrgManagementPage />} /> 
             <Route exact path="/driverCatalog" element={<DriverCatalog />}/>
+            <Route exact path="/sponsorCatalog" element={<SponsorCatalog />}/>
           </Routes>
       </Router>
       )}

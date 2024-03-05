@@ -5,6 +5,8 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import InfoIcon from '@mui/icons-material/Info';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { useNavigate } from 'react-router-dom';
+import StoreIcon from '@mui/icons-material/Store';
+
 
 export default function SponsorAppBar() {
   const [open, setOpen] = React.useState(false);
@@ -29,11 +31,23 @@ export default function SponsorAppBar() {
   const handleOrgManage = () => {
     navigate('/sponsorOrganizationManagement');
   };
+
+  const handleCatalog = () => {
+    navigate('/sponsorCatalog');
+  };
   
 
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
       <List>
+      <ListItem key={"Item Catalog"} disablePadding>
+          <ListItemButton onClick={handleCatalog}>
+            <ListItemIcon>
+              <StoreIcon/>
+            </ListItemIcon>
+            <ListItemText primary={"Item Catalog"} />
+          </ListItemButton>
+        </ListItem>
       <ListItem key={"Account Management"} disablePadding>
           <ListItemButton onClick={handleAccountManage}>
             <ListItemIcon>

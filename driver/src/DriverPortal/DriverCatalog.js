@@ -3,9 +3,6 @@ import Catalog from "../Catalog";
 import DriverAppBar from "./DriverAppBar";
 
 
-
-
-
 export default function DriverCatalog(){
 	const [dataFetched, setDataFetched] = useState(false);
 	const [albums, setAlbums] = useState([]);
@@ -27,7 +24,7 @@ export default function DriverCatalog(){
 		<div>
 			<DriverAppBar/>
 			<Catalog/>
-			<div>
+			<div style={{ marginLeft: '25px' }}>
 				{/* Loops through returned data and displays it */}
                 {albums.map(album => (
                     <div key={album.collectionId}>
@@ -42,5 +39,5 @@ export default function DriverCatalog(){
                 ))}
             </div>
 		</div>
-	)
+	);
 }
