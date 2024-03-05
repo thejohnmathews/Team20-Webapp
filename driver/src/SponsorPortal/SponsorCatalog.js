@@ -30,6 +30,11 @@ export default function SponsorCatalog() {
   return (
     <div>
         <SponsorAppBar/>
+        <div style={{display: 'flex'}}>
+            <Button>Add Rule</Button>
+            <Button>Remove Rule</Button>
+            <Button>View As Driver</Button>
+        </div>
         <div style={{ marginLeft: '25px' }}>
             <h1 className="catalog-header">Catalog</h1>
             <p>iTunes api proof of concept</p>
