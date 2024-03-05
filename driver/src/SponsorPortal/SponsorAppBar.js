@@ -72,14 +72,6 @@ export default function SponsorAppBar() {
             <ListItemText primary={"About"} />
           </ListItemButton>
         </ListItem>
-        <ListItem key={"Catalog"} disablePadding>
-          <ListItemButton onClick={handleCatalog}>
-            <ListItemIcon>
-              <StoreIcon/>
-            </ListItemIcon>
-            <ListItemText primary={"Catalog"} />
-          </ListItemButton>
-        </ListItem>
       </List>
       <Divider />
     </Box>
