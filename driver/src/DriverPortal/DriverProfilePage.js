@@ -68,7 +68,6 @@ export default function ProfilePage() {
             { open && <ProfilePopup userID={userID} open={open} handleClose={handleClose} permission={"driver"}/> }
           </div>
           <Button variant="contained" onClick={back} style={{bottom: '-300px', fontSize: '18px', left: '20px'}}>back</Button>
-          <Button variant="contained" onClick={changePassword} style={{bottom: '-200px', fontSize: '18px', left: '20px'}}>Change Password</Button>
         </div>
     </div>
   );
