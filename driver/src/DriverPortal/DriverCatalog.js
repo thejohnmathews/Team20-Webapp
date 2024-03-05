@@ -28,7 +28,7 @@ export default function DriverCatalog(){
 			<DriverAppBar/>
 			<Catalog/>
 			<div>
-				{/* Loops through returned data */}
+				{/* Loops through returned data and displays it */}
                 {albums.map(album => (
                     <div key={album.collectionId}>
                         <h2>{album.collectionName}</h2>
