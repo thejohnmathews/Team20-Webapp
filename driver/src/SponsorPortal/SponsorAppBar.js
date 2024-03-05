@@ -3,8 +3,10 @@ import {AppBar, Box, Toolbar, Typography, IconButton, List, ListItem, ListItemBu
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import InfoIcon from '@mui/icons-material/Info';
+import StoreIcon from '@mui/icons-material/Store';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { useNavigate } from 'react-router-dom';
+
 
 export default function SponsorAppBar() {
   const [open, setOpen] = React.useState(false);
@@ -23,18 +25,43 @@ export default function SponsorAppBar() {
   };
 
   const handleAccountManage = () => {
-    navigate('/accountManagement');
+    navigate('/sponsorAccountManagement');
   };
+
+  const handleOrgManage = () => {
+    navigate('/sponsorOrganizationManagement');
+  };
+
+  const handleCatalog = () => {
+    navigate('/sponsorCatalog');
+  };
+  
 
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
       <List>
+      <ListItem key={"Item Catalog"} disablePadding>
+          <ListItemButton onClick={handleCatalog}>
+            <ListItemIcon>
+              <StoreIcon/>
+            </ListItemIcon>
+            <ListItemText primary={"Item Catalog"} />
+          </ListItemButton>
+        </ListItem>
       <ListItem key={"Account Management"} disablePadding>
           <ListItemButton onClick={handleAccountManage}>
             <ListItemIcon>
               <ManageAccountsIcon/>
             </ListItemIcon>
             <ListItemText primary={"Account Management"} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem key={"Organization Management"} disablePadding>
+          <ListItemButton onClick={handleOrgManage}>
+            <ListItemIcon>
+              <ManageAccountsIcon/>
+            </ListItemIcon>
+            <ListItemText primary={"Organization Management"} />
           </ListItemButton>
         </ListItem>
         <ListItem key={"About"} disablePadding>

@@ -3,8 +3,24 @@ import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import "../App.css"
 import SponsorAppBar from './SponsorAppBar';
+import SponsorProfilePopUp from '../ProfilePopUps/SponsorProfilePopup';
+import { useFetchUserAttributes } from '../CognitoAPI';
 
 export default function SponsorProfilePage() {
+
+  const [open, setOpen] = React.useState(false);
+  const [userID, setUserID] = React.useState(-1);
+
+  const handleClickOpen = (userID) => {
+		setUserID(userID);
+		setOpen(true);
+	};
+	
+	const handleClose = () => {
+		setOpen(false);
+		setUserID(-1);
+	};
+
   const navigate = useNavigate();
   function back(){
     navigate(-1);
@@ -18,29 +34,31 @@ export default function SponsorProfilePage() {
     .catch(err => console.log(err));
   }, [])
 
-  //NOTE: product description is not pulled from the backend
+  // get Cognito attributes
+  const userAttributes = useFetchUserAttributes();
 
   console.log(data)
   return (
     <div>
       <SponsorAppBar/>
         <div>
-          <h1 className="profile-header">(Username)'s Profile</h1>
+          {userAttributes && (
+          <div>
+          <h1 className="profile-header"> {userAttributes.preferred_username}'s Profile</h1>
             <div>
-              <p  className="profile-info">Sponsor: </p>
-              <p  className="profile-info">First Name: </p>
-              <p  className="profile-info">Last Name: </p>
-              <p  className="profile-info">Username: </p>
-              <p  className="profile-info">Password: </p>
-              <p  className="profile-info">Email: </p>
-              <p  className="profile-info">Phone Number: </p>
-              <p  className="profile-info">Address Line 1: </p>
-              <p  className="profile-info">Address Line 2: </p>
-              <p  className="profile-info">City: </p>
-              <p  className="profile-info">State: </p>
-              <p  className="profile-info">Zip: </p>
+                <p  className="profile-info">Sponsor: {userAttributes["custom:Sponsor"]}</p>
+                <p  className="profile-info">First Name: {userAttributes.given_name}</p>
+                <p  className="profile-info">Last Name: {userAttributes.family_name}</p>
+                <p  className="profile-info">Username: {userAttributes.preferred_username}</p>
+                <p  className="profile-info">Server Username: {userAttributes.sub}</p>
+                <p  className="profile-info">Email: {userAttributes.email}</p>
+                <p  className="profile-info">Phone Number: {userAttributes["custom:Phone"]}</p>
+                <p  className="profile-info">Address Line: {userAttributes.address}</p>
+              <Button variant="contained" onClick={handleClickOpen}>Edit Profile</Button>
+              { open && <SponsorProfilePopUp userID={userID} open={open} handleClose={handleClose} permission={"sponsor"}/> }
             </div>
-          
+          </div>
+          )}
           <Button variant="contained" onClick={back} style={{bottom: '-300px', fontSize: '18px', left: '20px'}}>back</Button>
         </div>
     </div>

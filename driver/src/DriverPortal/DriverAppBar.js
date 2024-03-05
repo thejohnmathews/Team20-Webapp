@@ -24,11 +24,15 @@ export default function DriverAppBar() {
     navigate('/driverAbout');
   };
 
+  const handleCatalog = () => {
+    navigate('/driverCatalog');
+  };
+
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
       <List>
         <ListItem key={"Item Catalog"} disablePadding>
-          <ListItemButton >
+          <ListItemButton onClick={handleCatalog}>
             <ListItemIcon>
               <StoreIcon/>
             </ListItemIcon>
