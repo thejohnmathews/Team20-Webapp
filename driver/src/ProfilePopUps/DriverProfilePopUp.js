@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextField, Select, MenuItem } from '@mui/material';
-import { useFetchUserAttributes, handleUpdateUserAttributes } from '../CognitoAPI';
+import { useFetchUserAttributes, handleUpdateUserAttributes, handleUpdatePassword } from '../CognitoAPI';
 
 export default function DriverProfilePopUp({ userID, open, handleClose, permission }) {
   const [editMode, setEditMode] = useState(false);
   const [firstName, setFirstName] = useState('Given Name');
   const [lastName, setLastName] = useState('Family Name');
   const [username, setUsername] = useState('Preferred Username');
-  const [password, setPassword] = useState('PSWD');
+  const [email, setEmail] = useState('email@email.com');
   const [sponsor, setSponsor] = useState('Sponsor');
+  const [address, setAddress] = useState('123 Street Rd, City, State, 11111');
   const [phoneNumber, setPhoneNumber] = useState('1111111111');
   const [applicationStatus, setApplicationStatus] = useState('Pending');
-  const [saving, setSaving] = useState(false);
+  const [password, setPassword] = useState('PSWD');
+  // const [saving, setSaving] = useState(false);
 
   // get Cognito attributes
   const userAttributes = useFetchUserAttributes();
@@ -26,6 +28,9 @@ export default function DriverProfilePopUp({ userID, open, handleClose, permissi
       setUsername(userAttributes.preferred_username || 'Preferred Username');
       setSponsor(userAttributes["custom:Sponsor"] || 'Sponsor');
       setPhoneNumber(userAttributes["custom:Phone"] || '1111111111');
+      setEmail(userAttributes.email || 'email@email.com');
+      setAddress(userAttributes.address || '123 Street Rd, City, State, 11111');
+      setPassword(userAttributes.address || '123 Street Rd, City, State, 11111');
       console.log(userAttributes);
     }
   }, [userAttributes]);
@@ -42,12 +47,13 @@ export default function DriverProfilePopUp({ userID, open, handleClose, permissi
   // update all attributes in edit profile screen everytime
   const handleSave = async () => {
     try {
-      await handleUpdateUserAttributes(
-        firstName,
-        lastName,
-        phoneNumber,
-        username,
-      );
+
+      // change normal attributes
+      await handleUpdateUserAttributes(email,firstName,lastName,phoneNumber,username,address,);
+
+      // change password
+      // await handleUpdatePassword(oldPassword, newPassword);
+
     } catch (error) {
       console.log(error);
     } finally {
@@ -55,7 +61,6 @@ export default function DriverProfilePopUp({ userID, open, handleClose, permissi
       setEditMode(false);
     }
   };
-
 
   return (
     <Dialog
@@ -97,22 +102,40 @@ export default function DriverProfilePopUp({ userID, open, handleClose, permissi
               disabled={!editMode}
             />
           </Grid>
-          {/* <Grid item xs={6}>
+          <Grid item xs={6}>
             <TextField
-              type="password"
-              label="Password"
+              label="Email"
               fullWidth
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               disabled={!editMode}
             />
-          </Grid> */}
+          </Grid>
           <Grid item xs={6}>
             <TextField
               label="Phone Number"
               fullWidth
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
+              disabled={!editMode}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Address"
+              fullWidth
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              disabled={!editMode}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              type="password"
+              label="Password"
+              fullWidth
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               disabled={!editMode}
             />
           </Grid>

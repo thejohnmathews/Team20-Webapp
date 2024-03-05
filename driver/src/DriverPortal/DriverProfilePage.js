@@ -7,7 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import DriverAppBar from './DriverAppBar';
 import ProfilePopup from '../ProfilePopUps/DriverProfilePopUp'
 import "../App.css"
-import { useFetchUserAttributes } from '../CognitoAPI';
+import { useFetchUserAttributes} from '../CognitoAPI';
+import { Amplify } from 'aws-amplify';
 
 // ProfilePage logic
 export default function ProfilePage() {
@@ -24,9 +25,8 @@ export default function ProfilePage() {
 		setUserID(-1);
 	};
 
-
   const navigate = useNavigate();
-  
+
   function back(){
     navigate(-1);
   }
@@ -59,7 +59,7 @@ export default function ProfilePage() {
                 <p  className="profile-info">Server Username: {userAttributes.sub}</p>
                 <p  className="profile-info">Email: {userAttributes.email}</p>
                 <p  className="profile-info">Phone Number: {userAttributes["custom:Phone"]}</p>
-                <p  className="profile-info">Address Line: {userAttributes.address}</p>
+                <p  className="profile-info">Address: {userAttributes.address}</p>
               </div>
             </div>
           )}
@@ -68,6 +68,7 @@ export default function ProfilePage() {
             { open && <ProfilePopup userID={userID} open={open} handleClose={handleClose} permission={"driver"}/> }
           </div>
           <Button variant="contained" onClick={back} style={{bottom: '-300px', fontSize: '18px', left: '20px'}}>back</Button>
+          <Button variant="contained" onClick={changePassword} style={{bottom: '-200px', fontSize: '18px', left: '20px'}}>Change Password</Button>
         </div>
     </div>
   );
