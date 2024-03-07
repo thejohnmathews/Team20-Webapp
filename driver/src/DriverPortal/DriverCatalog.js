@@ -1,9 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import Catalog from "../Catalog";
 import DriverAppBar from "./DriverAppBar";
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function DriverCatalog(){
+	const navigate = useNavigate();
+
+	const handleCart = () => {
+		navigate('/driverCart');
+	};
+
 	const [dataFetched, setDataFetched] = useState(false);
 	const [albums, setAlbums] = useState([]);
 
@@ -38,6 +46,11 @@ export default function DriverCatalog(){
                     </div>
                 ))}
             </div>
+			<div style={{ position: 'absolute', top: 100, right: 25, padding: '10px' }}>
+				<button style={{border: 'none', background: 'none', cursor: 'pointer'}}>
+					<ShoppingCartIcon style={{fontSize: '2rem'}} onClick={handleCart} />
+				</button>
+			</div>
 		</div>
 	);
 }
