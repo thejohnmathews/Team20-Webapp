@@ -5,6 +5,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import InfoIcon from '@mui/icons-material/Info';
 import { useNavigate } from 'react-router-dom';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import OrgManagement from './OrganizationManagement'
 
 export default function AdminAppBar() {
   const [open, setOpen] = React.useState(false);
@@ -26,6 +27,10 @@ export default function AdminAppBar() {
     navigate('/adminAccountManagement');
   };
 
+  const handleOrgManagement = () => {
+    navigate('/adminOrgManagement');
+  };
+
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
       <List>
@@ -35,6 +40,14 @@ export default function AdminAppBar() {
               <ManageAccountsIcon/>
             </ListItemIcon>
             <ListItemText primary={"Account Management"} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem key={"Organization Management"} disablePadding>
+          <ListItemButton onClick={handleOrgManagement}>
+            <ListItemIcon>
+              <ManageAccountsIcon/>
+            </ListItemIcon>
+            <ListItemText primary={"Organization Management"} />
           </ListItemButton>
         </ListItem>
         <ListItem key={"About"} disablePadding>
