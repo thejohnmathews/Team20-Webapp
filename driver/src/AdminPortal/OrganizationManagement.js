@@ -2,6 +2,7 @@ import React from 'react';
 import { TableRow, TableHead, TableContainer, TableCell, TableBody, Table, Button, Container, Paper } from '@mui/material';
 import AdminAppBar from './AdminAppBar';
 import AddOrgPopup from '../AddUserPopups/AddOrganizationPopup';
+import EditOrgPopup from '../ProfilePopUps/OrganizationPopup';
 
 function createData(id, name) {
 	return { id, name };
@@ -18,7 +19,7 @@ function createData(id, name) {
 function OrganizationManagement() {
   const [addOrg, setAddOrg] = React.useState(false);
   const [viewOrg, setViewOrg] = React.useState(false);
-  const [userID, setUserID] = React.useState(-1);
+  const [sponsorID, setSponsorID] = React.useState(-1);
 
   const handleAdd = () => {
     setAddOrg(true);
@@ -29,7 +30,7 @@ function OrganizationManagement() {
   };
 
   const handleView = (id) => {
-	setUserID(id);
+	setSponsorID(id);
     setViewOrg(true);
   };
 
@@ -70,7 +71,7 @@ function OrganizationManagement() {
 				</TableBody>
 			</Table>
 			</TableContainer>
-			{/* { viewOrg && <AddOrgPopup userID={userID} open={open} handleClose={handleCloseView}/> } */}
+			{ viewOrg && <EditOrgPopup sponsorID={sponsorID} open={viewOrg} handleClose={handleCloseView}/> }
 			
 			<Button variant="contained" color="primary" onClick={handleAdd} style={{ marginTop: '20px' }}>Add Organization</Button>
 			{ addOrg &&  <AddOrgPopup open={addOrg} handleClose={handleCloseAdd}/> }
