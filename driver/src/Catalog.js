@@ -12,7 +12,7 @@ export default function CatalogPage() {
   
    const [data, setData] = useState([])
    useEffect(() => {
-     fetch("https://team20.cpsc4911.com/Catalog")
+     fetch("http://localhost:3000/Catalog")
      .then(res => res.json())
      .then(data => setData(data[0]))
      .catch(err => console.log(err));

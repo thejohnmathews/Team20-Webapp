@@ -1,6 +1,6 @@
 // React App imports
-import React from 'react';
 import './App.css';
+import React, { useState } from 'react';
 import ForgotPasswordPage from './ForgotPasswordPage.js'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ForgotUsernamePage from './ForgotUsernamePage.js';
@@ -18,7 +18,7 @@ import AdminAccountManagement from './AdminPortal/AccountManagement.js';
 import SponsorAccountManagement from './SponsorPortal/AccountManagement.js';
 import DriverCatalog from './DriverPortal/DriverCatalog.js';
 import SponsorCatalog from './SponsorPortal/SponsorCatalog';
-import DriverCart from './DriverPortal/DriverCart';
+import DriverCart from './DriverPortal/DriverCart.js';
 import AdminOrgManagement from './AdminPortal/OrganizationManagement.js'
 import SponsorPoints from './SponsorPortal/SponsorPoints';
 import NewUserRedirect from './NewUserRedirect.js'
@@ -33,6 +33,7 @@ Amplify.configure(config);
 
 
 export default function App() {
+  const [cartItems, setCartItems] = useState([]);
   return (
     <Authenticator
 
@@ -116,12 +117,12 @@ export default function App() {
             <Route exact path="/sponsorAccountManagement" element={<SponsorAccountManagement/>} />
             <Route exact path="/adminAccountManagement" element={<AdminAccountManagement />} />
             <Route exact path="/sponsorOrganizationManagement" element={<SponsorOrgManagementPage />} /> 
-            <Route exact path="/driverCatalog" element={<DriverCatalog />}/>
             <Route exact path="/sponsorCatalog" element={<SponsorCatalog />}/>
-            <Route exact path="/driverCart" element={<DriverCart />}/>
             <Route exact path="/adminOrgManagement" element={<AdminOrgManagement/>}/>
             <Route exact path="/sponsorPoints" element={<SponsorPoints/>}/>
             <Route exact path="/newUser" element={<NewUserRedirect/>}/>
+            <Route exact path="/driverCatalog" element={<DriverCatalog/>}/>
+            <Route exact path="/driverCart" element={<DriverCart/>}/>
           </Routes>
       </Router>
       )}
