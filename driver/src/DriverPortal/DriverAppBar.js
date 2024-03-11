@@ -87,6 +87,9 @@ export default function DriverAppBar() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Driver Portal
           </Typography>
+          <Typography variant="h6" style={{marginRight: '20px'}}>
+            Current Point Total: ~
+          </Typography>
               <IconButton
                 size="large"
                 aria-label="account of current user"
