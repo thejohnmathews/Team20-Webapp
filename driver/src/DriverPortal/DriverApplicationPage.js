@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Grid, TextField, Card, CardHeader, CardContent, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { useFetchUserAttributes} from '../CognitoAPI';
 import { useNavigate } from 'react-router-dom';
+import BaseURL from '../BaseURL'
 
 
 class Address{
@@ -51,27 +52,42 @@ export default function DriverApplicationPage() {
 		console.log("frontend application");
 		console.log(driverApplication);
 
-		fetch('https://team20.cpsc4911.com/newDriver', {
+		fetch(BaseURL + '/newDriver', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(driverApplication) // Convert the object to JSON format
+			body: JSON.stringify(driverApplication)
 		})
 		.then(response => {
-			if (response.ok) {
-				console.log('User inserted successfully');
-				// Handle success response
-
-				navigate('/driverApplicationStatus');
-			} else {
-				console.error('Failed to insert user');
-				// Handle failed response
-			}
+			if (response.ok) { 
+				console.log('User inserted successfully'); 
+				return response.json();
+			} 
+			else { console.error('Failed to insert user'); }
+		})
+		.then(data => {
+			console.log(data);
+			var userID = data.userID;
+			
+			fetch(BaseURL + '/newApplication', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({id: userID}) 
+			})
+			.then(response => {
+				if (response.ok) { console.log('Application submitted successfully'); } 
+				else { console.error('Failed to submit application'); }
+			})
+			.catch(error => {
+				console.error('Error submitting application:', error);
+			});
+			navigate('/');
 		})
 		.catch(error => {
 			console.error('Error inserting user:', error);
-			// Handle network errors or exceptions
 		});
 
 	}
