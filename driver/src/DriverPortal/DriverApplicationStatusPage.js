@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, Grid, Typography, Box } from '@mui/material';
 
 
-export default function DriverApplicationStatusPage(){
+export default function DriverApplicationStatusPage({application}){
 	const [sponsorName, setSponsorName] = useState("");
-	const [applicationStatus, setApplicationStatus] = useState("Pending");
+	const [applicationStatus, setApplicationStatus] = useState(application.applicationStatus);
+
+	console.log(application);
 
 	useEffect(() => {
 
 		setSponsorName("Sponsor1");
-		setApplicationStatus("Pending");
 	}, [])
 
 
