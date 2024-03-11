@@ -4,53 +4,54 @@ import { Modal } from '@mui/material';
 import Catalog from "../Catalog";
 import DriverAppBar from "./DriverAppBar";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import FilterIcon from '@mui/icons-material/Filter';
+import FilterIcon from '@mui/icons-material/Tune';
 import SortIcon from '@mui/icons-material/SwapVert';
 import DollarIcon from '@mui/icons-material/AttachMoney';
 import AlphaIcon from '@mui/icons-material/SortByAlpha';
 import DateIcon from '@mui/icons-material/CalendarMonth';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
+import TextField from '@mui/material/TextField';
+
 
 
 export default function DriverCatalog(){
 	const navigate = useNavigate();
-    const [isSortOpen, setIsSortOpen] = useState(false);
-    const [selectedSortOption, setSelectedSortOption] = useState(null);
     const [dataFetched, setDataFetched] = useState(false);
 	const [albums, setAlbums] = useState([]);
     const [originalAlbums, setOriginalAlbums] = useState([]);
-
-
-	const handleCart = () => {
-		navigate('/driverCart');
-	};
-    const handleFilter = () => {
-        <Box>
-        </Box>
-        
-    };
-    const handleSort = () => {
-        setIsSortOpen(true);
-    };
-    const handleCloseSort = () => {
-        setIsSortOpen(false);
-    };
+    const [isSortOpen, setIsSortOpen] = useState(false);
+    const [selectedSortOption, setSelectedSortOption] = useState(null);
     const [sortedAlbums, setSortedAlbums] = useState([]);
     const [sortOptions, setSortOptions] = useState([
         {id: 0, label: 'Alphabetical', icon: AlphaIcon, selected: false},
         {id: 1, label: 'By Price', icon: DollarIcon, selected: false},
         {id: 2, label: 'By Release Date', icon: DateIcon, selected: false}
     ]);
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [priceFilter, setPriceFilter] = useState({ min: '', max: '' });
+    const [filteredAlbums, setFilteredAlbums] = useState([]);
+
+
+	const handleCart = () => {
+		navigate('/driverCart');
+	};
+    {/*Sort Functions*/}
+    const handleSort = () => {
+        setIsSortOpen(true);
+    };
+    const handleCloseSort = () => {
+        setIsSortOpen(false);
+    };
     const handleSortOptionSelect = (option) => {
         let sorted; 
-        if(option.id == 0){
+        if(option.id === 0){
             sorted = [...albums].sort((a, b) => a.collectionName.localeCompare(b.collectionName));
         }
-        else if(option.id == 1){
+        else if(option.id === 1){
             sorted = [...albums].sort((a, b) => a.collectionPrice - b.collectionPrice);
         }
-        else if(option.id == 2){
+        else if(option.id === 2){
             sorted = [...albums].sort((a, b) => new Date(a.releaseDate) - new Date(b.releaseDate));
         }
         setSortedAlbums(sorted);
@@ -62,13 +63,32 @@ export default function DriverCatalog(){
             }));
         });
 
-
         setIsSortOpen(false);
     };
     const handleUndoSort = () => {
         setAlbums(originalAlbums);
         setSortedAlbums([]);
         setSortOptions(prevOptions => prevOptions.map(opt => ({ ...opt, selected: false })));
+    };
+    {/*Filter Functions*/}
+    const handleFilter = () => {
+        setIsFilterOpen(true);
+    };
+    const handleCloseFilter = () => {
+        setIsFilterOpen(false);
+    };
+
+    const handleApplyFilter = () => {
+        // Filter albums based on price range
+        const filtered = albums.filter(album => {
+            const price = parseFloat(album.collectionPrice);
+            const min = parseFloat(priceFilter.min);
+            const max = parseFloat(priceFilter.max);
+            return (!min || price >= min) && (!max || price <= max);
+        });
+        const sortedFiltered = [...filtered].sort((a, b) => a.collectionPrice - b.collectionPrice);
+        setSortedAlbums(sortedFiltered);
+        setIsFilterOpen(false);
     };
 
 
@@ -117,7 +137,7 @@ export default function DriverCatalog(){
 					<ShoppingCartIcon style={{fontSize: '2rem'}} onClick={handleCart} />
 				</button>
 			</div>
-            
+            {/* Sort Operations */}
             <Modal
                 open={isSortOpen}
                 onClose={handleCloseSort}
@@ -139,6 +159,35 @@ export default function DriverCatalog(){
                          onClick={handleUndoSort}>Undo Sort</Button>
                 </Box>
             </Modal>
+            {/*Filter Operations */}
+            <Modal
+                open={isFilterOpen}
+                onClose={handleCloseFilter}
+                aria-labelledby="filter-options"
+                aria-describedby="select-filter-option"
+            >
+                <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'background.paper', boxShadow: 24, p: 4, width: 300 }}>
+                    <h2 id="filter-options">Price Filter</h2>
+                    <TextField
+                        label="Minimum Price"
+                        variant="outlined"
+                        value={priceFilter.min}
+                        onChange={(e) => setPriceFilter({ ...priceFilter, min: e.target.value })}
+                        style={{ marginBottom: '10px' }}
+                    />
+                    <TextField
+                        label="Maximum Price"
+                        variant="outlined"
+                        value={priceFilter.max}
+                        onChange={(e) => setPriceFilter({ ...priceFilter, max: e.target.value })}
+                        style={{ marginBottom: '10px' }}
+                    />
+                    <Button variant="contained" style={{cursor: 'pointer', marginTop: '15px'}} color="primary" onClick={handleApplyFilter}>Apply Filter</Button>
+                    <Button variant="contained" style={{cursor: 'pointer', marginTop: '15px'}} color="primary" onClick={handleUndoSort}>Undo Filter</Button>
+                </Box>
+            </Modal>
+            
+            
 		</div>
 	);
 }
