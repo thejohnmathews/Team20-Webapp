@@ -46,6 +46,25 @@ app.get('/goodReasons', (req, res) => {
     })
 })
 
+app.post('/newDriver', (req, res) => {
+    console.log("creating new driver ");
+    console.log(req.body);
+
+    const { firstName, lastName, username, email } = req.body;
+    const sql = 'INSERT INTO UserInfo (firstName, lastName, userUsername, email, userType) VALUES (?, ?, ?, ?, ?, ?)';
+    const values = [firstName, lastName, username, email, "Driver"];
+  
+    db.query(sql, values, (err, result) => {
+      if (err) {
+        console.error('Error inserting user:', err);
+        res.status(500).send('Error inserting user');
+      } else {
+        console.log('User inserted successfully');
+        res.status(200).send('User inserted successfully');
+      }
+    });
+  });
+
 app.get('/badReasons', (req, res) => {
     const sql = "SELECT * FROM Reason WHERE reasonID >= 6"
     db.query(sql, (err, data) => {

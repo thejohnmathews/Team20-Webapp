@@ -11,17 +11,15 @@ class Address{
 	}
 }
 class Application{
-	constructor(firstName, lastName, username, password, email, phoneNumber, sponsor, address) {
+	constructor(firstName, lastName, username, email) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.username = username;
-		this.password = password;
 		this.email = email;
-		this.phoneNumber = phoneNumber;
-		this.sponsor = sponsor;
-		this.address = address;
+		// this.phoneNumber = phoneNumber;
+		// this.sponsor = sponsor;
+		// this.address = address;
 	  }
-	
 }
 
 export default function DriverApplicationPage() {
@@ -43,9 +41,31 @@ export default function DriverApplicationPage() {
 	
 
 	function submit(){
-		const driverAddress = new Address(address1, address2, city, state, zip);
-		const driverApplication = new Application(firstName, lastName, username, password, email, phoneNumber, sponsor, driverAddress)
+		// const driverAddress = new Address(address1, address2, city, state, zip);
+		const driverApplication = new Application(firstName, lastName, username, email)
+		console.log("frontend application");
 		console.log(driverApplication);
+
+		fetch('https://team20.cpsc4911.com/newDriver', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(driverApplication) // Convert the object to JSON format
+		})
+		.then(response => {
+			if (response.ok) {
+				console.log('User inserted successfully');
+				// Handle success response
+			} else {
+				console.error('Failed to insert user');
+				// Handle failed response
+			}
+		})
+		.catch(error => {
+			console.error('Error inserting user:', error);
+			// Handle network errors or exceptions
+		});
 	}
 
 	return (
