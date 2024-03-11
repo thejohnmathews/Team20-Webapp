@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { Button, Grid, TextField, Card, CardHeader, CardContent, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { useFetchUserAttributes} from '../CognitoAPI';
+import { useNavigate } from 'react-router-dom';
+
 
 class Address{
 	constructor(address1, address2, city, state, zip){
@@ -11,11 +14,12 @@ class Address{
 	}
 }
 class Application{
-	constructor(firstName, lastName, username, email) {
+	constructor(firstName, lastName, username, email, sub) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.username = username;
 		this.email = email;
+		this.sub = sub;
 		// this.phoneNumber = phoneNumber;
 		// this.sponsor = sponsor;
 		// this.address = address;
@@ -38,11 +42,12 @@ export default function DriverApplicationPage() {
 	const [sponsor, setSponsor] = useState(null);
 	// const [address, setAddress] = useState(null);
 
-	
+	const userAttributes = useFetchUserAttributes();
+	const navigate = useNavigate();
 
 	function submit(){
 		// const driverAddress = new Address(address1, address2, city, state, zip);
-		const driverApplication = new Application(firstName, lastName, username, email)
+		const driverApplication = new Application(firstName, lastName, username, email, userAttributes.sub)
 		console.log("frontend application");
 		console.log(driverApplication);
 
@@ -57,6 +62,8 @@ export default function DriverApplicationPage() {
 			if (response.ok) {
 				console.log('User inserted successfully');
 				// Handle success response
+
+				navigate('/driverApplicationStatus');
 			} else {
 				console.error('Failed to insert user');
 				// Handle failed response
@@ -66,6 +73,7 @@ export default function DriverApplicationPage() {
 			console.error('Error inserting user:', error);
 			// Handle network errors or exceptions
 		});
+
 	}
 
 	return (

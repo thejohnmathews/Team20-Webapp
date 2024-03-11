@@ -21,6 +21,7 @@ import SponsorCatalog from './SponsorPortal/SponsorCatalog';
 import DriverCart from './DriverPortal/DriverCart';
 import AdminOrgManagement from './AdminPortal/OrganizationManagement.js'
 import SponsorPoints from './SponsorPortal/SponsorPoints';
+import NewUserRedirect from './NewUserRedirect.js'
 
 // Amplify/UI/Cognito imports
 import '@aws-amplify/ui-react/styles.css';
@@ -120,6 +121,7 @@ export default function App() {
             <Route exact path="/driverCart" element={<DriverCart />}/>
             <Route exact path="/adminOrgManagement" element={<AdminOrgManagement/>}/>
             <Route exact path="/sponsorPoints" element={<SponsorPoints/>}/>
+            <Route exact path="/newUser" element={<NewUserRedirect/>}/>
           </Routes>
       </Router>
       )}

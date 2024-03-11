@@ -1,63 +1,60 @@
-import React, { useState } from 'react';
-import { Grid, Card, CardHeader, Button, CardContent } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Grid, CircularProgress  } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import DriverApplicationPage from './DriverPortal/DriverApplicationPage';
+import { useFetchUserAttributes} from './CognitoAPI';
 
 export default function LoginRedirect() {
 
-	const [isDriver, setIsDriver] = useState(false);
-  	const [isAccepted, setIsAccepted] = useState(false);
-	const [isAdmin, setIsAdmin] = useState(false);
-	const [isSponsor, setIsSponsor] = useState(false);
-	const [application, setApplication] = useState(false);
+	const [userSub, setUserSub] = useState(null)
 
+	const userAttributes = useFetchUserAttributes();
 	const navigate = useNavigate();
 
-	const handleDriverClick = () => {
-		setIsDriver(true);
-		setIsAccepted(true);
-	  };
+	useEffect(() => {
+		const setUserSubIfNotNull = () => {
+			if (userAttributes !== null) {
+				setUserSub(userAttributes.sub);
+				console.log(userSub);
+			} else {
+				setTimeout(setUserSubIfNotNull, 1000); // Retry after 1 second
+			}
+		};
 	
-	const handleAdminClick = () => {
-	setIsAdmin(true);
-	};
+		setUserSubIfNotNull();
+	}, [userAttributes]);
 	
-	const handleSponsorClick = () => {
-	setIsSponsor(true);
-	};
-	const handleApplication = () => {
-		setApplication(true);
-	};
-
-	if(isDriver){
-		if(isAccepted){
-			navigate('/driverProfile');
-		}
-		else{
-			navigate('/driverApplicationStatus');
-		}
-	}
-	else if (isAdmin){
-		navigate('/adminProfile');
-	}
-	else if(isSponsor){
-		navigate('/sponsorProfile');
-	}
-	
+	useEffect(() => {
+        if (userSub !== null) {
+            fetch('https://team20.cpsc4911.com/userAttributes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({sub: userSub})
+            })
+			.then(response => {
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}
+				return response.json(); 
+			})
+            .then(data => {
+                console.log(data);
+				if(data.userExists !== true){ navigate('/newUser'); }
+				else if(data.userData.userType === "Driver"){ navigate('/driverProfile'); }
+				else if(data.userData.userType === "Sponsor"){ navigate('/sponsorProfile'); }
+				else if(data.userData.userType === "Admin"){ navigate('/adminProfile'); }
+				else { console.log("error logging in user type: " + data.userData.userType); }
+			})
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    }, [userSub]);
 
 	return(
 		<Grid container alignItems="center" justifyContent="center" sx={{ mt: 10 }} >
-			<Card sx={{ minWidth: 275, p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-				<CardHeader title="Temp manual login"></CardHeader>
-				<CardContent>
-				<Button onClick={handleDriverClick}>Driver</Button>
-				<Button onClick={handleAdminClick}>Admin</Button>
-				<Button onClick={handleSponsorClick}>Sponsor</Button>
-				<Button onClick={handleApplication}>Driver Application</Button>
-				</CardContent>
-			</Card>
-			{application && <DriverApplicationPage/>}
+			<CircularProgress/>
 		</Grid>
-		// <CircularProgress/>
 	);
 }
