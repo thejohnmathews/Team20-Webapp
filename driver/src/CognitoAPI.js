@@ -52,12 +52,29 @@ export async function handleUpdateUserAttributes(
         address: updatedAddress,
       },
     });
-    console.log(attributes);
+    // handleUpdateUserAttributeNextSteps(output);
     // Handle next steps
   } catch (error) {
     console.log(error);
   }
 }
+
+/* function handleUpdateUserAttributeNextSteps(output) {
+  const { nextStep } = output;
+
+  switch (nextStep.updateAttributeStep) {
+    case 'CONFIRM_ATTRIBUTE_WITH_CODE':
+      const codeDeliveryDetails = nextStep.codeDeliveryDetails;
+      console.log(
+        `Confirmation code was sent to ${codeDeliveryDetails?.deliveryMedium}.`
+      );
+      // Collect the confirmation code from the user and pass to confirmUserAttribute.
+      break;
+    case 'DONE':
+      console.log(`attribute was successfully updated.`);
+      break;
+  }
+} */
 
 export async function handleUpdateAddress(
   updatedAddress,
@@ -75,6 +92,16 @@ export async function handleUpdateAddress(
 }
 
 
+export async function handleConfirmUserAttribute({
+  userAttributeKey,
+  confirmationCode
+}) {
+  try {
+    await confirmUserAttribute({ userAttributeKey, confirmationCode });
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 // https://docs.amplify.aws/react/build-a-backend/auth/manage-passwords/
 export async function handleUpdatePassword(oldPassword, newPassword) {

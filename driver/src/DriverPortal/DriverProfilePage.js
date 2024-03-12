@@ -8,12 +8,33 @@ import DriverAppBar from './DriverAppBar';
 import ProfilePopup from '../ProfilePopUps/DriverProfilePopUp'
 import "../App.css"
 import { useFetchUserAttributes} from '../CognitoAPI';
-import { Amplify } from 'aws-amplify';
+import VerificationCodeForm from '../VerificationCode'; 
+import UpdatePassword from '../UpdatePassword';
 
 // ProfilePage logic
 export default function ProfilePage() {
   const [open, setOpen] = React.useState(false);
+  const [open2, setOpen2] = React.useState(false);
   const [userID, setUserID] = React.useState(-1);
+  const [showVerificationCodeForm, setShowVerificationCodeForm] = useState(false);
+  const userAttributes = useFetchUserAttributes();
+  const [data, setData] = useState([])
+
+
+  useEffect(() => {
+    fetch("http://localhost:8081/profilePage")
+    .then(res => res.json())
+    .then(data => setData(data[0]))
+    .catch(err => console.log(err));
+  }, [])
+
+  const handleClickOpen2 = () => {
+		setOpen2(true);
+	};
+
+  const handleClose2 = () => {
+		setOpen2(false);
+	};
 
   const handleClickOpen = (userID) => {
 		setUserID(userID);
@@ -25,24 +46,22 @@ export default function ProfilePage() {
 		setUserID(-1);
 	};
 
+  // Add logic to check if email has been changed and show verification code form
+  useEffect(() => {
+    if (userAttributes && userAttributes.email !== data.email) {
+      setShowVerificationCodeForm(true);
+    } else {
+      setShowVerificationCodeForm(false);
+    }
+  }, [userAttributes, data]);
+
   const navigate = useNavigate();
 
   function back(){
     navigate(-1);
   }
-  
-  const [data, setData] = useState([])
-  useEffect(() => {
-    fetch("http://localhost:8081/profilePage")
-    .then(res => res.json())
-    .then(data => setData(data[0]))
-    .catch(err => console.log(err));
-  }, [])
 
   console.log(data)
-
-  // get Cognito attributes
-  const userAttributes = useFetchUserAttributes();
 
   return (
     <div>
@@ -66,6 +85,12 @@ export default function ProfilePage() {
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', height: '100vh' }}>
             <Button variant="contained" onClick={handleClickOpen}>Edit Profile</Button>
             { open && <ProfilePopup userID={userID} open={open} handleClose={handleClose} permission={"driver"}/> }
+
+            <Button variant="contained" onClick={handleClickOpen2}>Change Password</Button>
+            { open2 && <UpdatePassword open={open2} handleClose={handleClose2} permission={"driver"}/> }
+
+            {/* Display verification code form if needed */}
+            {showVerificationCodeForm && <VerificationCodeForm />}
           </div>
           <Button variant="contained" onClick={back} style={{bottom: '-300px', fontSize: '18px', left: '20px'}}>back</Button>
         </div>

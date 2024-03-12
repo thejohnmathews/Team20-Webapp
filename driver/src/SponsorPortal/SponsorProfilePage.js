@@ -5,11 +5,21 @@ import "../App.css"
 import SponsorAppBar from './SponsorAppBar';
 import SponsorProfilePopUp from '../ProfilePopUps/SponsorProfilePopup';
 import { useFetchUserAttributes } from '../CognitoAPI';
+import UpdatePassword from '../UpdatePassword';
 
 export default function SponsorProfilePage() {
 
   const [open, setOpen] = React.useState(false);
+  const [open2, setOpen2] = React.useState(false);
   const [userID, setUserID] = React.useState(-1);
+
+  const handleClickOpen2 = () => {
+		setOpen2(true);
+	};
+
+  const handleClose2 = () => {
+		setOpen2(false);
+	};
 
   const handleClickOpen = (userID) => {
 		setUserID(userID);
@@ -56,6 +66,9 @@ export default function SponsorProfilePage() {
                 <p  className="profile-info">Address Line: {userAttributes.address}</p>
               <Button variant="contained" onClick={handleClickOpen}>Edit Profile</Button>
               { open && <SponsorProfilePopUp userID={userID} open={open} handleClose={handleClose} permission={"sponsor"}/> }
+
+              <Button variant="contained" onClick={handleClickOpen2}>Change Password</Button>
+              { open2 && <UpdatePassword open={open2} handleClose={handleClose2} permission={"driver"}/> }
             </div>
           </div>
           )}
