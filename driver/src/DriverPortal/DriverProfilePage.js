@@ -8,13 +8,15 @@ import DriverAppBar from './DriverAppBar';
 import ProfilePopup from '../ProfilePopUps/DriverProfilePopUp'
 import "../App.css"
 import { useFetchUserAttributes} from '../CognitoAPI';
-import VerificationCodeForm from '../VerificationCode'; 
+// import VerificationCodeForm from '../VerificationCode'; 
 import UpdatePassword from '../UpdatePassword';
+import VerificationCode from '../VerificationCode';
 
 // ProfilePage logic
 export default function ProfilePage() {
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
+  const [open3, setOpen3] = React.useState(false);
   const [userID, setUserID] = React.useState(-1);
   const [showVerificationCodeForm, setShowVerificationCodeForm] = useState(false);
   const userAttributes = useFetchUserAttributes();
@@ -27,6 +29,14 @@ export default function ProfilePage() {
     .then(data => setData(data[0]))
     .catch(err => console.log(err));
   }, [])
+
+  const handleClickOpen3 = () => {
+		setOpen3(true);
+	};
+
+  const handleClose3 = () => {
+		setOpen3(false);
+	};
 
   const handleClickOpen2 = () => {
 		setOpen2(true);
@@ -89,8 +99,9 @@ export default function ProfilePage() {
             <Button variant="contained" onClick={handleClickOpen2}>Change Password</Button>
             { open2 && <UpdatePassword open={open2} handleClose={handleClose2} permission={"driver"}/> }
 
-            {/* Display verification code form if needed */}
-            {showVerificationCodeForm && <VerificationCodeForm />}
+            <Button variant="contained" onClick={handleClickOpen3}>Verify Email</Button>
+            { open3 && <VerificationCode open={open3} handleClose={handleClose3} permission={"driver"}/> }
+
           </div>
           <Button variant="contained" onClick={back} style={{bottom: '-300px', fontSize: '18px', left: '20px'}}>back</Button>
         </div>

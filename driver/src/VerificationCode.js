@@ -9,8 +9,10 @@ const VerificationCode = ({ open, handleClose, userAttributeKey }) => {
   const ConfirmUserAttribute = async () => {
     try {
       await handleConfirmUserAttribute('email', confirmationCode);
+      alert(confirmationCode);
       handleClose();
     } catch (error) {
+        alert(error);
       setError(error.message || 'Error confirming user attribute. Please try again.');
     }
   };
