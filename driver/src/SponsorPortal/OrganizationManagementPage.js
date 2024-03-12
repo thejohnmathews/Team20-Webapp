@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import SponsorAppBar from './SponsorAppBar';
+import {Button} from '@mui/material'
 
 export default function SponsorManagementPage() {
   
@@ -23,7 +24,7 @@ export default function SponsorManagementPage() {
         <p  className="profile-info">Description:</p>
         <p className='profile-info'>{data.sponsorOrgDescription}</p>
       </div>
-      <button onClick={() => setToggleForm(!toggleForm)}>Edit Information</button>
+      <Button variant="contained" onClick={() => setToggleForm(!toggleForm)}>Edit Information</Button>
       {toggleForm && 
         <form id='sponsorInfo' method='POST' action='http://localhost:8081/accountManagement/sponsorOrgUpdate/1'>
           <h1>Edit Sponsor Information</h1>

@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { Button, Grid, TextField, Card, CardHeader, CardContent, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { useFetchUserAttributes} from '../CognitoAPI';
+import { useNavigate } from 'react-router-dom';
+import BaseURL from '../BaseURL'
+
 
 class Address{
 	constructor(address1, address2, city, state, zip){
@@ -11,17 +15,16 @@ class Address{
 	}
 }
 class Application{
-	constructor(firstName, lastName, username, password, email, phoneNumber, sponsor, address) {
+	constructor(firstName, lastName, username, email, sub) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.username = username;
-		this.password = password;
 		this.email = email;
-		this.phoneNumber = phoneNumber;
-		this.sponsor = sponsor;
-		this.address = address;
+		this.sub = sub;
+		// this.phoneNumber = phoneNumber;
+		// this.sponsor = sponsor;
+		// this.address = address;
 	  }
-	
 }
 
 export default function DriverApplicationPage() {
@@ -40,12 +43,53 @@ export default function DriverApplicationPage() {
 	const [sponsor, setSponsor] = useState(null);
 	// const [address, setAddress] = useState(null);
 
-	
+	const userAttributes = useFetchUserAttributes();
+	const navigate = useNavigate();
 
 	function submit(){
-		const driverAddress = new Address(address1, address2, city, state, zip);
-		const driverApplication = new Application(firstName, lastName, username, password, email, phoneNumber, sponsor, driverAddress)
+		// const driverAddress = new Address(address1, address2, city, state, zip);
+		const driverApplication = new Application(firstName, lastName, username, email, userAttributes.sub)
+		console.log("frontend application");
 		console.log(driverApplication);
+
+		fetch(BaseURL + '/newDriver', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(driverApplication)
+		})
+		.then(response => {
+			if (response.ok) { 
+				console.log('User inserted successfully'); 
+				return response.json();
+			} 
+			else { console.error('Failed to insert user'); }
+		})
+		.then(data => {
+			console.log(data);
+			var userID = data.userID;
+			
+			fetch(BaseURL + '/newApplication', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({id: userID}) 
+			})
+			.then(response => {
+				if (response.ok) { console.log('Application submitted successfully'); } 
+				else { console.error('Failed to submit application'); }
+			})
+			.catch(error => {
+				console.error('Error submitting application:', error);
+			});
+			navigate('/');
+		})
+		.catch(error => {
+			console.error('Error inserting user:', error);
+		});
+
 	}
 
 	return (

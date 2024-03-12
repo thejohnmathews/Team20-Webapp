@@ -91,16 +91,6 @@ export default function SponsorProfilePopUp({ userID, open, handleClose }) {
               disabled={!editMode}
             />
           </Grid>
-          {/* <Grid item xs={6}>
-            <TextField
-              type="password"
-              label="Password"
-              fullWidth
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={!editMode}
-            />
-          </Grid> */}
           <Grid item xs={6}>
             <TextField
               label="Phone Number"

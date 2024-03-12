@@ -28,6 +28,10 @@ export default function DriverAppBar() {
     navigate('/driverCatalog');
   };
 
+  const handlePastPurchases = () => {
+    navigate('/pastPurchases');
+  };
+  
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
       <List>
@@ -40,7 +44,7 @@ export default function DriverAppBar() {
           </ListItemButton>
         </ListItem>
         <ListItem key={"Past Purchases"} disablePadding>
-          <ListItemButton >
+          <ListItemButton onClick={handlePastPurchases}>
             <ListItemIcon>
               <HistoryIcon/>
             </ListItemIcon>
@@ -86,6 +90,9 @@ export default function DriverAppBar() {
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Driver Portal
+          </Typography>
+          <Typography variant="h6" style={{marginRight: '20px'}}>
+            Current Point Total: ~
           </Typography>
               <IconButton
                 size="large"

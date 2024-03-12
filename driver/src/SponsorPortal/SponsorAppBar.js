@@ -35,6 +35,10 @@ export default function SponsorAppBar() {
   const handleCatalog = () => {
     navigate('/sponsorCatalog');
   };
+
+  const handlePointManagement = () => {
+    navigate('/SponsorPoints');
+  };
   
 
   const DrawerList = (
@@ -62,6 +66,14 @@ export default function SponsorAppBar() {
               <ManageAccountsIcon/>
             </ListItemIcon>
             <ListItemText primary={"Organization Management"} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem key={"Point Management"} disablePadding>
+          <ListItemButton onClick={handlePointManagement}>
+            <ListItemIcon>
+              <ManageAccountsIcon/>
+            </ListItemIcon>
+            <ListItemText primary={"Point Management"} />
           </ListItemButton>
         </ListItem>
         <ListItem key={"About"} disablePadding>
