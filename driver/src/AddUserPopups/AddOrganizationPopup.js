@@ -1,12 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextField, Select, MenuItem } from '@mui/material';
+import {Organization} from '../Pojo.js';
+import BaseURL from '../BaseURL.js';
 
 export default function AddOrgPopup({ open, handleClose }) {
   const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
 
   const handleSave = () => {
+    var org = new Organization(-1, name, description);
+    console.log(org);
+    
+    fetch(BaseURL + '/newOrganization', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(org)
+		})
+		.then(response => {
+			if (response.ok) { 
+				console.log('org inserted successfully'); 
+			} 
+			else { console.error('Failed to insert org'); }
+		})
+		.catch(error => {
+			console.error('Error inserting org:', error);
+		});
     handleClose();
-    // MAKE COGNITO CALLS HERE TO UPDATE WITH THE NEW USER INFO
   };
 
   return (
@@ -28,6 +49,14 @@ export default function AddOrgPopup({ open, handleClose }) {
               fullWidth
               value={name}
               onChange={(e) => setName(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Description"
+              fullWidth
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
             />
           </Grid>
         </Grid>

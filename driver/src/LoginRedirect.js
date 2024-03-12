@@ -1,55 +1,100 @@
-import React, { useState } from 'react';
-import { Grid, Card, CardHeader, Button, CardContent } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Grid, CircularProgress  } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useFetchUserAttributes} from './CognitoAPI';
+import BaseURL from './BaseURL'
+import DriverApplicationStatus from './DriverPortal/DriverApplicationStatusPage';
+import {Application} from './Pojo.js'
 
 export default function LoginRedirect() {
 
-	const [isDriver, setIsDriver] = useState(false);
-  	const [isAccepted, setIsAccepted] = useState(false);
-	const [isAdmin, setIsAdmin] = useState(false);
-	const [isSponsor, setIsSponsor] = useState(false);
-
+	const [userSub, setUserSub] = useState(null)
+	const [applicationInProgress, setApplicationInProgress] = useState(false)
+	const [loading, setLoading] = useState(true)
+	const [application, setApplication] = useState(new Application())
+	const userAttributes = useFetchUserAttributes();
 	const navigate = useNavigate();
 
-	const handleDriverClick = () => {
-		setIsDriver(true);
-		setIsAccepted(true);
-	  };
+	useEffect(() => {
+		const setUserSubIfNotNull = () => {
+			if (userAttributes !== null) {
+				setUserSub(userAttributes.sub);
+				console.log(userSub);
+			} else {
+				setTimeout(setUserSubIfNotNull, 1000); // Retry after 1 second
+			}
+		};
 	
-	  const handleAdminClick = () => {
-		setIsAdmin(true);
-	  };
-	
-	  const handleSponsorClick = () => {
-		setIsSponsor(true);
-	  };
+		setUserSubIfNotNull();
+	}, [userAttributes]);
 
-	if(isDriver){
-		if(isAccepted){
-			navigate('/driverProfile');
-		}
-		else{
-			navigate('/driverApplicationStatus');
-		}
+	const checkApplication = (id) => {
+		fetch(BaseURL + '/checkDriverApplication/' + id)
+		.then(response => {
+			if (response.ok) {
+				return response.json(); // Parse the JSON response
+			} else {
+				console.error('Failed to check driver application');
+				throw new Error('Failed to check driver application');
+			}
+		})
+		.then(data => {
+			console.log(data);
+			if (data.hasApplication) {
+				// Driver application found
+				console.log('Driver application found:', data.application);
+				console.log(data.application[0].applicationStatus)
+				if (data.application[0].applicationStatus === "In-Progress"){
+					setApplicationInProgress(true);
+					setLoading(false);
+					setApplication(data.application[0]);
+				}
+				else{
+					navigate('/driverProfile');
+				}
+				// Handle the application data as needed
+			} else {
+				navigate('/driverProfile');
+			}
+		})
+		.catch(error => {
+			console.error('Error checking driver application:', error);
+		});
 	}
-	else if (isAdmin){
-		navigate('/adminProfile');
-	}
-	else if(isSponsor){
-		navigate('/sponsorProfile');
-	}
+	
+	useEffect(() => {
+        if (userSub !== null) {
+            fetch(BaseURL+'/userAttributes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({sub: userSub})
+            })
+			.then(response => {
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}
+				return response.json(); 
+			})
+            .then(data => {
+                console.log(data);
+				if(data.userExists !== true){ navigate('/newUser'); }
+				else if(data.userData.userType === "Driver"){ checkApplication(data.userData.userID); }
+				else if(data.userData.userType === "Sponsor"){ navigate('/sponsorProfile'); }
+				else if(data.userData.userType === "Admin"){ navigate('/adminProfile'); }
+				else { console.log("error logging in user type: " + data.userData.userType); }
+			})
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    }, [userSub]);
 
 	return(
 		<Grid container alignItems="center" justifyContent="center" sx={{ mt: 10 }} >
-			<Card sx={{ minWidth: 275, p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-				<CardHeader title="Temp manual login"></CardHeader>
-				<CardContent>
-				<Button onClick={handleDriverClick}>Driver</Button>
-				<Button onClick={handleAdminClick}>Admin</Button>
-				<Button onClick={handleSponsorClick}>Sponsor</Button>
-				</CardContent>
-			</Card>
+			{ loading && <CircularProgress/>}
+			{applicationInProgress && <DriverApplicationStatus application={application}/>}
 		</Grid>
-		// <CircularProgress/>
 	);
 }

@@ -8,14 +8,14 @@ USE DriverApp;
 
 -- Create User(Info) table
 CREATE TABLE UserInfo(
-
-	userID 					INTEGER						PRIMARY KEY,
-    firstName				VARCHAR(30),
-    lastName				VARCHAR(50),
-    email 					VARCHAR(75),
-    userUsername			VARCHAR(50),
-    userPassword			VARCHAR(50),
-    userType				VARCHAR(10)
+    userID                  INTEGER                     PRIMARY KEY AUTO_INCREMENT,
+    sub                     VARCHAR(255)                UNIQUE,
+    firstName               VARCHAR(30),
+    lastName                VARCHAR(50),
+    email                   VARCHAR(75),
+    userUsername            VARCHAR(50),
+    userPassword            VARCHAR(50),
+    userType                VARCHAR(10)
 );
 
 -- Create Driver(User) table
@@ -58,7 +58,7 @@ CREATE TABLE AdminUser(
 -- Create SponsorOrganization table
 CREATE TABLE SponsorOrganization(
 	
-    sponsorOrgID			INTEGER						PRIMARY KEY,
+    sponsorOrgID			INTEGER						AUTO_INCREMENT PRIMARY KEY,
     sponsorOrgName			VARCHAR(75),
     sponsorOrgDescription   VARCHAR(500)
 );

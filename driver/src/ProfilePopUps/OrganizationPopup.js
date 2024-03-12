@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextField, Select, MenuItem } from '@mui/material';
+import BaseURL from '../BaseURL';
 
-export default function OrgPopup({ sponsorID, open, handleClose }) {
-  const [name, setName] = useState('');
+export default function OrgPopup({ org, open, handleClose }) {
+  const [name, setName] = useState(org.sponsorOrgName);
+  const [orgDescription, setOrgDescription] = useState(org.sponsorOrgDescription);
+  const [ID, setID] = useState(org.sponsorOrgID);
   const [editMode, setEditMode] = useState(false);
 
   const handleEdit = () => {
@@ -15,8 +18,29 @@ export default function OrgPopup({ sponsorID, open, handleClose }) {
   };
 
   const handleSave = () => {
-    handleClose();
-    // DB CALLS TO EDIT SPONSOR
+    console.log(ID)
+    fetch(BaseURL + '/editOrg', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+          sponsorOrgID: ID,
+          sponsorOrgName: name,
+          sponsorOrgDescription: orgDescription
+      })
+  })
+  .then(response => {
+      if (response.ok) {
+          console.log('Organization updated successfully');
+      } else {
+          console.error('Failed to update organization');
+      }
+      handleClose();
+  })
+  .catch(error => {
+      console.error('Error updating organization:', error);
+  });
   };
 
   return (
@@ -38,6 +62,16 @@ export default function OrgPopup({ sponsorID, open, handleClose }) {
               fullWidth
               value={name}
               onChange={(e) => setName(e.target.value)}
+              disabled={!editMode}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              label="Name"
+              fullWidth
+              value={orgDescription}
+              onChange={(e) => setOrgDescription(e.target.value)}
+              disabled={!editMode}
             />
           </Grid>
         </Grid>
