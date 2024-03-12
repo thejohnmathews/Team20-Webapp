@@ -59,6 +59,21 @@ export async function handleUpdateUserAttributes(
   }
 }
 
+export async function handleUpdateAddress(
+  updatedAddress,
+) {
+  try {
+    const attributes = await updateUserAttributes({
+      userAttributes: {
+        address: updatedAddress
+      },
+    });
+    // Handle next steps
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 
 
 // https://docs.amplify.aws/react/build-a-backend/auth/manage-passwords/

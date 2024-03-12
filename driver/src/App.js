@@ -22,6 +22,7 @@ import DriverCart from './DriverPortal/DriverCart.js';
 import AdminOrgManagement from './AdminPortal/OrganizationManagement.js'
 import SponsorPoints from './SponsorPortal/SponsorPoints';
 import NewUserRedirect from './NewUserRedirect.js'
+import PastPurchases from './PastPurchases.js';
 
 // Amplify/UI/Cognito imports
 import '@aws-amplify/ui-react/styles.css';
@@ -123,6 +124,7 @@ export default function App() {
             <Route exact path="/newUser" element={<NewUserRedirect/>}/>
             <Route exact path="/driverCatalog" element={<DriverCatalog/>}/>
             <Route exact path="/driverCart" element={<DriverCart/>}/>
+            <Route exact path="/pastPurchases" element={<PastPurchases/>}/>
           </Routes>
       </Router>
       )}
