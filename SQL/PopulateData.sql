@@ -12,7 +12,8 @@ VALUES
     
 INSERT INTO UserInfo (sub, firstName, lastName, email, userUsername, userType) VALUES
 ('04883448-50d1-7011-f35f-0d5e75242a0e', 'bransen', 'eppes', 'beppes@clemson.edu', 'beppes', 'Driver'), 
-('64b894f8-a0f1-7051-73a1-0e297f69d6fb', 'bransen', 'eppes', 'eppes.bransen@gmail.com', 'bransen', 'Admin');
+('64b894f8-a0f1-7051-73a1-0e297f69d6fb', 'bransen', 'eppes', 'eppes.bransen@gmail.com', 'bransen', 'Admin'),
+('c4b80428-d031-70fc-b7c7-bc83de23fa43', 'john', 'mathews', 'thejohnmathews@gmail.com', 'oCyphyr', 'Driver');
 
 INSERT INTO Reason(reasonString) VALUES
 ("Wearing a seatbelt."),
