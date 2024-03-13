@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextField, Select, MenuItem } from '@mui/material';
 import { useFetchUserAttributes, handleUpdateUserAttributes, handleConfirmUserAttribute } from '../CognitoAPI';
 
-export default function DriverProfilePopUp({ userID, open, handleClose, permission }) {
+export default function DriverProfilePopUp({ sub, open, handleClose, permission }) {
   const [editMode, setEditMode] = useState(false);
   const [firstName, setFirstName] = useState('Given Name');
   const [lastName, setLastName] = useState('Family Name');

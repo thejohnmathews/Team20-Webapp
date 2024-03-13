@@ -34,7 +34,7 @@ CREATE TABLE DriverApplication(
 
 	applicationID			INTEGER 					AUTO_INCREMENT PRIMARY KEY,
     dateOfApplication		DATE,
-    applicationStatus		VARCHAR(20)					DEFAULT "In-Progress",
+    applicationStatus		VARCHAR(20)					DEFAULT "Submitted",
     statusReason			VARCHAR(50),
     userID					INTEGER,
     FOREIGN KEY (userID) REFERENCES DriverUser(userID)

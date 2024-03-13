@@ -231,6 +231,48 @@ app.post('/userAttributes', (req, res) => {
     });
 });
 
+app.get('/driverApplications', (req, res) => {
+    const orgID = req.query.orgID;
+    let sql = "SELECT DA.*, UI.sub FROM DriverApplication DA INNER JOIN UserInfo UI ON DA.UserID = UI.UserID";
+
+    const values = [];
+    if (orgID && orgID > 0) {
+        sql += " WHERE DA.Organization = ?";
+        values.push(orgID);
+    }
+
+    db.query(sql, values, (err, data) => {
+        if (err) {
+            return res.json(err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
+
+app.post('/updateApplicationStatus', (req, res) => {
+    console.log(req.body);
+    const { appID, status } = req.body;
+    console.log(appID);
+    console.log(status);
+
+    // Check if appID and status are provided
+    if (!appID || !status) {
+        return res.status(400).json({ error: 'Both appID and status are required parameters' });
+    }
+
+    // Update the application status in the DriverApplication table
+    const sql = "UPDATE DriverApplication SET applicationStatus = ? WHERE applicationID = ?";
+    db.query(sql, [status, appID], (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: 'Failed to update application status' });
+        } else {
+            return res.status(200).json({ message: 'Application status updated successfully' });
+        }
+    });
+});
+
+
 app.get('/badReasons', (req, res) => {
     const sql = "SELECT * FROM Reason WHERE reasonID >= 6"
     db.query(sql, (err, data) => {
