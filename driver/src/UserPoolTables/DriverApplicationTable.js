@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { TableRow, TableHead, TableContainer, TableCell, TableBody, Table, Button, Container, Paper, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
-import AdminAppBar from './AdminAppBar';
+import AdminAppBar from '../AdminPortal/AdminAppBar';
+import SponsorAppBar from '../SponsorPortal/SponsorAppBar';
 import AddOrgPopup from '../AddUserPopups/AddOrganizationPopup';
 import DriverProfilePopUp from '../ProfilePopUps/DriverProfilePopUp'
 import BaseURL from '../BaseURL';
 
 
-export default function DriverApplicationTable({}) {
+export default function DriverApplicationTable({permissions}) {
   const [viewProfile, setViewProfile] = React.useState(false);
   const [refresh, setRefresh] = React.useState(false);
   const [appList, setAppList] = useState([]);
@@ -91,7 +92,8 @@ export default function DriverApplicationTable({}) {
 
   return (
 	<div>
-		<AdminAppBar/>
+		{permissions === 'Admin' && <AdminAppBar/>}
+		{permissions === 'Sponsor' && <SponsorAppBar/>}
 		<br></br>
 		<Container>
 		<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
