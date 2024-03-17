@@ -1,24 +1,42 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import {Paper, TableRow, TableHead, TableContainer, TableCell, TableBody, Table, Button} from '@mui/material';
 import ProfilePopup from '../ProfilePopUps/AdminProfilePopup';
 import AddAdmin from '../AddUserPopups/AddAdminPopup'
+import BaseURL from '../BaseURL'
 
-function createData(id, username, email) {
-  return { id, username, email };
-}
-
-const rows = [
-  createData(1, "uname1", "email1"),
-  createData(2, "uname2", "email2"),
-  createData(3, "uname3", "email3"),
-  createData(4, "uname4", "email4"),
-  createData(5, "uname5", "email5"),
-];
-
-export default function AdminTable() {
+export default function AdminTable({refresh, setRefresh}) {
 	const [open, setOpen] = React.useState(false);
 	const [userID, setUserID] = React.useState(-1);
   const [addAdminOpen, setAddAdminOpen] = React.useState(false);
+  const [adminList, setAdminList] = useState([]);
+
+  useEffect(() => {
+		updateRows()
+	}, []);
+
+const updateRows = () => {
+		fetch(BaseURL + '/adminList', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+		})
+		.then(response => {
+			if (response.ok) { 
+				console.log('lists retrieved successfully'); 
+				return response.json();
+			} 
+			else { console.error('Failed to retrieve'); }
+		})
+		.then(data => {
+			console.log(data);
+			setAdminList(data)
+			
+		})
+		.catch(error => {
+			console.error('Error retrieving successfully:', error);
+		});
+	};
 
 	const handleClickOpen = (userID) => {
 		setUserID(userID);
@@ -36,6 +54,8 @@ export default function AdminTable() {
 
   const handleCloseAddAdmin = () => {
     setAddAdminOpen(false);
+    updateRows();
+    setRefresh(!refresh)
   };
 	
   	return (
@@ -45,24 +65,22 @@ export default function AdminTable() {
         <TableHead>
           <TableRow>
             <TableCell>User ID</TableCell>
-            <TableCell align="right">Username</TableCell>
+            <TableCell align="right">Sub</TableCell>
             <TableCell align="right">Email</TableCell>
-			<TableCell align="right">Actions</TableCell>
+			      <TableCell align="right">Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {adminList.map((adminRow) => (
             <TableRow
-              key={row.id}
+              key={adminRow.userID}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-        		<TableCell component="th" scope="row">
-                	{row.id}
-				</TableCell>
-				<TableCell align="right">{row.username}</TableCell>
-				<TableCell align="right">{row.email}</TableCell>
+        <TableCell component="th" scope="row"> {adminRow.userID} </TableCell>
+				<TableCell align="right">{adminRow.sub}</TableCell>
+				<TableCell align="right">{adminRow.email}</TableCell>
 				<TableCell align="right">
-						<Button variant="contained" color="primary" onClick={() => handleClickOpen(row.id)}>View/Edit Profile</Button>
+						<Button variant="contained" color="primary" onClick={() => handleClickOpen(adminRow.id)}>View/Edit Profile</Button>
 				</TableCell>
             </TableRow>
           ))}

@@ -27,6 +27,9 @@ function TabPanel(props) {
 
 function App() {
   const [value, setValue] = React.useState(0);
+  const [refresh, setRefresh] = React.useState(true);
+
+
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -48,10 +51,10 @@ function App() {
 				<DriverTable permission={"admin"}/>
 			</TabPanel>
 			<TabPanel value={value} index={1}>
-				<SponsorTable permission={"admin"}/>
+				<SponsorTable sponsorID={-1} permission={"admin"}/>
 			</TabPanel>
 			<TabPanel value={value} index={2}>
-				<AdminTable/>
+				<AdminTable refresh={refresh} setRefresh={setRefresh}/>
 			</TabPanel>
 		</Container>
 	</div>

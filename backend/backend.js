@@ -77,6 +77,137 @@ app.post('/newDriver', (req, res) => {
     });
 });
 
+
+app.post('/addAdmin', (req, res) => {
+    console.log("adding new admin ");
+
+    const { email } = req.body;
+    const sql1 = 'INSERT INTO UserInfo (email, userType) VALUES (?, ?)';
+    const sql2 = 'INSERT INTO AdminUser (userID) VALUES (?)';
+
+    const values = [email, "Admin"];
+
+    db.query(sql1, values, (err, result) => {
+        if (err) {
+            console.error('Error inserting into user:', err);
+            res.status(500).send('Error inserting into user');
+        } else {
+            console.log('user inserted successfully');
+
+            const userID = result.insertId; // Get the ID of the newly inserted user
+            db.query(sql2, userID, (err, result) => { 
+                if (err) {
+                    console.error('Error inserting into admin:', err);
+                    res.status(500).send('Error inserting into admin');
+                } else {
+                    console.log('admin inserted successfully');
+                    res.status(200).send('admin inserted successfully');
+                }
+
+            });
+        }
+    });
+});
+
+app.get('/adminList', (req, res) => {
+    console.log("getting all admins ");
+    const sql = 'SELECT a.userID, u.sub, u.email FROM AdminUser AS a INNER JOIN UserInfo AS u ON a.userID = u.userID';
+
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error('Error retrieving admins:', err);
+            res.status(500).send('Error retrieving admins');
+        } else {
+            if (result.length > 0) {
+                console.log('admins retrieved successfully');
+                res.status(200).json(result);
+            } else {
+                console.log('No admins found');
+                res.status(404).send('No admins found');
+            }
+        }
+    });
+});
+
+app.post('/sponsorList', (req, res) => {
+    console.log("getting all sponsors ");
+    const orgID = req.body.orgID;
+    var sql = 'SELECT s.userID, u.sub, u.email';
+    if (orgID < 1){
+        sql += ', o.SponsorOrgName'
+    }
+    sql += ' FROM SponsorUser AS s INNER JOIN UserInfo AS u ON s.userID = u.userID';
+
+    if (orgID > 0) {
+        sql += ' WHERE s.sponsorOrgID = ?'
+
+        db.query(sql, [orgID], (err, result) => {
+            if (err) {
+                console.error('Error retrieving sponsor:', err);
+                res.status(500).send('Error retrieving sponsor');
+            } else {
+                if (result.length > 0) {
+                    console.log('Sponsor retrieved successfully');
+                    res.status(200).json(result);
+                } else {
+                    console.log('No sponsors found');
+                    res.status(404).send('No sponsors found');
+                }
+            }
+        });
+    } else {
+        sql += ' INNER JOIN SponsorOrganization AS o ON s.sponsorOrgID = o.sponsorOrgID ';
+
+        db.query(sql, (err, result) => {
+            if (err) {
+                console.error('Error retrieving sponsor:', err);
+                res.status(500).send('Error retrieving sponsor');
+            } else {
+                if (result.length > 0) {
+                    console.log('Sponsor retrieved successfully');
+                    res.status(200).json(result);
+                } else {
+                    console.log('No sponsors found');
+                    res.status(404).send('No sponsors found');
+                }
+            }
+        });
+    }
+});
+
+
+app.post('/addSponsor', (req, res) => {
+    console.log("adding new admin ");
+
+    const { email, sponsorID } = req.body;
+    const sql1 = 'INSERT INTO UserInfo (email, userType) VALUES (?, ?)';
+    const sql2 = 'INSERT INTO SponsorUser (userID, sponsorOrgID) VALUES (?, ?)';
+
+    const values = [email, "Sponsor"];
+
+    db.query(sql1, values, (err, result) => {
+        if (err) {
+            console.error('Error inserting into user:', err);
+            res.status(500).send('Error inserting into user');
+        } else {
+            console.log('user inserted successfully');
+
+            const userID = result.insertId;
+            const values2 = [userID, sponsorID]
+            db.query(sql2, values2, (err, result) => { 
+                if (err) {
+                    console.error('Error inserting into admin:', err);
+                    res.status(500).send('Error inserting into admin');
+                } else {
+                    console.log('admin inserted successfully');
+                    res.status(200).send('admin inserted successfully');
+                }
+
+            });
+        }
+    });
+});
+
 app.post('/newOrganization', (req, res) => {
     console.log("creating new organization ");
 
