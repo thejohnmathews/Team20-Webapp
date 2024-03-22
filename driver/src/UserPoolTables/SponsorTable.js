@@ -59,13 +59,14 @@ export default function SponsorTable({permission, sponsorID}) {
 	
   return (
 	<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+	{sponsorList && sponsorList.length ? (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
             <TableCell>User ID</TableCell>
-            <TableCell align="right">Username</TableCell>
-			<TableCell align="right">Sponsor</TableCell>
+            <TableCell align="right">Sub</TableCell>
+			{permission === 'admin' && <TableCell align="right">Sponsor</TableCell>}
             <TableCell align="right">Email</TableCell>
 			<TableCell align="right">Actions</TableCell>
           </TableRow>
@@ -77,8 +78,8 @@ export default function SponsorTable({permission, sponsorID}) {
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
 				<TableCell component="th" scope="row"> {row.userID} </TableCell>
-				<TableCell align="right">{row.sub}</TableCell>
-				<TableCell align="right">{row.SponsorOrgName}</TableCell>
+				<TableCell align="right">{(row.sub !== null && row.sub !== undefined && row.sub !== '') ? row.sub : "Cognito account not created"}</TableCell>
+				{permission === 'admin' && <TableCell align="right">{row.SponsorOrgName}</TableCell>}
 				<TableCell align="right">{row.email}</TableCell>
 				<TableCell align="right">
 					<Button variant="contained" color="primary" onClick={() => handleClickOpen(row.id)}>View/Edit Profile</Button>
@@ -88,10 +89,11 @@ export default function SponsorTable({permission, sponsorID}) {
         </TableBody>
       </Table>
     </TableContainer>
+	) : <p>No sponsors available.</p>}
 	{ open && <ProfilePopUp userID={userID} open={open} handleClose={handleClose} permission={permission} /> }
 	
 	<Button variant="contained" color="primary" onClick={handleAddSponsor} style={{ marginTop: '20px' }}>Add Sponsor</Button>
-    { addSponsorOpen && <AddSponsor open={addSponsorOpen} handleClose={handleCloseAddSponsor}/> }
+    { addSponsorOpen && <AddSponsor inherited={sponsorID} open={addSponsorOpen} handleClose={handleCloseAddSponsor}/> }
 	</div>
   );
 }

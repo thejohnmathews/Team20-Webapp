@@ -48,7 +48,7 @@ function App() {
 				</Tabs>
 			</Box>
 			<TabPanel value={value} index={0}>
-				<DriverTable permission={"admin"}/>
+				<DriverTable sponsorID={-1} permission={"admin"}/>
 			</TabPanel>
 			<TabPanel value={value} index={1}>
 				<SponsorTable sponsorID={-1} permission={"admin"}/>

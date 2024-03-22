@@ -26,6 +26,7 @@ CREATE TABLE DriverUser(
     driverEndDate			DATE DEFAULT NULL,
     driverNumTrips			INTEGER,
     driverMilesDriven		INTEGER,
+    sponsorOrgID			INTEGER,
     FOREIGN KEY (userID) REFERENCES UserInfo(userID)
 );
 

@@ -1,18 +1,70 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextField, Select, MenuItem } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import BaseURL from '../BaseURL'
 
-export default function DriverProfilePopUp({ open, handleClose }) {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [sponsor, setSponsor] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [applicationStatus, setApplicationStatus] = useState('');
+export default function DriverProfilePopUp({ open, handleClose, inherited }) {
+  const [email, setEmail] = useState('');
+  const [sponsorID, setSponsorID] = useState('');
+  const [orgList, setOrgList] = useState([]);
+
+  useEffect(() => {
+    if(inherited < 1){
+      getOrgs()
+    } else {
+      setSponsorID(inherited);
+    }
+	}, []);
+
+  function getOrgs(){
+    fetch(BaseURL + '/getAllOrgs', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+		})
+		.then(response => {
+			if (response.ok) { 
+				console.log('lists retrieved successfully'); 
+				return response.json();
+			} 
+			else { console.error('Failed to retrieve'); }
+		})
+		.then(data => {
+			console.log(data);
+			if(data){
+				setOrgList(data);
+			} else {
+				setOrgList([]);
+			}
+			
+		})
+		.catch(error => {
+			console.error('Error retrieving successfully:', error);
+		});
+  }
 
   const handleSave = () => {
+    fetch(BaseURL + '/newDriver', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({email, sponsorID})
+		})
+		.then(response => {
+			if (response.ok) { 
+				return response.json();
+			} 
+			else { console.error('Failed to post'); }
+		})
+		.then(data => {
+			console.log(data);			
+		})
+		.catch(error => {
+			console.error('Error retrieving successfully:', error);
+		});
+
     handleClose();
-    // MAKE COGNITO CALLS HERE TO UPDATE WITH THE NEW USER INFO
   };
 
   return (
@@ -28,69 +80,39 @@ export default function DriverProfilePopUp({ open, handleClose }) {
       <br />
       <DialogContent>
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          
+          
+          <Grid item xs={12}>
             <TextField
-              label="First Name"
+              type="Email"
+              label="Email"
               fullWidth
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label="Last Name"
-              fullWidth
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-            />
+          {inherited < 1 && 
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <InputLabel htmlFor="sponsor-select">Sponsor</InputLabel>
+              <Select
+                value={sponsorID}
+                onChange={(e) => setSponsorID(e.target.value)}
+                fullWidth
+                inputProps={{
+                  name: 'sponsor',
+                  id: 'sponsor-select',
+                }}
+              >
+                {orgList.map(org => (
+                  <MenuItem key={org.sponsorOrgID} value={org.sponsorOrgID}>
+                    {org.sponsorOrgName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label="Username"
-              fullWidth
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              type="password"
-              label="Password"
-              fullWidth
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label="Phone Number"
-              fullWidth
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <Select
-              value={sponsor}
-              onChange={(e) => setSponsor(e.target.value)}
-              fullWidth
-            >
-              <MenuItem value="Sponsor 1">Sponsor 1</MenuItem>
-              <MenuItem value="Sponsor 2">Sponsor 2</MenuItem>
-              <MenuItem value="Sponsor 3">Sponsor 3</MenuItem>
-            </Select>
-          </Grid>
-          <Grid item xs={6}>
-            <Select
-              value={applicationStatus}
-              onChange={(e) => setApplicationStatus(e.target.value)}
-              fullWidth
-            >
-              <MenuItem value="Pending">Pending</MenuItem>
-              <MenuItem value="Approved">Approved</MenuItem>
-              <MenuItem value="Rejected">Rejected</MenuItem>
-            </Select>
-          </Grid>
+          }
         </Grid>
       </DialogContent>
       <DialogActions>

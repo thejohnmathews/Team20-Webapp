@@ -2,13 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import BaseURL from '../BaseURL'
 
-export default function AddSponsorPopup({ open, handleClose }) {
+export default function AddSponsorPopup({ open, handleClose, inherited }) {
   const [sponsorID, setSponsorID] = useState('');
   const [email, setEmail] = useState('');
   const [orgList, setOrgList] = useState([]);
  
   useEffect(() => {
-		getOrgs()
+    if(inherited < 1){
+      getOrgs()
+    } else {
+      console.log("adding the inherited id: " + inherited);
+      setSponsorID(inherited);
+    }
 	}, []);
 
   function getOrgs(){
@@ -50,18 +55,15 @@ export default function AddSponsorPopup({ open, handleClose }) {
 		})
 		.then(response => {
 			if (response.ok) { 
-				return response.json();
-			} 
-			else { console.error('Failed to post'); }
-		})
-		.then(data => {
-			console.log(data);			
+        handleClose();
+				return response.json(); 
+      } else { console.error('Failed to post'); }
 		})
 		.catch(error => {
 			console.error('Error retrieving successfully:', error);
 		});
 
-    handleClose();
+    
   };
 
   return (
@@ -77,7 +79,7 @@ export default function AddSponsorPopup({ open, handleClose }) {
       <br />
       <DialogContent>
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <TextField
               label="Email"
               fullWidth
@@ -85,7 +87,8 @@ export default function AddSponsorPopup({ open, handleClose }) {
               onChange={(e) => setEmail(e.target.value)}
             />
           </Grid>
-          <Grid item xs={6}>
+          {inherited < 1 && 
+          <Grid item xs={12}>
             <FormControl fullWidth>
               <InputLabel htmlFor="sponsor-select">Sponsor</InputLabel>
               <Select
@@ -105,6 +108,7 @@ export default function AddSponsorPopup({ open, handleClose }) {
               </Select>
             </FormControl>
           </Grid>
+        }
         </Grid>
       </DialogContent>
       <DialogActions>
