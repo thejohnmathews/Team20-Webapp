@@ -48,11 +48,11 @@ app.get('/goodReasons', (req, res) => {
 })
 
 app.post('/newDriver', (req, res) => {
-    const { email, sponsorID } = req.body;
-    const sql1 = 'INSERT INTO UserInfo (email, userType) VALUES (?, ?)';
+    const { email, sponsorID, firstName, lastName, sub, username } = req.body;
+    const sql1 = 'INSERT INTO UserInfo (email, userType, firstName, lastName, sub, userUsername) VALUES (?, ?, ?, ?, ?, ?)';
     const sql2 = 'INSERT INTO DriverUser (userID, sponsorOrgID) VALUES (?, ?)'; // Use placeholder for userID
 
-    const values = [email, "Driver"];
+    const values = [email, "Driver", firstName, lastName, sub, username];
 
     db.query(sql1, values, (err, result) => {
         if (err) {
@@ -437,6 +437,7 @@ app.get('/sponsorOrg/:sponsorOrgID', (req, res) => {
     })
 })
 
+// John - I changed the link in this to 3001 for testing!!
 app.post('/accountManagement/sponsorOrgUpdate/:sponsorOrgID', (req, res) => {
     console.log(req.body)
 
@@ -447,11 +448,12 @@ app.post('/accountManagement/sponsorOrgUpdate/:sponsorOrgID', (req, res) => {
             return res.json(err);
         }
         else {
-            res.redirect("http://localhost:3000/accountManagement")
+            res.redirect("http://localhost:3001/accountManagement")
         }
     })
 })
 
-app.listen(3000, ()=> {
+// John - I changed this to 3001 for testing!!
+app.listen(3001, ()=> {
     console.log("listening")
 })

@@ -1,15 +1,18 @@
+// CognitoAPI.js - Cognito API calls for this project are all here!
+
+// documentation used:
+// https://docs.amplify.aws/javascript/build-a-backend/auth/manage-user-profile/
+// https://docs.amplify.aws/react/build-a-backend/auth/manage-passwords/
+
 // imports 
 import { useEffect, useState } from 'react';
 import { Amplify } from 'aws-amplify';
-import { updatePassword } from 'aws-amplify/auth';
 import '@aws-amplify/ui-react/styles.css';
 import config from './amplifyconfiguration.json'; 
 import { fetchUserAttributes } from 'aws-amplify/auth';
 import { updateUserAttributes } from 'aws-amplify/auth';
-import { confirmUserAttribute } from 'aws-amplify/auth';
+import { updatePassword } from 'aws-amplify/auth';
 Amplify.configure(config);
-
-
 
 // useFetchUserAttributes(): used to grab attributes from user pool & constantly update
 export function useFetchUserAttributes(){
@@ -32,7 +35,8 @@ export function useFetchUserAttributes(){
   return userAttributes;
 }
 
-// https://docs.amplify.aws/javascript/build-a-backend/auth/manage-user-profile/
+
+// handleUpdateUserAttributes(): update userAttributes on the Profile Page
 export async function handleUpdateUserAttributes(
   updatedEmail,
   updatedGivenName,
@@ -52,30 +56,13 @@ export async function handleUpdateUserAttributes(
         address: updatedAddress,
       },
     });
-    // handleUpdateUserAttributeNextSteps(output);
     // Handle next steps
   } catch (error) {
     console.log(error);
   }
 }
 
-/* function handleUpdateUserAttributeNextSteps(output) {
-  const { nextStep } = output;
-
-  switch (nextStep.updateAttributeStep) {
-    case 'CONFIRM_ATTRIBUTE_WITH_CODE':
-      const codeDeliveryDetails = nextStep.codeDeliveryDetails;
-      console.log(
-        `Confirmation code was sent to ${codeDeliveryDetails?.deliveryMedium}.`
-      );
-      // Collect the confirmation code from the user and pass to confirmUserAttribute.
-      break;
-    case 'DONE':
-      console.log(`attribute was successfully updated.`);
-      break;
-  }
-} */
-
+// handleUpdateAddress(): update just the address Cognito attribute on the Cart Page
 export async function handleUpdateAddress(
   updatedAddress,
 ) {
@@ -91,19 +78,7 @@ export async function handleUpdateAddress(
   }
 }
 
-
-export async function handleConfirmUserAttribute({
-  userAttributeKey,
-  confirmationCode
-}) {
-  try {
-    await confirmUserAttribute({ userAttributeKey, confirmationCode });
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-// https://docs.amplify.aws/react/build-a-backend/auth/manage-passwords/
+// handleUpdatePassword(): update Cognito password on Profile Page
 export async function handleUpdatePassword(oldPassword, newPassword) {
   try {
     await updatePassword({ oldPassword, newPassword });

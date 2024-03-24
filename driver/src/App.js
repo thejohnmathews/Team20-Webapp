@@ -33,7 +33,6 @@ import { useAuthenticator } from '@aws-amplify/ui-react';
 import config from './amplifyconfiguration.json';
 Amplify.configure(config);
 
-
 export default function App() {
   const [cartItems, setCartItems] = useState([]);
   return (
@@ -88,13 +87,6 @@ export default function App() {
                   key = "address"
                   name = "address"
                   placeholder = "Enter your Address"
-                />
-
-                <TextField
-                  label = "Sponsor"
-                  key = "custom:Sponsor"
-                  name = "custom:Sponsor"
-                  placeholder = "Enter your Sponsor"
                 />
               </>
             );
