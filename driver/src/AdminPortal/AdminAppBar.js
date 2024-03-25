@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import BusinessIcon from '@mui/icons-material/Business';
+import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 
 export default function AdminAppBar() {
   const [open, setOpen] = React.useState(false);
@@ -62,7 +63,7 @@ export default function AdminAppBar() {
         <ListItem key={"Point Changes"} disablePadding>
           <ListItemButton onClick={handlePointChanges}>
             <ListItemIcon>
-              <BusinessIcon/>
+              <PointOfSaleIcon/>
             </ListItemIcon>
             <ListItemText primary={"Point Changes"} />
           </ListItemButton>

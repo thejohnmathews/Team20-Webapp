@@ -71,8 +71,8 @@ export default function AdminPointChanges({permissions}){
                           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                           >
                               <TableCell component="th" scope="row"> {appRow.driverID} </TableCell>
-                              <TableCell align="right">{}</TableCell>
-                              <TableCell align="right">{}</TableCell>
+                              <TableCell align="right">{appRow.firstName} {appRow.lastName}</TableCell>
+                              <TableCell align="right">{appRow.sponsorOrgName}</TableCell>
                               <TableCell align="right">{trimmedDate(appRow.changeDate)}</TableCell>
                               <TableCell align="right">{appRow.changePointAmt}</TableCell>
                               <TableCell align="right">{appRow.changeReasonID}</TableCell>
