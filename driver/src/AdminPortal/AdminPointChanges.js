@@ -75,7 +75,7 @@ export default function AdminPointChanges({permissions}){
                               <TableCell align="right">{appRow.sponsorOrgName}</TableCell>
                               <TableCell align="right">{trimmedDate(appRow.changeDate)}</TableCell>
                               <TableCell align="right">{appRow.changePointAmt}</TableCell>
-                              <TableCell align="right">{appRow.changeReasonID}</TableCell>
+                              <TableCell align="right">{appRow.reasonString}</TableCell>
                               <TableCell align="right"> 
                               </TableCell>
                           </TableRow>

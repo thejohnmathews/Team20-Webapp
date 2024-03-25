@@ -149,6 +149,7 @@ export default function DriverApplicationTable({permissions}) {
 					<TableCell>Application ID</TableCell>
 					<TableCell>Driver ID</TableCell>
 					<TableCell align="right">Name</TableCell>
+					<TableCell align="right">Sponsor</TableCell>
 					<TableCell align="right">Date Submitted (M/D/Y)</TableCell>
 					<TableCell align="right">Status</TableCell>
 					<TableCell align="right">Status Reason</TableCell>
@@ -164,8 +165,8 @@ export default function DriverApplicationTable({permissions}) {
 						>
 							<TableCell component="th" scope="row"> {appRow.applicationID} </TableCell>
 							<TableCell align="right">{appRow.userID}</TableCell>
-							{/* {Cognito call using sub to get the users name} */}
-							<TableCell align="right">{appRow.sub}</TableCell>
+							<TableCell align="right">{appRow.firstName} {appRow.lastName}</TableCell>
+							<TableCell align="right">{appRow.sponsorOrgName}</TableCell>
 							<TableCell align="right">{trimmedDate(appRow.dateOfApplication)}</TableCell>
 							<TableCell align="right">{appRow.applicationStatus}</TableCell>
 							<TableCell align="right">{appRow.statusReason}</TableCell>
