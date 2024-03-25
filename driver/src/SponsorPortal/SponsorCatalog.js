@@ -41,7 +41,7 @@ export default function SponsorCatalog() {
     <div>
         <SponsorAppBar/>
         <div style={{ marginLeft: '25px' }}>
-            <h1 className="catalog-header">Catalog</h1>
+            <h1 className="catalog-header">Catalog Rules</h1>
             <div style={{display: 'flex'}}>
             <Button onClick={handleAdd}>Change/View Rules</Button>
             <Button onClick={handleDriverCatalog}>View As Driver</Button>
