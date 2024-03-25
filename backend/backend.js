@@ -322,10 +322,10 @@ app.post('/editOrg', (req, res) => {
 
 
 app.post('/newApplication', (req, res) => {
-    const { id } = req.body;
-    const sql1 =' INSERT INTO DriverApplication (dateOfApplication, userID) VALUES (CURRENT_DATE, ?)';
+    const { id, sponsorOrgID } = req.body;
+    const sql1 =' INSERT INTO DriverApplication (dateOfApplication, userID, sponsorOrgID) VALUES (CURRENT_DATE, ?, ?)';
 
-    const values = [id];
+    const values = [id, sponsorOrgID];
   
     db.query(sql1, values, (err, result) => {
       if (err) {
