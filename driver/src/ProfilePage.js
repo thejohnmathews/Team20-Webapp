@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import "./App.css";
-import { useFetchUserAttributes } from './CognitoAPI';
+import { useFetchUserAttributes, handleUpdateUserAttributes } from './CognitoAPI';
 import UpdatePassword from './UpdatePassword';
 import { Grid, Typography, Box, Button, CardContent, TextField, Paper, Stack, Divider } from '@mui/material';
 import BaseURL from './BaseURL';
@@ -26,20 +26,77 @@ export default function ProfilePage({userType}) {
       setEmail(userAttributes.email || '');
       setPhoneNumber(userAttributes["custom:Phone"] || '');
       setAddress(userAttributes.address || '');
-	  getAssociatedSponsor();
+      if(userType !== 'admin'){ getAssociatedSponsor(); }
+      else{ getUserInfo();}
+      
     }
   }, [userAttributes]);
 
   const handleClickOpen2 = () => { setOpen2(true); };
-
   const handleClose2 = () => { setOpen2(false); };
-
   const handleEdit = () => { setEditMode(true); };
 
+  const updateAdmin = () => { 
+    fetch(BaseURL + '/updateAdmin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({email:email, firstName:firstName, lastName:lastName, userUsername:username, sub:userAttributes.sub })
+    })
+    .then(response => {
+      if (response.ok) { 
+        getUserInfo();
+        return response.json();
+      } 
+      else { console.error('Failed to update'); }
+    })
+    .catch(error => {
+      console.error('Error updating successfully:', error);
+    });
+  };
+  const updateDriver = () => { 
+    
+  };
+  const updateSponsor = () => { 
+    
+  };
+
   const handleSave = () => {
-    // NEEDS TO UPDATE USER INFO ON RDS AND COGNITO
+    if(userType === 'admin'){
+      updateAdmin();
+    } else if (userType === 'sponsor'){
+      updateSponsor();
+    } else {
+      updateDriver();
+    }
     setEditMode(false);
   };
+
+  const getUserInfo = () => {
+    fetch(BaseURL + '/adminInfoFromSub', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({sub:userAttributes.sub })
+    })
+    .then(response => {
+      if (response.ok) { 
+        return response.json();
+      } 
+      else { console.error('Failed to get user'); }
+    })
+    .then(data => {
+      setUsername(data[0].userUsername || '');
+      setFirstName(data[0].firstName || '');
+      setLastName(data[0].lastName || '');
+      setEmail(data[0].email || '');
+    })
+    .catch(error => {
+      console.error('Failed to get user:', error);
+    });
+  }
 
   const handleCancel = () => {
     setEditMode(false);
@@ -152,16 +209,18 @@ export default function ProfilePage({userType}) {
                   onChange={(e) => setPhoneNumber(e.target.value)}
                 />
               </Grid>
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  variant="outlined"
-                  label="Address Line 1"
-                  fullWidth
-                  value={address}
-                  disabled={!editMode}
-                  onChange={(e) => setAddress(e.target.value)}
-                />
-              </Grid>
+              {userType === 'driver' && (
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    variant="outlined"
+                    label="Address"
+                    fullWidth
+                    value={address}
+                    disabled={!editMode}
+                    onChange={(e) => setAddress(e.target.value)}
+                  />
+                </Grid>
+              )}
             </Grid>
             <br />
             <Divider />

@@ -6,7 +6,7 @@ export default function AdminProfilePage() {
   return (
     <div>
       <AdminAppBar/>
-      <ProfilePage/>
+      <ProfilePage userType={'admin'}/>
     </div>
   );
 }

@@ -47,6 +47,39 @@ app.get('/goodReasons', (req, res) => {
     })
 })
 
+app.post('/adminInfoFromSub', (req, res) => {
+    const sub = req.body.sub;
+    var sql = 'SELECT userID, firstName, lastName, email, userUsername FROM UserInfo WHERE sub = ?';
+    db.query(sql, sub, (err, result) => {
+        if (err) {
+            console.error('Error retrieving user info:', err);
+            res.status(500).send('Error retrieving user info');
+        } else {
+            if (result.length > 0) {
+                res.status(200).json(result);
+            } else {
+                res.status(404).send('No user found');
+            }
+        }
+    });
+});
+
+app.post('/updateAdmin', (req, res) => {
+    const { email, firstName, lastName, userUsername, sub } = req.body;
+    const sql = 'UPDATE UserInfo SET email = ?, firstName = ?, lastName = ?, userUsername = ? WHERE sub = ?';
+    const values = [email, firstName, lastName, userUsername, sub];
+
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Error updating user:', err);
+            res.status(500).send('Error updating user');
+        } else {
+            res.status(200).json("User updated successfully"); // Send the userID back to the frontend
+        }
+    });
+});
+
+
 app.post('/newDriver', (req, res) => {
     const { email, sponsorID, firstName, lastName, sub, username } = req.body;
     const sql1 = 'INSERT INTO UserInfo (email, userType, firstName, lastName, sub, userUsername) VALUES (?, ?, ?, ?, ?, ?)';
@@ -170,10 +203,10 @@ app.post('/driverList', (req, res) => {
     }
     sql += ' FROM DriverUser AS d INNER JOIN UserInfo AS u ON d.userID = u.userID';
 
-    if (orgID.orgID > 0) {
+    if (orgID > 0) {
         sql += ' WHERE d.sponsorOrgID = ?'
 
-        db.query(sql, [orgID.orgID], (err, result) => {
+        db.query(sql, [orgID], (err, result) => {
             if (err) {
                 console.error('Error retrieving list:', err);
                 res.status(500).send('Error retrieving list');
