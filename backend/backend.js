@@ -205,7 +205,7 @@ app.post('/driverList', (req, res) => {
 
 app.post('/associatedSponsor', (req, res) => {
     const sub = req.body.sub;
-    var sql = 'SELECT s.sponsorOrgID FROM SponsorUser s JOIN UserInfo u ON s.userID = u.userID WHERE u.sub = ?';
+    var sql = 'SELECT s.sponsorOrgID, o.sponsorOrgName FROM SponsorUser s JOIN UserInfo u ON s.userID = u.userID JOIN SponsorOrganization o ON s.sponsorOrgID = o.sponsorOrgID WHERE u.sub = ?';
 
     db.query(sql, sub, (err, result) => {
             if (err) {
@@ -223,6 +223,25 @@ app.post('/associatedSponsor', (req, res) => {
 
 });
 
+app.post('/driverAssociatedSponsor', (req, res) => {
+    const sub = req.body.sub;
+    var sql = 'SELECT d.sponsorOrgID, o.sponsorOrgName FROM DriverUser d JOIN UserInfo u ON d.userID = u.userID JOIN SponsorOrganization o ON d.sponsorOrgID = o.sponsorOrgID WHERE u.sub = ?';
+
+    db.query(sql, sub, (err, result) => {
+            if (err) {
+                console.error('Error retrieving associated sponsor:', err);
+                res.status(500).send('Error retrieving associated sponsor');
+            } else {
+                if (result.length > 0) {
+                    res.status(200).json(result);
+                } else {
+                    console.log('No sponsors found');
+                    res.status(404).send('No sponsors found');
+                }
+            }
+        });
+
+});
 
 app.post('/addSponsor', (req, res) => {
     const { email, sponsorID } = req.body;
