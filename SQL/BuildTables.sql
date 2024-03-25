@@ -17,6 +17,14 @@ CREATE TABLE UserInfo(
     userType                VARCHAR(10)
 );
 
+-- Create SponsorOrganization table
+CREATE TABLE SponsorOrganization(
+	
+    sponsorOrgID			INTEGER						AUTO_INCREMENT PRIMARY KEY,
+    sponsorOrgName			VARCHAR(75),
+    sponsorOrgDescription   VARCHAR(500)
+);
+
 -- Create Driver(User) table
 CREATE TABLE DriverUser(
 	
@@ -37,7 +45,9 @@ CREATE TABLE DriverApplication(
     applicationStatus		VARCHAR(20)					DEFAULT "Submitted",
     statusReason			VARCHAR(50)					DEFAULT "Under Review",
     userID					INTEGER,
-    FOREIGN KEY (userID) REFERENCES DriverUser(userID)
+    sponsorOrgID			INTEGER,
+    FOREIGN KEY (userID) REFERENCES DriverUser(userID),
+    FOREIGN KEY (sponsorOrgID) REFERENCES SponsorOrganization(sponsorOrgID)
 );
 
 -- Create Sponsor(User) table
@@ -53,14 +63,6 @@ CREATE TABLE AdminUser(
 	
     userID					INTEGER						PRIMARY KEY,
     FOREIGN KEY (userID) REFERENCES UserInfo(userID)
-);
-
--- Create SponsorOrganization table
-CREATE TABLE SponsorOrganization(
-	
-    sponsorOrgID			INTEGER						AUTO_INCREMENT PRIMARY KEY,
-    sponsorOrgName			VARCHAR(75),
-    sponsorOrgDescription   VARCHAR(500)
 );
 
 -- Create Purchase table

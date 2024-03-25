@@ -32,7 +32,6 @@ function AccountManagement() {
   const [sponsorOrgID, setSponsorOrgID] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
 
-
   const userAttributes = useFetchUserAttributes();
 
   useEffect(() => {

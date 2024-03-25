@@ -25,6 +25,10 @@ INSERT INTO DriverUser (UserID, sponsorOrgID) VALUES
 (1, 1),
 (3, 3);
 
+INSERT INTO DriverApplication (userID, sponsorOrgID) VALUES 
+(1, 1),
+(3, 3);
+
 INSERT INTO AdminUser (UserID) VALUES
 (2);
 

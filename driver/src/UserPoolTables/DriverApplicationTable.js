@@ -2,20 +2,64 @@ import React, { useState, useEffect } from 'react';
 import { TableRow, TableHead, TableContainer, TableCell, TableBody, Table, Button, Container, Paper, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 import AdminAppBar from '../AdminPortal/AdminAppBar';
 import SponsorAppBar from '../SponsorPortal/SponsorAppBar';
-import AddOrgPopup from '../AddUserPopups/AddOrganizationPopup';
 import DriverProfilePopUp from '../ProfilePopUps/DriverProfilePopUp'
 import BaseURL from '../BaseURL';
-
+import { useFetchUserAttributes } from '../CognitoAPI';
 
 export default function DriverApplicationTable({permissions}) {
   const [viewProfile, setViewProfile] = React.useState(false);
   const [refresh, setRefresh] = React.useState(false);
   const [appList, setAppList] = useState([]);
+  const [sponsorOrgID, setSponsorOrgID] = React.useState(null);
   const [userSub, setUserSub] = useState(-1);
+  const [loading, setLoading] = React.useState(true);
+
+
+  const userAttributes = useFetchUserAttributes();
+
+  useEffect(() => {
+	if (permissions === 'Sponsor'){
+		if (userAttributes && sponsorOrgID === null) {
+			getAssociatedSponsor();
+		  }
+	}
+	else{
+		setSponsorOrgID(-1);
+	}
+  }, [userAttributes]); 
+
+  useEffect(() => {
+	if(sponsorOrgID != null){
+		setLoading(true);
+		updateRows();
+	} else { setLoading(true) }
+  }, [sponsorOrgID]); 
+
+
+  const getAssociatedSponsor = () => {
+    fetch(BaseURL + '/associatedSponsor', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({sub: userAttributes.sub})
+    })
+    .then(response => {
+      if (response.ok) { 
+        return response.json();
+      } 
+      else { console.error('Failed to post'); }
+    })
+    .then(data => {
+      console.log(data[0].sponsorOrgID);
+      setSponsorOrgID(data[0].sponsorOrgID);			
+    })
+    .catch(error => {
+      console.error('Error retrieving successfully:', error);
+    });
+    
+  }
   
-	useEffect(() => {
-		updateRows()
-	}, []);
 
 	useEffect(() => {
 		if (refresh == true) {
@@ -25,10 +69,11 @@ export default function DriverApplicationTable({permissions}) {
 
 	const updateRows = () => {
 		fetch(BaseURL + '/driverApplications', {
-			method: 'GET',
+			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
+			body: JSON.stringify({orgID: sponsorOrgID})
 		})
 		.then(response => {
 			if (response.ok) { 

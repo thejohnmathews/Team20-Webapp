@@ -395,13 +395,15 @@ app.post('/userAttributes', (req, res) => {
     });
 });
 
-app.get('/driverApplications', (req, res) => {
-    const orgID = req.query.orgID;
-    let sql = "SELECT DA.*, UI.sub FROM DriverApplication DA INNER JOIN UserInfo UI ON DA.UserID = UI.UserID";
+app.post('/driverApplications', (req, res) => {
+    const orgID = req.body.orgID;
+
+    console.log(orgID);
+    let sql = "SELECT DA.*, UI.sub FROM DriverApplication DA INNER JOIN UserInfo UI ON DA.userID = UI.userID";
 
     const values = [];
     if (orgID && orgID > 0) {
-        sql += " WHERE DA.Organization = ?";
+        sql += " WHERE DA.sponsorOrgID = ?";
         values.push(orgID);
     }
 
