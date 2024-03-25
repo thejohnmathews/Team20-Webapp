@@ -508,7 +508,26 @@ app.post('/accountManagement/sponsorOrgUpdate/:sponsorOrgID', (req, res) => {
 })
 
 app.get('/pointChanges', (req, res) => {
-    const sql = "SELECT * FROM PointChange;"
+    const sql = `
+
+    SELECT 
+        PointChange.*, 
+        UserInfo.firstName, 
+        UserInfo.lastName, 
+        SponsorOrganization.sponsorOrgName,
+        Reason.reasonString
+    FROM 
+        PointChange 
+    JOIN 
+        UserInfo ON PointChange.driverID = UserInfo.userID 
+    JOIN 
+        DriverUser ON UserInfo.userID = DriverUser.userID 
+    JOIN 
+        SponsorOrganization ON DriverUser.sponsorOrgID = SponsorOrganization.sponsorOrgID
+    JOIN 
+        Reason ON PointChange.changeReasonID = Reason.reasonID;
+    `;
+    
     db.query(sql, (err, data) => {
         if(err) {
             return res.json(err);
