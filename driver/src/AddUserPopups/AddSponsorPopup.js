@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import BaseURL from '../BaseURL'
 
-export default function AddSponsorPopup({ open, handleClose, inherited }) {
+export default function AddSponsorPopup({ open, handleClose, inherited, callback }) {
   const [sponsorID, setSponsorID] = useState('');
   const [email, setEmail] = useState('');
   const [orgList, setOrgList] = useState([]);
@@ -55,6 +55,7 @@ export default function AddSponsorPopup({ open, handleClose, inherited }) {
 		})
 		.then(response => {
 			if (response.ok) { 
+        callback();
         handleClose();
 				return response.json(); 
       } else { console.error('Failed to post'); }

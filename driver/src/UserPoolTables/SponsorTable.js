@@ -10,6 +10,10 @@ export default function SponsorTable({permission, sponsorID}) {
 	const [addSponsorOpen, setAddSponsorOpen] = React.useState(false);
 	const [sponsorList, setSponsorList] = React.useState([]);
 
+	const callback = () => {
+		updateRows();
+	}
+
 	useEffect(() => {
 		updateRows()
 	}, []);
@@ -93,7 +97,7 @@ export default function SponsorTable({permission, sponsorID}) {
 	{ open && <ProfilePopUp userID={userID} open={open} handleClose={handleClose} permission={permission} /> }
 	
 	<Button variant="contained" color="primary" onClick={handleAddSponsor} style={{ marginTop: '20px' }}>Add Sponsor</Button>
-    { addSponsorOpen && <AddSponsor inherited={sponsorID} open={addSponsorOpen} handleClose={handleCloseAddSponsor}/> }
+    { addSponsorOpen && <AddSponsor inherited={sponsorID} open={addSponsorOpen} handleClose={handleCloseAddSponsor} callback={callback} /> }
 	</div>
   );
 }

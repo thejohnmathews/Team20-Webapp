@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import BaseURL from '../BaseURL'
 
-export default function DriverProfilePopUp({ open, handleClose, inherited }) {
+export default function DriverProfilePopUp({ open, handleClose, inherited, callback }) {
   const [email, setEmail] = useState('');
   const [sponsorID, setSponsorID] = useState('');
   const [orgList, setOrgList] = useState([]);
@@ -59,6 +59,7 @@ export default function DriverProfilePopUp({ open, handleClose, inherited }) {
 		})
 		.then(data => {
 			console.log(data);			
+      callback();
 		})
 		.catch(error => {
 			console.error('Error retrieving successfully:', error);

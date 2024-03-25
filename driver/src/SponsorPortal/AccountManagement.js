@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Tabs, Tab, Typography, Container } from '@mui/material';
 import SponsorAppBar from './SponsorAppBar';
 import DriverTable from '../UserPoolTables/DriverTable'
@@ -35,11 +35,13 @@ function AccountManagement() {
 
   const userAttributes = useFetchUserAttributes();
 
-    React.useEffect(() => {
+  useEffect(() => {
+    if (userAttributes && sponsorOrgID === null) {
       getAssociatedSponsor();
+    }
   }, [userAttributes]); 
 
-  React.useEffect(() => {
+  useEffect(() => {
     sponsorOrgID != null ? setLoading(false) : setLoading(true);
     
   }, [sponsorOrgID]); 
@@ -51,7 +53,7 @@ function AccountManagement() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({sub: '8448a408-6041-708e-33d8-e527c48e94b4'})
+      body: JSON.stringify({sub: userAttributes.sub})
     })
     .then(response => {
       if (response.ok) { 

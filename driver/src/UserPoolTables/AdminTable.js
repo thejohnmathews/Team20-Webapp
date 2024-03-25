@@ -10,7 +10,11 @@ export default function AdminTable({refresh, setRefresh}) {
   const [addAdminOpen, setAddAdminOpen] = React.useState(false);
   const [adminList, setAdminList] = useState([]);
 
-  useEffect(() => {
+  	const callback = () => {
+		updateRows();
+	}
+
+  	useEffect(() => {
 		updateRows()
 	}, []);
 
@@ -90,7 +94,7 @@ const updateRows = () => {
     { open && <ProfilePopup userID={userID} open={open} handleClose={handleClose}/> }
     
     <Button variant="contained" color="primary" onClick={handleAddAdmin} style={{ marginTop: '20px' }}>Add Admin</Button>
-    { addAdminOpen && <AddAdmin open={addAdminOpen} handleClose={handleCloseAddAdmin}/> }
+    { addAdminOpen && <AddAdmin open={addAdminOpen} handleClose={handleCloseAddAdmin} callback={callback}/> }
     </div>
   );
 }

@@ -10,9 +10,14 @@ export default function DriverTable({permission, sponsorID}) {
   const [addDriverOpen, setAddDriverOpen] = React.useState(false);
   const [driverList, setDriverList] = React.useState([]);
 
+  const callback = () => {
+    updateRows();
+  }
+
   React.useEffect(() => {
-		updateRows()
+		updateRows();
 	}, []);
+
 	const updateRows = () => {
 		fetch(BaseURL + '/driverList', {
 			method: 'POST',
@@ -90,7 +95,7 @@ export default function DriverTable({permission, sponsorID}) {
       { open && <ProfilePopup userID={userID} open={open} handleClose={handleClose} permission={permission}/> }
 
       <Button variant="contained" color="primary" onClick={handleAddDriver} style={{ marginTop: '20px' }}>Add Driver</Button>
-      { addDriverOpen && <AddDriver inherited={sponsorID} open={addDriverOpen} handleClose={handleCloseAddDriver}/> }
+      { addDriverOpen && <AddDriver inherited={sponsorID} open={addDriverOpen} handleClose={handleCloseAddDriver} callback={callback} /> }
     </div>
   );
 }

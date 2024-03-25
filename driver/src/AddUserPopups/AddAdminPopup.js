@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextField, Select, MenuItem } from '@mui/material';
 import BaseURL from '../BaseURL';
 
-export default function DriverProfilePopUp({ open, handleClose }) {
+export default function DriverProfilePopUp({ open, handleClose, callback }) {
   const [email, setEmail] = useState('');
 
   const handleSave = () => {
@@ -15,12 +15,13 @@ export default function DriverProfilePopUp({ open, handleClose }) {
 		})
 		.then(response => {
 			if (response.ok) { 
+        callback();	
 				return response.json();
 			} 
 			else { console.error('Failed to post'); }
 		})
 		.then(data => {
-			console.log(data);			
+			console.log(data);		
 		})
 		.catch(error => {
 			console.error('Error retrieving successfully:', error);
