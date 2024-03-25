@@ -36,6 +36,10 @@ export default function AdminAppBar() {
     navigate('/adminDriverApplicaitons');
   };
 
+  const handlePointChanges = () => {
+    navigate('/AdminPointChanges');
+  };
+
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
       <List>
@@ -53,6 +57,14 @@ export default function AdminAppBar() {
               <PendingActionsIcon/>
             </ListItemIcon>
             <ListItemText primary={"Pending Driver Applications"} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem key={"Point Changes"} disablePadding>
+          <ListItemButton onClick={handlePointChanges}>
+            <ListItemIcon>
+              <BusinessIcon/>
+            </ListItemIcon>
+            <ListItemText primary={"Point Changes"} />
           </ListItemButton>
         </ListItem>
         <ListItem key={"Organization Management"} disablePadding>

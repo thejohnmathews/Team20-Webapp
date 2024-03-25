@@ -14,7 +14,6 @@ CREATE TABLE UserInfo(
     lastName                VARCHAR(50),
     email                   VARCHAR(75),
     userUsername            VARCHAR(50),
-    userPassword            VARCHAR(50),
     userType                VARCHAR(10)
 );
 
@@ -36,7 +35,7 @@ CREATE TABLE DriverApplication(
 	applicationID			INTEGER 					AUTO_INCREMENT PRIMARY KEY,
     dateOfApplication		DATE,
     applicationStatus		VARCHAR(20)					DEFAULT "Submitted",
-    statusReason			VARCHAR(50),
+    statusReason			VARCHAR(50)					DEFAULT "Under Review",
     userID					INTEGER,
     FOREIGN KEY (userID) REFERENCES DriverUser(userID)
 );

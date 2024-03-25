@@ -24,6 +24,7 @@ import SponsorPoints from './SponsorPortal/SponsorPoints';
 import NewUserRedirect from './NewUserRedirect.js'
 import PastPurchases from './PastPurchases.js';
 import DriverApplicationTable from './UserPoolTables/DriverApplicationTable.js'
+import AdminPointChanges from './AdminPortal/AdminPointChanges.js';
 
 // Amplify/UI/Cognito imports
 import '@aws-amplify/ui-react/styles.css';
@@ -120,7 +121,7 @@ export default function App() {
             <Route exact path="/pastPurchases" element={<PastPurchases/>}/>
             <Route exact path="/adminDriverApplicaitons" element={<DriverApplicationTable permissions={'Admin'}/>}/>
             <Route exact path="/sponsorDriverApplicaitons" element={<DriverApplicationTable permissions={'Sponsor'}/>}/>
-
+            <Route exact path="/AdminPointChanges" element={<AdminPointChanges permissions={'Admin'}/>}/>
           </Routes>
       </Router>
       )}

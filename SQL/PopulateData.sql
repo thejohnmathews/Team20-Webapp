@@ -43,3 +43,6 @@ INSERT INTO Reason(reasonString) VALUES
 ("Running a red light/stop sign."),
 ("Impaired driving."),
 ("Off-roading.");
+
+INSERT INTO PointChange(driverID, changeDate, changePointAmt, changeReasonID) VALUES
+(3, '2024-03-25', 100, 1);

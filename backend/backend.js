@@ -448,12 +448,24 @@ app.post('/accountManagement/sponsorOrgUpdate/:sponsorOrgID', (req, res) => {
             return res.json(err);
         }
         else {
-            res.redirect("http://localhost:3001/accountManagement")
+            res.redirect("http://localhost:8080/accountManagement")
+        }
+    })
+})
+
+app.get('/pointChanges', (req, res) => {
+    const sql = "SELECT * FROM PointChange;"
+    db.query(sql, (err, data) => {
+        if(err) {
+            return res.json(err);
+        }
+        else {
+            return res.json(data);
         }
     })
 })
 
 // John - I changed this to 3001 for testing!!
-app.listen(3001, ()=> {
+app.listen(8080, ()=> {
     console.log("listening")
 })
