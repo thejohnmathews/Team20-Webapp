@@ -70,6 +70,7 @@ const updateRows = () => {
           <TableRow>
             <TableCell>User ID</TableCell>
             <TableCell align="right">Sub</TableCell>
+			<TableCell align="right">Name</TableCell>
             <TableCell align="right">Email</TableCell>
 			      <TableCell align="right">Actions</TableCell>
           </TableRow>
@@ -82,6 +83,7 @@ const updateRows = () => {
             >
         <TableCell component="th" scope="row"> {adminRow.userID} </TableCell>
 				<TableCell align="right">{adminRow.sub}</TableCell>
+				<TableCell align="right">{adminRow.firstName + " " + adminRow.lastName}</TableCell>
 				<TableCell align="right">{adminRow.email}</TableCell>
 				<TableCell align="right">
 						<Button variant="contained" color="primary" onClick={() => handleClickOpen(adminRow.id)}>View/Edit Profile</Button>

@@ -135,7 +135,7 @@ app.post('/addAdmin', (req, res) => {
 
 
 app.get('/adminList', (req, res) => {
-    const sql = 'SELECT a.userID, u.sub, u.email FROM AdminUser AS a INNER JOIN UserInfo AS u ON a.userID = u.userID';
+    const sql = 'SELECT a.userID, u.sub, u.email, u.firstName, u.lastName FROM AdminUser AS a INNER JOIN UserInfo AS u ON a.userID = u.userID';
 
     db.query(sql, (err, result) => {
         if (err) {
@@ -154,7 +154,7 @@ app.get('/adminList', (req, res) => {
 
 app.post('/sponsorList', (req, res) => {
     const orgID = req.body.orgID;
-    var sql = 'SELECT s.userID, u.sub, u.email';
+    var sql = 'SELECT s.userID, u.sub, u.email, u.lastName, u.firstName';
     if (orgID < 1){
         sql += ', o.SponsorOrgName'
     }
@@ -196,10 +196,10 @@ app.post('/sponsorList', (req, res) => {
 });
 
 app.post('/driverList', (req, res) => {
-    const orgID = req.body;
-    var sql = 'SELECT d.userID, u.sub, u.email';
+    const orgID = req.body.orgID;
+    var sql = 'SELECT d.userID, u.sub, u.email, u.lastName, u.firstName';
     if (orgID < 1 || orgID === undefined){
-        sql += ', o.SponsorOrgName'
+        sql += ', o.sponsorOrgName'
     }
     sql += ' FROM DriverUser AS d INNER JOIN UserInfo AS u ON d.userID = u.userID';
 
