@@ -16,7 +16,7 @@ export default function DriverAppBar() {
   const [pointTotal, setPointTotal] = useState("");
   const userID = 5;
 
-  const [drivers, setDrivers] = useState([])
+  const [drivers, setDrivers, data] = useState([])
     useEffect(() => {
         fetch(BaseURL + "/activeDrivers")
         .then(res => res.json())
@@ -24,6 +24,9 @@ export default function DriverAppBar() {
             // Store the fetched driver data in state
             setDrivers(data);  
             console.log(data);
+            data.forEach((driver, index) => {
+              console.log(`Driver ${index + 1} points:`, driver.driverPoints);
+            });
 
         })
         .catch(err => console.error('Error fetching driver data:', err));
@@ -114,8 +117,9 @@ export default function DriverAppBar() {
             Driver Portal
           </Typography>
           <Typography variant="h6" style={{marginRight: '20px'}}>
-            {/*Current Point Total: {drivers[0].driverPoints}*/}
-          </Typography> 
+            {drivers.length > 0 && drivers[2] && drivers[2].driverPoints !== null ? `Current Point Total: ${drivers[2].driverPoints}` : "No points available"}
+          </Typography>           
+          
               <IconButton
                 size="large"
                 aria-label="account of current user"

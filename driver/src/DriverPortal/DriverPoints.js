@@ -56,6 +56,34 @@ export default function DriverPoints(){
         day: '2-digit'
     });
 
+	const [drivers, setDrivers] = useState([])
+    useEffect(() => {
+        fetch(BaseURL + "/activeDrivers")
+        .then(res => res.json())
+        .then(data => {
+            // Store the fetched driver data in state
+            setDrivers(data);  
+            console.log(data);
+            data.forEach((driver, index) => {
+              console.log(`Driver ${index + 1} points:`, driver.driverPoints);
+            });
+
+        })
+        .catch(err => console.error('Error fetching driver data:', err));
+  }, []);
+
+  const sortRowsByDate = () => {
+    // Sort the appList by date
+    const sortedList = [...appList].sort((a, b) => new Date(a.changeDate) - new Date(b.changeDate));
+    setAppList(sortedList);
+  };
+
+  const sortRowsByChangePointAmt = () => {
+    // Sort the appList by changePointAmt
+    const sortedList = [...appList].sort((a, b) => a.changePointAmt - b.changePointAmt);
+    setAppList(sortedList);
+  };
+
 	return(
 		<div>
 			<DriverAppBar/>
@@ -65,6 +93,8 @@ export default function DriverPoints(){
 			<Container>
 			<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 				<h1> Point Change Log</h1>
+				<Button onClick={sortRowsByDate}>Sort by Date</Button>
+          		<Button onClick={sortRowsByChangePointAmt}>Sort by Point Change Amount</Button>
 				<TableContainer component={Paper}>
 				<Table sx={{ minWidth: 650 }} aria-label="simple table">
 					<TableHead>
@@ -78,19 +108,21 @@ export default function DriverPoints(){
 					</TableRow>
 					</TableHead>
 					<TableBody>
-						{appList.map((appRow) => (
-							<TableRow
-							key={appRow.applicationID}
-							sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-							>
-								<TableCell component="th" scope="row" >{trimmedDate(appRow.changeDate)}</TableCell>
+						{appList
+							.filter(appRow => appRow.driverID === 5)
+							.map((appRow) => (
+								<TableRow
+								key={appRow.applicationID}
+								sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+								>
+								<TableCell component="th" scope="row">{trimmedDate(appRow.changeDate)}</TableCell>
 								<TableCell>{appRow.firstName} {appRow.lastName}</TableCell>
 								<TableCell>{appRow.sponsorOrgName}</TableCell>
 								<TableCell>{appRow.reasonString}</TableCell>
 								<TableCell>{appRow.changePointAmt}</TableCell>
-								<TableCell>~</TableCell>
-							</TableRow>
-						))}
+								<TableCell>{drivers.length > 0 && drivers[2] && drivers[2].driverPoints !== null ? `Current Point Total: ${drivers[2].driverPoints}` : "No points available"}</TableCell>
+								</TableRow>
+							))}
 					</TableBody>
 				</Table>
 				</TableContainer>
