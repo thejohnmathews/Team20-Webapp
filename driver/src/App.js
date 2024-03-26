@@ -23,6 +23,8 @@ import AdminOrgManagement from './AdminPortal/OrganizationManagement.js'
 import SponsorPoints from './SponsorPortal/SponsorPoints';
 import NewUserRedirect from './NewUserRedirect.js'
 import PastPurchases from './PastPurchases.js';
+import DriverApplicationTable from './UserPoolTables/DriverApplicationTable.js'
+import AdminPointChanges from './AdminPortal/AdminPointChanges.js';
 
 // Amplify/UI/Cognito imports
 import '@aws-amplify/ui-react/styles.css';
@@ -31,7 +33,6 @@ import { Authenticator, PhoneNumberField, TextField } from '@aws-amplify/ui-reac
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import config from './amplifyconfiguration.json';
 Amplify.configure(config);
-
 
 export default function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -88,13 +89,6 @@ export default function App() {
                   name = "address"
                   placeholder = "Enter your Address"
                 />
-
-                <TextField
-                  label = "Sponsor"
-                  key = "custom:Sponsor"
-                  name = "custom:Sponsor"
-                  placeholder = "Enter your Sponsor"
-                />
               </>
             );
           },
@@ -125,6 +119,9 @@ export default function App() {
             <Route exact path="/driverCatalog" element={<DriverCatalog/>}/>
             <Route exact path="/driverCart" element={<DriverCart/>}/>
             <Route exact path="/pastPurchases" element={<PastPurchases/>}/>
+            <Route exact path="/adminDriverApplicaitons" element={<DriverApplicationTable permissions={'Admin'}/>}/>
+            <Route exact path="/sponsorDriverApplicaitons" element={<DriverApplicationTable permissions={'Sponsor'}/>}/>
+            <Route exact path="/AdminPointChanges" element={<AdminPointChanges permissions={'Admin'}/>}/>
           </Routes>
       </Router>
       )}

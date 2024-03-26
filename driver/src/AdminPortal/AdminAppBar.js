@@ -5,7 +5,9 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import InfoIcon from '@mui/icons-material/Info';
 import { useNavigate } from 'react-router-dom';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
-import OrgManagement from './OrganizationManagement'
+import PendingActionsIcon from '@mui/icons-material/PendingActions';
+import BusinessIcon from '@mui/icons-material/Business';
+import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 
 export default function AdminAppBar() {
   const [open, setOpen] = React.useState(false);
@@ -31,6 +33,14 @@ export default function AdminAppBar() {
     navigate('/adminOrgManagement');
   };
 
+  const handleDriverApps = () => {
+    navigate('/adminDriverApplicaitons');
+  };
+
+  const handlePointChanges = () => {
+    navigate('/AdminPointChanges');
+  };
+
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
       <List>
@@ -42,10 +52,26 @@ export default function AdminAppBar() {
             <ListItemText primary={"Account Management"} />
           </ListItemButton>
         </ListItem>
+        <ListItem key={"Pending Driver Applications"} disablePadding>
+          <ListItemButton onClick={handleDriverApps}>
+            <ListItemIcon>
+              <PendingActionsIcon/>
+            </ListItemIcon>
+            <ListItemText primary={"Pending Driver Applications"} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem key={"Point Changes"} disablePadding>
+          <ListItemButton onClick={handlePointChanges}>
+            <ListItemIcon>
+              <PointOfSaleIcon/>
+            </ListItemIcon>
+            <ListItemText primary={"Point Changes"} />
+          </ListItemButton>
+        </ListItem>
         <ListItem key={"Organization Management"} disablePadding>
           <ListItemButton onClick={handleOrgManagement}>
             <ListItemIcon>
-              <ManageAccountsIcon/>
+              <BusinessIcon/>
             </ListItemIcon>
             <ListItemText primary={"Organization Management"} />
           </ListItemButton>

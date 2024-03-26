@@ -6,6 +6,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import StoreIcon from '@mui/icons-material/Store';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { useNavigate } from 'react-router-dom';
+import PendingActionsIcon from '@mui/icons-material/PendingActions';
 
 
 export default function SponsorAppBar() {
@@ -39,6 +40,10 @@ export default function SponsorAppBar() {
   const handlePointManagement = () => {
     navigate('/SponsorPoints');
   };
+
+  const handleDriverApplications = () => {
+    navigate('/sponsorDriverApplicaitons');
+  };
   
 
   const DrawerList = (
@@ -66,6 +71,14 @@ export default function SponsorAppBar() {
               <ManageAccountsIcon/>
             </ListItemIcon>
             <ListItemText primary={"Organization Management"} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem key={"Driver Applications"} disablePadding>
+          <ListItemButton onClick={handleDriverApplications}>
+            <ListItemIcon>
+              <PendingActionsIcon/>
+            </ListItemIcon>
+            <ListItemText primary={"Driver Applications"} />
           </ListItemButton>
         </ListItem>
         <ListItem key={"Point Management"} disablePadding>

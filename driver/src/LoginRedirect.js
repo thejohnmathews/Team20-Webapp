@@ -19,7 +19,6 @@ export default function LoginRedirect() {
 		const setUserSubIfNotNull = () => {
 			if (userAttributes !== null) {
 				setUserSub(userAttributes.sub);
-				console.log(userSub);
 			} else {
 				setTimeout(setUserSubIfNotNull, 1000); // Retry after 1 second
 			}
@@ -42,9 +41,7 @@ export default function LoginRedirect() {
 			console.log(data);
 			if (data.hasApplication) {
 				// Driver application found
-				console.log('Driver application found:', data.application);
-				console.log(data.application[0].applicationStatus)
-				if (data.application[0].applicationStatus === "In-Progress"){
+				if (data.application[0].applicationStatus !== "Accepted"){
 					setApplicationInProgress(true);
 					setLoading(false);
 					setApplication(data.application[0]);

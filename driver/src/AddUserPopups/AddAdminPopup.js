@@ -1,16 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextField, Select, MenuItem } from '@mui/material';
+import BaseURL from '../BaseURL';
 
-export default function DriverProfilePopUp({ open, handleClose }) {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+export default function DriverProfilePopUp({ open, handleClose, callback }) {
+  const [email, setEmail] = useState('');
 
   const handleSave = () => {
+    fetch(BaseURL + '/addAdmin', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({email})
+		})
+		.then(response => {
+			if (response.ok) { 
+        callback();	
+				return response.json();
+			} 
+			else { console.error('Failed to post'); }
+		})
+		.then(data => {
+			console.log(data);		
+		})
+		.catch(error => {
+			console.error('Error retrieving successfully:', error);
+		});
+
     handleClose();
-    // MAKE COGNITO CALLS HERE TO UPDATE WITH THE NEW USER INFO
   };
 
   return (
@@ -26,45 +43,12 @@ export default function DriverProfilePopUp({ open, handleClose }) {
       <br />
       <DialogContent>
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          <Grid item xs={10}>
             <TextField
-              label="First Name"
+              label="Email"
               fullWidth
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label="Last Name"
-              fullWidth
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label="Username"
-              fullWidth
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              type="password"
-              label="Password"
-              fullWidth
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label="Phone Number"
-              fullWidth
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </Grid>
         </Grid>

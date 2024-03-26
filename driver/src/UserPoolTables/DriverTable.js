@@ -2,23 +2,44 @@ import * as React from 'react';
 import {Paper, TableRow, TableHead, TableContainer, TableCell, TableBody, Table, Button} from '@mui/material';
 import ProfilePopup from '../ProfilePopUps/DriverProfilePopUp'
 import AddDriver from '../AddUserPopups/AddDriverPopup'
+import BaseURL from '../BaseURL'
 
-function createData(id, username, sponsor, application, email, points) {
-  return { id, username, sponsor, application, email, points };
-}
-
-const rows = [
-  createData(1, "uname1", "Sponsor1", "Approved" ,"email1", 4.0),
-  createData(2, "uname2", "Sponsor1", "Approved" ,"email2", 4.3),
-  createData(3, "uname3", "Sponsor2", "Pending" ,"email3", 0),
-  createData(4, "uname4", "Sponsor2", "Pending" ,"email4", 0),
-  createData(5, "uname5", "Sponsor3", "Rejected" ,"email5", 0),
-];
-
-export default function DriverTable(permission) {
+export default function DriverTable({permission, sponsorID}) {
   const [open, setOpen] = React.useState(false);
 	const [userID, setUserID] = React.useState(-1);
   const [addDriverOpen, setAddDriverOpen] = React.useState(false);
+  const [driverList, setDriverList] = React.useState([]);
+
+  const callback = () => {
+    updateRows();
+  }
+
+  React.useEffect(() => {
+		updateRows();
+	}, []);
+
+	const updateRows = () => {
+		fetch(BaseURL + '/driverList', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({orgID: sponsorID})
+		})
+		.then(response => {
+			if (response.ok) { 
+				return response.json();
+			} 
+			else { console.error('Failed to retrieve'); }
+		})
+		.then(data => {
+			setDriverList(data)
+			
+		})
+		.catch(error => {
+			console.error('Error retrieving successfully:', error);
+		});
+	};
 
 	const handleClickOpen = (userID) => {
 		setUserID(userID);
@@ -45,32 +66,28 @@ export default function DriverTable(permission) {
           <TableHead>
             <TableRow>
               <TableCell>User ID</TableCell>
-              <TableCell align="right">Username</TableCell>
-              <TableCell align="right">Sponsor</TableCell>
+              <TableCell align="right">Sub</TableCell>
+              {permission === 'admin' && <TableCell align="right">Sponsor</TableCell>}
               <TableCell align="right">Email</TableCell>
-              <TableCell align="right">Application</TableCell>
-              <TableCell align="right">Points</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {driverList.map((row) => (
               <TableRow
-                key={row.id}
+                key={row.userID}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {row.id}
+                  {row.userID}
                 </TableCell>
-                <TableCell align="right">{row.username}</TableCell>
-                <TableCell align="right">{row.sponsor}</TableCell>
+                <TableCell align="right">{(row.sub !== null && row.sub !== undefined && row.sub !== '') ? row.sub : "Cognito account not created"}</TableCell>
+                {permission === 'admin' && <TableCell align="right">{row.SponsorOrgName}</TableCell>}
                 <TableCell align="right">{row.email}</TableCell>
-                <TableCell align="right">{row.application}</TableCell>
-                <TableCell align="right">{row.points}</TableCell>
                 <TableCell align="right">
                   <Button variant="contained" color="primary" onClick={() => handleClickOpen(row.id)}>View/Edit Profile</Button>
                 </TableCell>
-              </TableRow>
+              </TableRow> 
             ))}
           </TableBody>
         </Table>
@@ -78,7 +95,7 @@ export default function DriverTable(permission) {
       { open && <ProfilePopup userID={userID} open={open} handleClose={handleClose} permission={permission}/> }
 
       <Button variant="contained" color="primary" onClick={handleAddDriver} style={{ marginTop: '20px' }}>Add Driver</Button>
-      { addDriverOpen && <AddDriver open={addDriverOpen} handleClose={handleCloseAddDriver}/> }
+      { addDriverOpen && <AddDriver inherited={sponsorID} open={addDriverOpen} handleClose={handleCloseAddDriver} callback={callback} /> }
     </div>
   );
 }
