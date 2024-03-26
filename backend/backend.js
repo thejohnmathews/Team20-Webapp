@@ -428,6 +428,22 @@ app.post('/userAttributes', (req, res) => {
     });
 });
 
+app.post('/loginAudit', (req, res) => {
+    const username = req.body.username;
+    const sql1 = 'INSERT INTO LoginAttempt(userName, loginSuccess) VALUES (?, ?)';
+
+    const values = [username, true];
+    console.log("hi")
+    db.query(sql1, values, (err, result) => {
+        if (err) {
+            console.error('Error inserting login:', err);
+            res.status(500).send('Error inserting login');
+        } else {
+            res.status(200).send('Login inserted successfully');
+        }
+    });
+});
+
 app.post('/driverApplications', (req, res) => {
     const orgID = req.body.orgID;
 
