@@ -432,13 +432,15 @@ app.post('/driverApplications', (req, res) => {
     const orgID = req.body.orgID;
 
     console.log(orgID);
-    let sql = "SELECT DA.*, UI.sub FROM DriverApplication DA INNER JOIN UserInfo UI ON DA.userID = UI.userID";
+    let sql = "SELECT DA.*, UI.sub, UI.lastName, UI.firstName, SO.sponsorOrgName FROM DriverApplication DA INNER JOIN UserInfo UI ON DA.userID = UI.userID JOIN SponsorOrganization SO ON DA.sponsorOrgID = SO.sponsorOrgID";
 
     const values = [];
     if (orgID && orgID > 0) {
         sql += " WHERE DA.sponsorOrgID = ?";
         values.push(orgID);
     }
+
+    
 
     db.query(sql, values, (err, data) => {
         if (err) {

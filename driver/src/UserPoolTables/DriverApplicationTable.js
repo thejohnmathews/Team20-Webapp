@@ -147,14 +147,13 @@ export default function DriverApplicationTable({permissions}) {
 				<TableHead>
 				<TableRow>
 					<TableCell>Application ID</TableCell>
-					<TableCell>Driver ID</TableCell>
+					<TableCell>User ID</TableCell>
 					<TableCell align="right">Name</TableCell>
 					<TableCell align="right">Sponsor</TableCell>
 					<TableCell align="right">Date Submitted (M/D/Y)</TableCell>
-					<TableCell align="right">Status</TableCell>
+					<TableCell align="right">Application Status</TableCell>
 					<TableCell align="right">Status Reason</TableCell>
 					<TableCell align="right">View Profile</TableCell>
-					<TableCell align="right">Change Application Status</TableCell>
 				</TableRow>
 				</TableHead>
 				<TableBody>
@@ -165,14 +164,9 @@ export default function DriverApplicationTable({permissions}) {
 						>
 							<TableCell component="th" scope="row"> {appRow.applicationID} </TableCell>
 							<TableCell align="right">{appRow.userID}</TableCell>
-							<TableCell align="right">{appRow.firstName} {appRow.lastName}</TableCell>
+							<TableCell align="right">{appRow.firstName + " " + appRow.lastName}</TableCell>
 							<TableCell align="right">{appRow.sponsorOrgName}</TableCell>
 							<TableCell align="right">{trimmedDate(appRow.dateOfApplication)}</TableCell>
-							<TableCell align="right">{appRow.applicationStatus}</TableCell>
-							<TableCell align="right">{appRow.statusReason}</TableCell>
-							<TableCell align="right"> 
-								<Button variant="contained" color="primary" onClick={() => handleView(appRow.sub)}>View/Edit Profile</Button> 
-							</TableCell>
 							<TableCell align="right"> 
 							<FormControl>
 								<InputLabel id="status-label">Status</InputLabel>
@@ -191,6 +185,11 @@ export default function DriverApplicationTable({permissions}) {
 								</Select>
 							</FormControl>
 							</TableCell>
+							<TableCell align="right">{appRow.statusReason}</TableCell>
+							<TableCell align="right"> 
+								<Button variant="contained" color="primary" onClick={() => handleView(appRow.sub)}>View/Edit Profile</Button> 
+							</TableCell>
+							
 						</TableRow>
 					))}
 				</TableBody>
