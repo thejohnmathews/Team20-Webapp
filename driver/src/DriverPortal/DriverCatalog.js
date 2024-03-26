@@ -125,7 +125,7 @@ export default function DriverCatalog(){
                     <img src={album.artworkUrl100} alt="Album Artwork" />
                     <p>Artist: {album.artistName}</p>
                     <p>Genre: {album.primaryGenreName}</p>
-                    <p>Price: ${album.collectionPrice}</p>
+                    <p>Price: {Math.ceil(album.collectionPrice)} Points</p>
                     <p>Release Date: {album.releaseDate}</p>
                     <Button style={{ cursor: 'pointer', marginRight: '25px' }} variant="contained" color="primary" onClick={() => addToCart(album)}>Add to Cart</Button>
                     <a href={album.collectionViewUrl} target="_blank">View on iTunes</a>

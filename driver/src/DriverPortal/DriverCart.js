@@ -62,7 +62,7 @@ export default function DriverCart(){
                             <div>
                                 <h3>{item.collectionName}</h3>
                                 <p>Artist: {item.artistName}</p>
-                                <p>Price: ${item.collectionPrice}</p>
+                                <p>Price: {Math.ceil(item.collectionPrice)} Points</p>
                                 
                                 {/* If order is sumbitted, remove button for this order*/}
                                 {/* Later make it so everything is removed from page*/}
@@ -76,7 +76,7 @@ export default function DriverCart(){
                     ))}
                 </ul>
                 <div style={{ textAlign: 'right', marginTop: '20px' }}>
-                    <h2>Total: ${totalPrice.toFixed(2)}</h2>
+                    <h2>Total: {Math.ceil(totalPrice.toFixed(2))} Points</h2>
                     {userAttributes && (<p>Address: {userAttributes.address}</p> )}
                     <Button style={{ cursor: 'pointer'}} variant="contained" color="primary"onClick={() => setShowAddressForm(true)}> Change Address</Button>
                 </div>
