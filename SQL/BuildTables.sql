@@ -115,8 +115,7 @@ CREATE TABLE PasswordChange(
 -- Create Login Attempt table
 CREATE TABLE LoginAttempt(
     loginAttemptID INT AUTO_INCREMENT PRIMARY KEY,
-    userID INT,
-    FOREIGN KEY (userID) REFERENCES UserInfo(userID),
-    loginAttemptDate DATE,
+    userName VARCHAR(40),
+    loginAttemptDate DATE DEFAULT CURRENT_TIMESTAMP,
     loginSuccess BOOLEAN
 );

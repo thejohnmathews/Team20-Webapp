@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import SponsorAppBar from './SponsorAppBar';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import BaseURL from '../BaseURL';
 
 
 export default function SponsorCatalog() {
@@ -37,6 +38,10 @@ export default function SponsorCatalog() {
     navigate('/driverCatalog');
   };
 
+  const handleSubmit = () => {
+
+  }
+
   return (
     <div>
         <SponsorAppBar/>
@@ -49,19 +54,25 @@ export default function SponsorCatalog() {
             {showAdd && 
                 <div style={{display: 'flex', flexWrap: 'wrap'}}>
                     <div style={{paddingRight: 20}}>
-                        <FormGroup>
+                        <form id='catalogRules' method='POST' action={BaseURL + "/catalogRules"}>
                             <h2>Allowed Content</h2>
-                            <FormControlLabel control={<Checkbox/>} label="Music"/>
-                            <FormControlLabel control={<Checkbox/>} label="Movies"/>
-                            <FormControlLabel control={<Checkbox/>} label="TV Shows"/>
-                            <FormControlLabel control={<Checkbox/>} label="Audio Books"/>
-                            <FormControlLabel control={<Checkbox/>} label="E-Books"/>
-                        </FormGroup>
-                    </div>
-                    <div>
-                        <h2>Items per Page</h2>
-                        <p style={{fontStyle: 'italic'}}>Please enter a value betwen 1 and 200</p>
-                        <TextField sx={{width: 200}}></TextField>
+                            <input type='checkbox' id="music" name="music" value="music"></input>
+                            <label htmlFor="music">Music</label>
+                            <br></br>
+                            <input type='checkbox' id="movie" name="movie" value="movie"></input>
+                            <label htmlFor="movie">Movies</label>
+                            <br></br>
+                            <input type='checkbox' id="tvShow" name="tvShow" value="tvShow"></input>
+                            <label htmlFor="tvShow">TV Shows</label>
+                            <br></br>
+                            <input type='checkbox' id="audiobook" name="audiobook" value="audiobook"></input>
+                            <label htmlFor="audiobook">Audio Books</label>
+                            <br></br>
+                            <input type='checkbox' id="ebook" name="ebook" value="ebook"></input>
+                            <label htmlFor="ebook">E-Books</label>
+                            <br></br>
+                            <input type='submit' value="Submit"></input>
+                        </form>
                     </div>
                 </div>
             }
