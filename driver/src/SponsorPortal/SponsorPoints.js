@@ -74,13 +74,79 @@ export default function SponsorPoints(){
         .catch(err => console.log(err));
     }
 
+    const [selectedDriver, setSelectedDriver] = useState("");
+    const handleDriverChange = (event) => {
+        setSelectedDriver(event.target.value);
+    };
+
     const [reason, setReason] = useState("")
     const handleReasonChange = (event) => {
-        setReason(event.currentTarget.value)
-        console.log(reason)
+        if (event && event.target){
+            const selectedReasonID = event.target.value
+            setReason(selectedReasonID)
+        }
     } 
 
-    console.log(goodReasons)
+    const [pointValue, setPointValue] = useState("");
+    const handlePointValueChange = (event) => {
+        setPointValue(event.target.value);
+    };
+
+    const [drivers, setDrivers] = useState("")
+    useEffect(() => {
+        fetch(BaseURL + "/activeDrivers")
+        .then(res => res.json())
+        .then(data => {
+            // Store the fetched driver data in state
+            setDrivers(data);
+        })
+        .catch(err => console.error('Error fetching driver data:', err));
+    }, []);
+
+    const handleSubmit = () => {
+        const data = {
+            userID: selectedDriver,
+            reasonID: reason, 
+            driverPoints: pointValue 
+        };
+        console.log(data)
+        if(checked){
+            fetch(BaseURL + "/updatePointsGood", {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success: ', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle errors, if needed
+            });
+        }
+        if(!checked){
+            fetch(BaseURL + "/updatePointsBad", {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success: ', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle errors, if needed
+            });
+        }
+
+    }
+
 	return(
 		<div>
 			<SponsorAppBar/>
@@ -98,10 +164,20 @@ export default function SponsorPoints(){
                 id="demo-simple-select"
                 label="Driver"
                 sx={{minWidth: 200}}
+                value={selectedDriver}
+                onChange={handleDriverChange}
             >
-                <MenuItem value={"driver1"}>driver 1</MenuItem>
-                <MenuItem value={"driver2"}>driver 2</MenuItem>
-                <MenuItem value={"driver3"}>driver 3</MenuItem>
+                {drivers.length > 0 ? (
+                    drivers.map(driver => (
+                        <MenuItem key={driver.userID} value={driver.userID}>
+                            {`${driver.userID} - ${driver.firstName} ${driver.lastName}`}
+                        </MenuItem>
+                    ))
+                ) : (
+                    <MenuItem disabled>
+                        Error: No drivers available
+                    </MenuItem>
+                )}
             </Select>
             {checked && goodReasons.length > 0 &&<div><InputLabel id="good-reasons">Good Reasons</InputLabel>
             <Select
@@ -109,6 +185,8 @@ export default function SponsorPoints(){
                 id="demo-simple-select"
                 label="Good Reasons"
                 sx={{minWidth: 200}}
+                value={reason}
+                onChange={handleReasonChange}
             >
                 {goodReasons.map((reason, index) => (
                     <MenuItem key={index} value={reason.reasonString}>{reason.reasonString}</MenuItem>
@@ -121,6 +199,8 @@ export default function SponsorPoints(){
                 id="demo-simple-select"
                 label="Good Reasons"
                 sx={{minWidth: 200}}
+                value={reason}
+                onChange={handleReasonChange}
             >
                 {badReasons.map((reason, index) => (
                     <MenuItem key={index} value={reason.reasonString}>{reason.reasonString}</MenuItem>
@@ -128,9 +208,9 @@ export default function SponsorPoints(){
                 <MenuItem value={"Other"}>Other</MenuItem>
             </Select></div>}
             <br></br>
-            <TextField id="outlined-basic" label="Point value" variant="outlined" type="number" />
+            <TextField id="outlined-basic" label="Point value" variant="outlined" type="number" value={pointValue} onChange={handlePointValueChange}/>
             <br></br>
-            <Button>Submit</Button>
+            <Button onClick={handleSubmit}>Submit</Button>
 		</div>
 	)
 }

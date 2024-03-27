@@ -441,6 +441,22 @@ app.post('/userAttributes', (req, res) => {
     });
 });
 
+app.post('/loginAudit', (req, res) => {
+    const username = req.body.username;
+    const sql1 = 'INSERT INTO LoginAttempt(userName, loginSuccess) VALUES (?, ?)';
+
+    const values = [username, true];
+    console.log("hi")
+    db.query(sql1, values, (err, result) => {
+        if (err) {
+            console.error('Error inserting login:', err);
+            res.status(500).send('Error inserting login');
+        } else {
+            res.status(200).send('Login inserted successfully');
+        }
+    });
+});
+
 app.post('/driverApplications', (req, res) => {
     const orgID = req.body.orgID;
 
@@ -539,8 +555,116 @@ app.get('/pointChanges', (req, res) => {
         }
     })
 })
+//returns active drivers in DB 
+app.get('/activeDrivers', (req, res) => {
+    const sql = "SELECT * FROM DriverUser INNER JOIN UserInfo ON DriverUser.userID = UserInfo.userID";
+    db.query(sql, (err, data) => {
+        if(err) {
+            return res.json(err);
+        }
+        else {
+            return res.json(data);
+        }
+    })
+})
+
+app.post('/updatePointsGood', (req, res) => {
+    console.log("good");
+    // Extracting parameters from request body
+    const { userID, reasonID, driverPoints } = req.body;
+    // Perform validation on parameters if necessary
+    console.log(req.body)
+    if (!userID || !reasonID || !driverPoints) {
+        return res.status(400).json({ error: "Missing parameters" });
+    }
+
+    // Convert driverPoints to integer
+    const driverPointsInt = parseInt(driverPoints);
+
+    // Check if driverPointsInt is a valid integer
+    if (isNaN(driverPointsInt)) {
+        return res.status(400).json({ error: "Invalid driverPoints value" });
+    }
+
+    const sql1 = 'UPDATE DriverUser SET driverPoints = driverPoints + ? WHERE userID = ?;'
+    console.log(userID, driverPointsInt);
+    const values = [driverPointsInt, userID]; 
+
+    const sql2 = 'INSERT INTO PointChange (driverID, changeDate, changePointAmt, changeReasonID) VALUES ((SELECT userID FROM DriverUser WHERE userID = ?), CURDATE(), ?, ?);';
+
+    db.query(sql1, values, (err, result1) => {
+        if (err) {
+            console.error('Error updating user:', err);
+            res.status(500).json({ error: 'Error updating user' });
+        } else {
+            db.query(sql2, [userID, driverPointsInt, reasonID], (err, result2) => {
+                if (err) {
+                    console.error('Error inserting point change:', err);
+                    res.status(500).json({ error: 'Error inserting point change' });
+                } else {
+                    res.status(200).json("Points updated successfully");
+                }
+            });
+        }
+    });
+});
+app.post('/updatePointsBad', (req, res) => {
+    console.log("bad");
+    // Extracting parameters from request body
+    const { userID, reasonID, driverPoints } = req.body;
+    // Perform validation on parameters if necessary
+    console.log(req.body)
+    if (!userID || !reasonID || !driverPoints) {
+        return res.status(400).json({ error: "Missing parameters" });
+    }
+
+    // Convert driverPoints to integer
+    const driverPointsInt = parseInt(driverPoints);
+
+    // Check if driverPointsInt is a valid integer
+    if (isNaN(driverPointsInt)) {
+        return res.status(400).json({ error: "Invalid driverPoints value" });
+    }
+
+    const sql1 = 'UPDATE DriverUser SET driverPoints = driverPoints - ? WHERE userID = ?;'
+    console.log(userID, driverPointsInt);
+    const values = [driverPointsInt, userID]; 
+
+    const sql2 = 'INSERT INTO PointChange (driverID, changeDate, changePointAmt, changeReasonID) VALUES ((SELECT userID FROM DriverUser WHERE userID = ?), CURDATE(), ?, ?);';
+
+
+    db.query(sql1, values, (err, result1) => {
+        if (err) {
+            console.error('Error updating user:', err);
+            res.status(500).json({ error: 'Error updating user' });
+        } else {
+            db.query(sql2, [userID, driverPointsInt, reasonID], (err, result2) => {
+                if (err) {
+                    console.error('Error inserting point change:', err);
+                    res.status(500).json({ error: 'Error inserting point change' });
+                } else {
+                    res.status(200).json("Points updated successfully");
+                }
+            });
+        }
+    });
+});
+
+app.get('/driverInfo/:userID', (req, res) => {
+    const userID = req.params.userID;
+    const sql = "SELECT * FROM DriverUser WHERE userID = ?";
+    db.query(sql, [userID], (err, data) => {
+        if(err) {
+            return res.json(err);
+        }
+        else {
+            return res.json(data);
+        }
+    })
+})
+
 
 // John - I changed this to 3001 for testing!!
-app.listen(8080, ()=> {
+app.listen(3000, ()=> {
     console.log("listening")
 })

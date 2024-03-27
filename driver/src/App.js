@@ -14,6 +14,7 @@ import SponsorOrgManagementPage from './SponsorPortal/OrganizationManagementPage
 import AdminAbout from './AdminPortal/AdminAbout.js';
 import SponsorAbout from './SponsorPortal/SponsorAbout.js';
 import DriverAbout from './DriverPortal/DriverAbout.js';
+import DriverPoints from './DriverPortal/DriverPoints.js';
 import AdminAccountManagement from './AdminPortal/AccountManagement.js';
 import SponsorAccountManagement from './SponsorPortal/AccountManagement.js';
 import DriverCatalog from './DriverPortal/DriverCatalog.js';
@@ -118,6 +119,7 @@ export default function App() {
             <Route exact path="/newUser" element={<NewUserRedirect/>}/>
             <Route exact path="/driverCatalog" element={<DriverCatalog/>}/>
             <Route exact path="/driverCart" element={<DriverCart/>}/>
+            <Route exact path="/driverPoints" element={<DriverPoints/>}/>
             <Route exact path="/pastPurchases" element={<PastPurchases/>}/>
             <Route exact path="/adminDriverApplicaitons" element={<DriverApplicationTable permissions={'Admin'}/>}/>
             <Route exact path="/sponsorDriverApplicaitons" element={<DriverApplicationTable permissions={'Sponsor'}/>}/>

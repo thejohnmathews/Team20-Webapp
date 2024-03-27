@@ -7,9 +7,31 @@ import StoreIcon from '@mui/icons-material/Store';
 import LoyaltyIcon from '@mui/icons-material/Loyalty';
 import HistoryIcon from '@mui/icons-material/History';
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import BaseURL from '../BaseURL'
+
 
 export default function DriverAppBar() {
   const [open, setOpen] = React.useState(false);
+  const [pointTotal, setPointTotal] = useState("");
+  const userID = 5;
+
+  const [drivers, setDrivers, data] = useState([])
+    useEffect(() => {
+        fetch(BaseURL + "/activeDrivers")
+        .then(res => res.json())
+        .then(data => {
+            // Store the fetched driver data in state
+            setDrivers(data);  
+            console.log(data);
+            data.forEach((driver, index) => {
+              console.log(`Driver ${index + 1} points:`, driver.driverPoints);
+            });
+
+        })
+        .catch(err => console.error('Error fetching driver data:', err));
+  }, []);
+
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
@@ -31,6 +53,9 @@ export default function DriverAppBar() {
   const handlePastPurchases = () => {
     navigate('/pastPurchases');
   };
+  const handleDrivingPoints = () => {
+    navigate('/driverPoints')
+  }
   
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
@@ -52,7 +77,7 @@ export default function DriverAppBar() {
           </ListItemButton>
         </ListItem>
         <ListItem key={"Driving Points"} disablePadding>
-          <ListItemButton >
+          <ListItemButton onClick={handleDrivingPoints}>
             <ListItemIcon>
               <LoyaltyIcon/>
             </ListItemIcon>
@@ -92,8 +117,9 @@ export default function DriverAppBar() {
             Driver Portal
           </Typography>
           <Typography variant="h6" style={{marginRight: '20px'}}>
-            Current Point Total: ~
-          </Typography>
+            {drivers.length > 0 && drivers[2] && drivers[2].driverPoints !== null ? `Current Point Total: ${drivers[2].driverPoints}` : "No points available"}
+          </Typography>           
+          
               <IconButton
                 size="large"
                 aria-label="account of current user"

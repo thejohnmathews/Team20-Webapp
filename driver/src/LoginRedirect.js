@@ -9,6 +9,7 @@ import {Application} from './Pojo.js'
 export default function LoginRedirect() {
 
 	const [userSub, setUserSub] = useState(null)
+	const [username, setUsername] = useState(null)
 	const [applicationInProgress, setApplicationInProgress] = useState(false)
 	const [loading, setLoading] = useState(true)
 	const [application, setApplication] = useState(new Application())
@@ -19,6 +20,7 @@ export default function LoginRedirect() {
 		const setUserSubIfNotNull = () => {
 			if (userAttributes !== null) {
 				setUserSub(userAttributes.sub);
+				setUsername(userAttributes.preferred_username)
 			} else {
 				setTimeout(setUserSubIfNotNull, 1000); // Retry after 1 second
 			}
@@ -87,6 +89,24 @@ export default function LoginRedirect() {
             });
         }
     }, [userSub]);
+
+	useEffect(() => {
+		if (username !== null) {
+			fetch(BaseURL+'/loginAudit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({username: username})
+            })
+			.then(response => {
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}
+				return response.json(); 
+			})
+		}
+	})
 
 	return(
 		<Grid container alignItems="center" justifyContent="center" sx={{ mt: 10 }} >

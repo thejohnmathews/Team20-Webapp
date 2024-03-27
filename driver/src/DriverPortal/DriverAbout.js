@@ -1,7 +1,7 @@
 import AboutPage from "../AboutPage";
 import DriverAppBar from "./DriverAppBar";
 
-export default function AdminAbout(){
+export default function DriverAbout(){
 
 
 	return(
