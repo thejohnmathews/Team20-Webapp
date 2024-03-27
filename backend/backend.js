@@ -74,7 +74,22 @@ app.post('/updateAdmin', (req, res) => {
             console.error('Error updating user:', err);
             res.status(500).send('Error updating user');
         } else {
-            res.status(200).json("User updated successfully"); // Send the userID back to the frontend
+            res.status(200).json("User updated successfully");
+        }
+    });
+});
+
+app.post('/updateOrg', (req, res) => {
+    const { name, description, ID, ratio } = req.body;
+    const sql = 'UPDATE SponsorOrganization SET sponsorOrgName = ?, sponsorOrgDescription = ?, sponsorDolarPointRatio = ? WHERE sponsorOrgID = ?';
+    const values = [name, description, ratio, ID];
+
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Error updating org:', err);
+            res.status(500).send('Error updating org');
+        } else {
+            res.status(200).json("org updated succegssfully"); 
         }
     });
 });
@@ -496,31 +511,14 @@ app.get('/badReasons', (req, res) => {
     })
 })
 
-app.get('/sponsorOrg/:sponsorOrgID', (req, res) => {
-    //NOTE: DEFINITELY NOT SAFE, WILL FIX THAT LATER
-    const sql = "SELECT * FROM SponsorOrganization WHERE sponsorOrgID = " + req.params.sponsorOrgID;
-    db.query(sql, (err, data) => {
+app.get('/sponsorOrg', (req, res) => {
+    const sql = "SELECT * FROM SponsorOrganization WHERE sponsorOrgID = ?";
+    db.query(sql, req.query.sponsorOrgID, (err, data) => {
         if(err) {
             return res.json(err);
         }
         else {
             return res.json(data);
-        }
-    })
-})
-
-// John - I changed the link in this to 3001 for testing!!
-app.post('/accountManagement/sponsorOrgUpdate/:sponsorOrgID', (req, res) => {
-    console.log(req.body)
-
-    //also will fix this, this is super dangerous lol but more proof of concept than anything else
-    const sql = 'UPDATE SponsorOrganization SET sponsorOrgName = "' + req.body.sponsorName + '", sponsorOrgDescription = "' + req.body.sponsorDescription + '" WHERE sponsorOrgID = ' + req.params.sponsorOrgID + ';'
-    db.query(sql, (err, data) => {
-        if(err) {
-            return res.json(err);
-        }
-        else {
-            res.redirect("http://localhost:8080/accountManagement")
         }
     })
 })

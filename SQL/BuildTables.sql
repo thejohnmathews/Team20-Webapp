@@ -22,6 +22,7 @@ CREATE TABLE SponsorOrganization(
 	
     sponsorOrgID			INTEGER						AUTO_INCREMENT PRIMARY KEY,
     sponsorOrgName			VARCHAR(75),
+    sponsorDolarPointRatio  DOUBLE 						DEFAULT .01,
     sponsorOrgDescription   VARCHAR(500)
 );
 
@@ -33,7 +34,7 @@ CREATE TABLE DriverUser(
     driverEndDate			DATE DEFAULT NULL,
     driverNumTrips			INTEGER,
     driverMilesDriven		INTEGER,
-    driverPoints 			INTEGER, 
+    driverPoints 			INTEGER 					DEFAULT 0, 
     sponsorOrgID			INTEGER,
     FOREIGN KEY (userID) REFERENCES UserInfo(userID)
 );
@@ -44,7 +45,7 @@ CREATE TABLE DriverApplication(
 	applicationID			INTEGER 					AUTO_INCREMENT PRIMARY KEY,
     dateOfApplication		DATE,
     applicationStatus		VARCHAR(20)					DEFAULT "Submitted",
-    statusReason			VARCHAR(50)					DEFAULT "Under Review",
+    statusReason			VARCHAR(50)					DEFAULT "",
     userID					INTEGER,
     sponsorOrgID			INTEGER,
     FOREIGN KEY (userID) REFERENCES DriverUser(userID),
@@ -53,7 +54,6 @@ CREATE TABLE DriverApplication(
 
 -- Create Sponsor(User) table
 CREATE TABLE SponsorUser(
-
 	userID 					INTEGER 					PRIMARY KEY,
     sponsorOrgID			INTEGER,
     FOREIGN KEY (userID) REFERENCES UserInfo(userID)
@@ -88,7 +88,10 @@ CREATE TABLE About (
 -- Create Reason Table
 CREATE TABLE Reason (
 	reasonID INT PRIMARY KEY AUTO_INCREMENT,
-    reasonString VARCHAR(200)
+    reasonString VARCHAR(200),
+    reasonType VARCHAR(5),
+    sponsorOrgID INT,
+    FOREIGN KEY (sponsorOrgID) REFERENCES SponsorOrganization(sponsorOrgID)
 );
 
 -- Create PointChange table (related to reason, driver, and sponsor)
@@ -117,6 +120,6 @@ CREATE TABLE PasswordChange(
 CREATE TABLE LoginAttempt(
     loginAttemptID INT AUTO_INCREMENT PRIMARY KEY,
     userName VARCHAR(40),
-    loginAttemptDate DATE DEFAULT CURRENT_TIMESTAMP,
+    loginAttemptDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     loginSuccess BOOLEAN
 );

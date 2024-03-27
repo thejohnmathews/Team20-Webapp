@@ -50,5 +50,18 @@ INSERT INTO Reason(reasonString) VALUES
 ("Impaired driving."),
 ("Off-roading.");
 
+INSERT INTO Reason(reasonString, reasonType, sponsorOrgID) VALUES
+("Wearing a seatbelt.", "good", 1),
+("Following the speed limit.", "good", 1),
+("Following school/work zone speed limits.", "good", 1),
+("Arrived with all items in good condition.", "good", 2),
+("Stopping for trains at railroad crossings.", "good", 2),
+("Texting and driving.", "bad", 1),
+("Speeding.", "bad", 1),
+("Getting into a wreck.", "bad", 1),
+("Running a red light/stop sign.", "bad", 2),
+("Impaired driving.", "bad", 2),
+("Off-roading.", "bad", 2);
+
 INSERT INTO PointChange(driverID, changeDate, changePointAmt, changeReasonID) VALUES
 (3, '2024-03-25', 100, 1);
