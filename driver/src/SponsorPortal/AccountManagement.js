@@ -67,7 +67,6 @@ function AccountManagement() {
     .catch(error => {
       console.error('Error retrieving successfully:', error);
     });
-    
   }
   
 

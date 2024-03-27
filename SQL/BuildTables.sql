@@ -87,7 +87,10 @@ CREATE TABLE About (
 -- Create Reason Table
 CREATE TABLE Reason (
 	reasonID INT PRIMARY KEY AUTO_INCREMENT,
-    reasonString VARCHAR(200)
+    reasonString VARCHAR(200),
+    reasonType VARCHAR(5),
+    sponsorOrgID INT,
+    FOREIGN KEY (sponsorOrgID) REFERENCES SponsorOrganization(sponsorOrgID)
 );
 
 -- Create PointChange table (related to reason, driver, and sponsor)

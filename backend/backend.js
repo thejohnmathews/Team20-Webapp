@@ -36,8 +36,21 @@ app.get('/About', (req, res) => {
 })
 
 app.get('/goodReasons', (req, res) => {
-    const sql = "SELECT * FROM Reason WHERE reasonID BETWEEN 1 AND 5"
-    db.query(sql, (err, data) => {
+    const sql = "SELECT * FROM Reason WHERE reasonType = 'good' AND sponsorOrgID = ?"
+    db.query(sql, req.query.sponsorOrgID, (err, data) => {
+        if(err) {
+            return res.json(err);
+        }
+        else {
+            return res.json(data);
+        }
+    })
+})
+
+app.get('/badReasons', (req, res) => {
+    console.log('hello')
+    const sql = "SELECT * FROM Reason WHERE reasonType = 'bad' AND sponsorOrgID = ?"
+    db.query(sql, req.query.sponsorOrgID, (err, data) => {
         if(err) {
             return res.json(err);
         }
@@ -466,19 +479,6 @@ app.post('/updateApplicationStatus', (req, res) => {
         }
     });
 });
-
-
-app.get('/badReasons', (req, res) => {
-    const sql = "SELECT * FROM Reason WHERE reasonID >= 6"
-    db.query(sql, (err, data) => {
-        if(err) {
-            return res.json(err);
-        }
-        else {
-            return res.json(data);
-        }
-    })
-})
 
 app.get('/sponsorOrg/:sponsorOrgID', (req, res) => {
     //NOTE: DEFINITELY NOT SAFE, WILL FIX THAT LATER
