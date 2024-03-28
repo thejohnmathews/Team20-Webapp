@@ -247,7 +247,7 @@ app.post('/driverList', (req, res) => {
     sql += ' FROM DriverUser d JOIN UserInfo u ON d.userID = u.userID JOIN DriverOrganizations dorg ON dorg.driverID = d.userID';
 
     if (orgID > 0) {
-        sql += ' WHERE d.sponsorOrgID = ?'
+        sql += ' WHERE dorg.sponsorOrgID = ?'
 
         db.query(sql, [orgID], (err, result) => {
             if (err) {
