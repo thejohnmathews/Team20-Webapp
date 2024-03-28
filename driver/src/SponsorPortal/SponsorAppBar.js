@@ -9,9 +9,14 @@ import { useNavigate } from 'react-router-dom';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import BusinessIcon from '@mui/icons-material/Business';
 import SavingsIcon from '@mui/icons-material/Savings';
+import { useEffect, useState } from 'react';
+import { useFetchUserAttributes, handleUpdateUserAttributes } from '../CognitoAPI';
+import BaseURL from '../BaseURL'
+
 
 export default function SponsorAppBar() {
   const [open, setOpen] = React.useState(false);
+  const userType = 'sponsor'
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
@@ -45,7 +50,101 @@ export default function SponsorAppBar() {
   const handleDriverApplications = () => {
     navigate('/sponsorDriverApplicaitons');
   };
-  
+
+  const [open2, setOpen2] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [username, setUsername] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [address, setAddress] = useState('');
+  const [sponsorOrgName, setSponsorOrgName] = React.useState('');
+
+  const userAttributes = useFetchUserAttributes();
+
+  useEffect(() => {
+    if (userAttributes) {
+      setUsername(userAttributes.preferred_username || '');
+      setFirstName(userAttributes.given_name || '');
+      setLastName(userAttributes.family_name || '');
+      setEmail(userAttributes.email || '');
+      setPhoneNumber(userAttributes["custom:Phone"] || '');
+      setAddress(userAttributes.address || '');
+      if(userType !== 'admin'){ getAssociatedSponsor(); }
+      else{ getUserInfo();}
+      
+    }
+  }, [userAttributes]);
+
+  const getUserInfo = () => {
+    fetch(BaseURL + '/adminInfoFromSub', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({sub:userAttributes.sub })
+    })
+    .then(response => {
+      if (response.ok) { 
+        return response.json();
+      } 
+      else { console.error('Failed to get user'); }
+    })
+    .then(data => {
+      setUsername(data[0].userUsername || '');
+      setFirstName(data[0].firstName || '');
+      setLastName(data[0].lastName || '');
+      setEmail(data[0].email || '');
+    })
+    .catch(error => {
+      console.error('Failed to get user:', error);
+    });
+  }
+
+  const [sponsors, setSponsors] = useState([])
+    useEffect(() => {
+        fetch(BaseURL + "/activeSponsors")
+        .then(res => res.json())
+        .then(data => {
+            // Store the fetched driver data in state
+            setSponsors(data);  
+            console.log(data);
+
+        })
+        .catch(err => console.error('Error fetching driver data:', err));
+  }, []);
+
+  const getAssociatedSponsor = () => {
+    var endpoint = '';
+    if(userType === 'driver'){ endpoint = '/driverAssociatedSponsor' }
+    else{ endpoint = '/associatedSponsor' }
+      fetch(BaseURL + endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({sub: userAttributes.sub})
+      })
+      .then(response => {
+        if (response.ok) { 
+          return response.json();
+        } 
+        else { console.error('Failed to post'); }
+      })
+      .then(data => {
+        if(userType === 'driver'){ 
+          console.log(data);
+          setSponsorOrgName(data);	
+        } else {
+          setSponsorOrgName(data[0].sponsorOrgName);	 
+        }
+      })
+      .catch(error => {
+        console.error('Error retrieving successfully:', error);
+      });
+      
+    }
 
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
@@ -122,6 +221,7 @@ export default function SponsorAppBar() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Sponsor Portal
           </Typography>
+          <Typography variant="h6">My Sponsor: {sponsorOrgName}</Typography>
               <IconButton
                 size="large"
                 aria-label="account of current user"

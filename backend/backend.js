@@ -614,8 +614,22 @@ app.get('/pointChanges', (req, res) => {
     })
 })
 //returns active drivers in DB 
-app.get('/activeDrivers', (req, res) => {
-    const sql = "SELECT * FROM DriverUser INNER JOIN UserInfo ON DriverUser.userID = UserInfo.userID";
+app.get('/activeSponsors', (req, res) => {
+    const sql = 
+    'SELECT su.*, so.*, FROM SponsorUser su, INNER JOIN SponsorOrganization so ON su.sponsorOrgID = so.sponsorOrgID;SELECT * FROM DriverUser;'
+    db.query(sql, (err, data) => {
+        if(err) {
+            return res.json(err);
+        }
+        else {
+            return res.json(data);
+        }
+    })
+})
+
+//returns active drivers in DB 
+app.get('/activeSponsors', (req, res) => {
+    const sql = "SELECT * FROM SponsorUser INNER JOIN UserInfo ON SponsorUser.sponsorOrgID = SponsorOrganization.sponsorOrgID";
     db.query(sql, (err, data) => {
         if(err) {
             return res.json(err);

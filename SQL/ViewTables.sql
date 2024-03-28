@@ -6,7 +6,9 @@
 USE DriverApp;
 
 -- Display all tables
-SELECT * FROM DriverUser;
+SELECT su.*, so.*
+FROM SponsorUser su
+INNER JOIN SponsorOrganization so ON su.sponsorOrgID = so.sponsorOrgID;SELECT * FROM DriverUser;
 SELECT * FROM PointChange;
 SELECT * FROM About;
 SELECT * FROM Reason;
