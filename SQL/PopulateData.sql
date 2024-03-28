@@ -43,7 +43,7 @@ INSERT INTO AdminUser (UserID) VALUES
 (2);
 
 INSERT INTO SponsorUser (UserID, sponsorOrgID) VALUES
-(4, 1);
+(3, 1);
 
 INSERT INTO Reason(reasonString, reasonType, sponsorOrgID) VALUES
 ("Wearing a seatbelt.", "good", 1),

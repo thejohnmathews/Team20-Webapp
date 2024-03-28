@@ -242,9 +242,9 @@ app.post('/driverList', (req, res) => {
     const orgID = req.body.orgID;
     var sql = 'SELECT d.userID, u.sub, u.email, u.lastName, u.firstName';
     if (orgID < 1 || orgID === undefined){
-        sql += ', o.sponsorOrgName'
+        sql += ', GROUP_CONCAT(s.sponsorOrgName) AS organization_names'
     }
-    sql += ' FROM DriverUser AS d INNER JOIN UserInfo AS u ON d.userID = u.userID';
+    sql += ' FROM DriverUser d JOIN UserInfo u ON d.userID = u.userID JOIN DriverOrganizations dorg ON dorg.driverID = d.userID';
 
     if (orgID > 0) {
         sql += ' WHERE d.sponsorOrgID = ?'
@@ -262,7 +262,7 @@ app.post('/driverList', (req, res) => {
             }
         });
     } else {
-        sql += ' INNER JOIN SponsorOrganization AS o ON d.sponsorOrgID = o.sponsorOrgID';
+        sql += ' JOIN SponsorOrganization s ON dorg.sponsorOrgID = s.sponsorOrgID GROUP BY d.userID;';
 
         db.query(sql, (err, result) => {
             if (err) {

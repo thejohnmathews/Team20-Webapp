@@ -84,7 +84,11 @@ export default function DriverTable({permission, sponsorID}) {
                 </TableCell>
                 {permission === 'admin' && <TableCell align="right">{(row.sub !== null && row.sub !== undefined && row.sub !== '') ? row.sub : "Cognito account not created"}</TableCell> }
                 <TableCell align="right">{row.firstName + " " + row.lastName}</TableCell>
-                {permission === 'admin' && <TableCell align="right">{row.sponsorOrgName}</TableCell>}
+                {permission === 'admin' && (
+                    <TableCell align="right">
+                        {row.organization_names && row.organization_names.split(',').join(', ')}
+                    </TableCell>
+                )}
                 <TableCell align="right">{row.email}</TableCell>
                 <TableCell align="right">
                   <Button variant="contained" color="primary" onClick={() => handleClickOpen(row.id)}>View/Edit Profile</Button>
