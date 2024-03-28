@@ -18,9 +18,10 @@ INSERT INTO SponsorOrganization (sponsorOrgName, sponsorOrgDescription) VALUES
 INSERT INTO UserInfo (sub, firstName, lastName, email, userUsername, userType) VALUES
 ('64b894f8-a0f1-7051-73a1-0e297f69d6fb', 'bransen', 'eppes', 'eppes.bransen@gmail.com', 'bransen', 'Admin'),
 ('c4b80428-d031-70fc-b7c7-bc83de23fa43', 'john', 'mathews', 'thejohnmathews@gmail.com', 'oCyphyr', 'Driver'),
-('8448a408-6041-708e-33d8-e527c48e94b4', 'dev', 'user', 'dev@google.com', 'devUser', 'Sponsor'),
-('8418e448-00a1-70b9-ccfc-623a11e30df1', 'Liam', 'Gallagher', 'lmgalla@clemson.edu', 'lmgalla', 'Driver');
--- ('04883448-50d1-7011-f35f-0d5e75242a0e', 'bransen', 'eppes', 'beppes@clemson.edu', 'beppes', 'Driver'), 
+('8418e448-00a1-70b9-ccfc-623a11e30df1', 'Liam', 'Gallagher', 'lmgalla@clemson.edu', 'lmgalla', 'Driver'),
+('14183418-50a1-7058-baf0-e573db9f5b4a', 'Dan', 'Dean', 'driver@google.com', 'Driver_Username', 'Driver'),
+('54e81448-e0b1-704d-cb13-a76282121e1a', 'Sam', 'Sellers', 'sponsor@google.com', 'Sponsor_Username', 'Sponsor'),
+('64d80438-f041-70e4-b2f2-83f501d83606', 'Adam', 'Anderson', 'admin@google.com', 'Admin_Username', 'Admin');
 
 INSERT INTO DriverUser (UserID, driverPoints, sponsorOrgID) VALUES
 (2, 10, 3),
@@ -40,10 +41,13 @@ INSERT INTO DriverOrganizations (driverID, sponsorOrgID) VALUES
 -- (3, 3);
 
 INSERT INTO AdminUser (UserID) VALUES
-(2);
+(2),
+(6);
+
 
 INSERT INTO SponsorUser (UserID, sponsorOrgID) VALUES
-(3, 1);
+(3, 1),
+(5, 1);
 
 INSERT INTO Reason(reasonString, reasonType, sponsorOrgID) VALUES
 ("Wearing a seatbelt.", "good", 1),
