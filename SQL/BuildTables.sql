@@ -66,6 +66,15 @@ CREATE TABLE AdminUser(
     FOREIGN KEY (userID) REFERENCES UserInfo(userID)
 );
 
+CREATE TABLE DriverOrganizations(
+
+	driverID				INTEGER,
+    sponsorOrgID			INTEGER,
+    FOREIGN KEY (driverID) REFERENCES DriverUser(userID),
+    FOREIGN KEY (sponsorOrgID) REFERENCES SponsorOrganization(sponsorOrgID),
+    PRIMARY KEY (driverID, sponsorOrgID)
+);
+
 -- Create Purchase table
 CREATE TABLE Purchase(
 

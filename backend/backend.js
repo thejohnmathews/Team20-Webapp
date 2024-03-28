@@ -398,12 +398,22 @@ app.post('/editOrg', (req, res) => {
 
 
 app.post('/newApplication', (req, res) => {
-    const { id, sponsorOrgID } = req.body;
-    const sql1 =' INSERT INTO DriverApplication (dateOfApplication, userID, sponsorOrgID) VALUES (CURRENT_DATE, ?, ?)';
+    const { id, sponsorOrgIDs } = req.body;
 
-    const values = [id, sponsorOrgID];
+    var values = [];
+    var sql = 'INSERT INTO DriverApplication (dateOfApplication, userID, sponsorOrgID) VALUES';
+    for(var i = 0; i < sponsorOrgIDs.length; i++){
+        values.push(id)
+        values.push(sponsorOrgIDs[i])
+        if (i === 0){
+            sql += ' (CURRENT_DATE, ?, ?)';
+        } else{
+            sql += ', (CURRENT_DATE, ?, ?)';
+        }
+    }
+    sql += ';'
   
-    db.query(sql1, values, (err, result) => {
+    db.query(sql, values, (err, result) => {
       if (err) {
         console.error('Error inserting user:', err);
         res.status(500).send('Error inserting user');
@@ -476,7 +486,6 @@ app.post('/loginAudit', (req, res) => {
     const sql1 = 'INSERT INTO LoginAttempt(userName, loginSuccess) VALUES (?, ?)';
 
     const values = [username, true];
-    console.log("hi")
     db.query(sql1, values, (err, result) => {
         if (err) {
             console.error('Error inserting login:', err);
@@ -499,8 +508,6 @@ app.post('/driverApplications', (req, res) => {
         values.push(orgID);
     }
 
-    
-
     db.query(sql, values, (err, data) => {
         if (err) {
             return res.json(err);
@@ -510,20 +517,45 @@ app.post('/driverApplications', (req, res) => {
     });
 });
 
+app.get('/singleDriverApplications', (req, res) => {
+    const sub = req.query.sub;
+    console.log(sub);
+    let sql = "SELECT DA.*, UI.lastName, UI.firstName, SO.sponsorOrgName FROM DriverApplication DA INNER JOIN UserInfo UI ON DA.userID = UI.userID JOIN SponsorOrganization SO ON DA.sponsorOrgID = SO.sponsorOrgID WHERE UI.sub = ?";
+
+    db.query(sql, sub, (err, data) => {
+        if (err) {
+            return res.json(err);
+        } else {
+            return res.json(data);
+        }
+    });
+});
+
 app.post('/updateApplicationStatus', (req, res) => {
-    const { appID, status } = req.body;
+    const { appID, status, userID, sponsorID } = req.body;
     if (!appID || !status) {
         return res.status(400).json({ error: 'Both appID and status are required parameters' });
     }
 
     const sql = "UPDATE DriverApplication SET applicationStatus = ? WHERE applicationID = ?";
+    if(status === 'Accepted'){
+        var sql2 = "INSERT INTO DriverOrganizations (driverID, sponsorOrgID) VALUES (?, ?)"
+    } else {
+        var sql2 = "DELETE FROM DriverOrganizations WHERE driverID = ? AND sponsorOrgID = ?";
+    }
     db.query(sql, [status, appID], (err, result) => {
         if (err) {
             return res.status(500).json({ error: 'Failed to update application status' });
         } else {
-            return res.status(200).json({ message: 'Application status updated successfully' });
+            db.query(sql2, [userID, sponsorID], (err, result) => {
+                if (err) {
+                    return res.status(500).json({ error: 'Failed to change drivers organizations' });
+                } else {
+                    return res.status(200).json({ message: 'Application status updated successfully' });
+                }
+            })
         }
-    });
+    })
 });
 
 

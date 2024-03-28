@@ -93,13 +93,13 @@ export default function DriverApplicationTable({permissions}) {
 	};
 
 
-  const handleStatusChange = (appID, status) => {
+  const handleStatusChange = (appID, status, userID, sponsorID) => {
     fetch(BaseURL + '/updateApplicationStatus', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify({appID, status})
+		body: JSON.stringify({appID, status, userID, sponsorID})
 	})
 	.then(response => {
 		if (!response.ok) {
@@ -174,7 +174,7 @@ export default function DriverApplicationTable({permissions}) {
 									labelId="status-label"
 									id="status-select"
 									value={appRow.applicationStatus}
-									onChange={(event) => handleStatusChange(appRow.applicationID, event.target.value)}
+									onChange={(event) => handleStatusChange(appRow.applicationID, event.target.value, appRow.userID, appRow.sponsorOrgID)}
 									label="Status"
 								>
 									<MenuItem value="Submitted">Submitted</MenuItem>

@@ -16,7 +16,7 @@ class Application{
 }
 
 export default function DriverApplicationPage() {
-	const [sponsorID, setSponsorID] = useState(null);
+	const [sponsorIDs, setSponsorIDs] = useState([]);
 	const [orgList, setOrgList] = useState([]);
 
 	useEffect(() => {
@@ -55,49 +55,53 @@ export default function DriverApplicationPage() {
 	const navigate = useNavigate();
 
 	function submit(){
-		
-		const driverApplication = new Application(userAttributes.given_name, userAttributes.family_name, userAttributes.preferred_username, userAttributes.email, userAttributes.sub)
+		if(sponsorIDs.length > 1){
+			const driverApplication = new Application(userAttributes.given_name, userAttributes.family_name, userAttributes.preferred_username, userAttributes.email, userAttributes.sub)
 
-		fetch(BaseURL + '/newDriver', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(driverApplication)
-		})
-		.then(response => {
-			if (response.ok) { 
-				console.log('User inserted successfully'); 
-				return response.json();
-			} 
-			else { console.error('Failed to insert user'); }
-		})
-		.then(data => {
-			console.log(data);
-			var userID = data.userID;
-			
-			fetch(BaseURL + '/newApplication', {
+			fetch(BaseURL + '/newDriver', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({id: userID, sponsorOrgID: sponsorID}) 
+				body: JSON.stringify(driverApplication)
 			})
 			.then(response => {
-				if (response.ok) { console.log('Application submitted successfully'); } 
-				else { console.error('Failed to submit application'); }
+				if (response.ok) { 
+					console.log('User inserted successfully'); 
+					return response.json();
+				} 
+				else { console.error('Failed to insert user'); }
+			})
+			.then(data => {
+				console.log(data);
+				var userID = data.userID;
+				
+				fetch(BaseURL + '/newApplication', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({id: userID, sponsorOrgIDs: sponsorIDs}) 
+				})
+				.then(response => {
+					if (response.ok) { console.log('Application submitted successfully'); } 
+					else { console.error('Failed to submit application'); }
+				})
+				.catch(error => {
+					console.error('Error submitting application:', error);
+				});
+				navigate('/');
 			})
 			.catch(error => {
-				console.error('Error submitting application:', error);
+				console.error('Error inserting user:', error);
 			});
-			navigate('/');
-		})
-		.catch(error => {
-			console.error('Error inserting user:', error);
-		});
-		
+		}
+		else{
+			return(
+				alert("Please select at least one sponsor")
+			);
+		}
 
-		// Navigate to DriverApplicationStatusPage here!
 	}
 
 	return (
@@ -118,8 +122,11 @@ export default function DriverApplicationPage() {
 						<FormControl sx={{ minWidth: 416 }}>
 							<InputLabel id="sponsorSelectLabel">Choose Your Sponsor</InputLabel>
 							<Select
-								value={sponsorID}
-								onChange={(e) => setSponsorID(e.target.value)}
+								labelId="sponsor-select-label"
+								id="sponsor-select"
+								multiple
+								value={sponsorIDs}
+								onChange={(e) => setSponsorIDs(e.target.value)}
 								fullWidth
 								inputProps={{
 								name: 'sponsor',

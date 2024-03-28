@@ -16,20 +16,28 @@ INSERT INTO SponsorOrganization (sponsorOrgName, sponsorOrgDescription) VALUES
 ("Very real sponsor","This is definitly real");
     
 INSERT INTO UserInfo (sub, firstName, lastName, email, userUsername, userType) VALUES
-('04883448-50d1-7011-f35f-0d5e75242a0e', 'bransen', 'eppes', 'beppes@clemson.edu', 'beppes', 'Driver'), 
 ('64b894f8-a0f1-7051-73a1-0e297f69d6fb', 'bransen', 'eppes', 'eppes.bransen@gmail.com', 'bransen', 'Admin'),
 ('c4b80428-d031-70fc-b7c7-bc83de23fa43', 'john', 'mathews', 'thejohnmathews@gmail.com', 'oCyphyr', 'Driver'),
 ('8448a408-6041-708e-33d8-e527c48e94b4', 'dev', 'user', 'dev@google.com', 'devUser', 'Sponsor'),
 ('8418e448-00a1-70b9-ccfc-623a11e30df1', 'Liam', 'Gallagher', 'lmgalla@clemson.edu', 'lmgalla', 'Driver');
+-- ('04883448-50d1-7011-f35f-0d5e75242a0e', 'bransen', 'eppes', 'beppes@clemson.edu', 'beppes', 'Driver'), 
 
 INSERT INTO DriverUser (UserID, driverPoints, sponsorOrgID) VALUES
-(1, 0, 1),
-(3, 10, 3),
-(5, 100, 2);
+(2, 10, 3),
+(4, 100, 2);
+-- (5, 0, 1),
 
-INSERT INTO DriverApplication (userID, sponsorOrgID) VALUES 
-(1, 1),
-(3, 3);
+INSERT INTO DriverOrganizations (driverID, sponsorOrgID) VALUES
+	(2, 1),
+    (2, 2),
+    (2, 3),
+    (4, 1),
+    (4, 2),
+    (4, 3);
+
+-- INSERT INTO DriverApplication (userID, sponsorOrgID) VALUES 
+-- (1, 1),
+-- (3, 3);
 
 INSERT INTO AdminUser (UserID) VALUES
 (2);
@@ -64,4 +72,4 @@ INSERT INTO Reason(reasonString, reasonType, sponsorOrgID) VALUES
 ("Off-roading.", "bad", 2);
 
 INSERT INTO PointChange(driverID, changeDate, changePointAmt, changeReasonID) VALUES
-(3, '2024-03-25', 100, 1);
+(2, '2024-03-25', 100, 1);
