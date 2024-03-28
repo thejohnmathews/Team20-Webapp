@@ -532,18 +532,18 @@ app.get('/singleDriverApplications', (req, res) => {
 });
 
 app.post('/updateApplicationStatus', (req, res) => {
-    const { appID, status, userID, sponsorID } = req.body;
+    const { appID, status, userID, sponsorID, reason } = req.body;
     if (!appID || !status) {
         return res.status(400).json({ error: 'Both appID and status are required parameters' });
     }
 
-    const sql = "UPDATE DriverApplication SET applicationStatus = ? WHERE applicationID = ?";
+    const sql = "UPDATE DriverApplication SET applicationStatus = ?, statusReason = ? WHERE applicationID = ?";
     if(status === 'Accepted'){
         var sql2 = "INSERT INTO DriverOrganizations (driverID, sponsorOrgID) VALUES (?, ?)"
     } else {
         var sql2 = "DELETE FROM DriverOrganizations WHERE driverID = ? AND sponsorOrgID = ?";
     }
-    db.query(sql, [status, appID], (err, result) => {
+    db.query(sql, [status, reason, appID], (err, result) => {
         if (err) {
             return res.status(500).json({ error: 'Failed to update application status' });
         } else {

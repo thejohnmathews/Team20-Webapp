@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TableRow, TableHead, TableContainer, TableCell, TableBody, Table, Button, Container, Paper, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
+import { TableRow, TableHead, TableContainer, TableCell, TableBody, Table, Button, Container, Paper, Select, MenuItem, InputLabel, FormControl, DialogActions, Dialog, DialogContent, DialogTitle, Grid, TextField } from '@mui/material';
 import AdminAppBar from '../AdminPortal/AdminAppBar';
 import SponsorAppBar from '../SponsorPortal/SponsorAppBar';
 import DriverProfilePopUp from '../ProfilePopUps/DriverProfilePopUp'
@@ -13,7 +13,12 @@ export default function DriverApplicationTable({permissions}) {
   const [sponsorOrgID, setSponsorOrgID] = React.useState(null);
   const [userSub, setUserSub] = useState(-1);
   const [loading, setLoading] = React.useState(true);
-
+  const [addReason, setAddReason] = React.useState(false);
+  const [newReason, setNewReason] = React.useState('');
+  const [appID, setAppID] = React.useState('');
+  const [newStatus, setNewStatus] = React.useState('');
+  const [userID, setUserID] = React.useState('');
+  const [applicationSponsorID, setApplicationSponsorID] = React.useState('');
 
   const userAttributes = useFetchUserAttributes();
 
@@ -92,14 +97,26 @@ export default function DriverApplicationTable({permissions}) {
 		});
 	};
 
-
   const handleStatusChange = (appID, status, userID, sponsorID) => {
+	setAppID(appID);
+	setNewStatus(status);
+	setUserID(userID);
+	setApplicationSponsorID(sponsorID);
+	setAddReason(true)
+  }
+
+  const handleCloseAddReason = () => { 
+	setAddReason(false); 
+	setNewReason('');
+}
+
+  const updateApplication = () => {
     fetch(BaseURL + '/updateApplicationStatus', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify({appID, status, userID, sponsorID})
+		body: JSON.stringify({appID:appID, status:newStatus, userID:userID, sponsorID:applicationSponsorID, reason:newReason})
 	})
 	.then(response => {
 		if (!response.ok) {
@@ -109,8 +126,8 @@ export default function DriverApplicationTable({permissions}) {
 	})
 	.then(data => {
 		// Handle successful response
-		console.log(data);
 		updateRows();
+		handleCloseAddReason();
 	})
 	.catch(error => {
 		// Handle error
@@ -199,6 +216,38 @@ export default function DriverApplicationTable({permissions}) {
 			</div>
 
 		</Container>
+
+		<Dialog
+			open={addReason}
+			onClose={handleCloseAddReason}
+			aria-labelledby="alert-dialog-title"
+			aria-describedby="alert-dialog-description"
+			>
+			<DialogTitle id="alert-dialog-title">
+				Add a reason for the status change
+			</DialogTitle>
+			<br />
+			<DialogContent>
+				<Grid container spacing={2}>
+				<Grid item xs={10}>
+					<TextField
+					label="Reason"
+					fullWidth
+					value={newReason}
+					onChange={(e) => setNewReason(e.target.value)}
+					/>
+				</Grid>
+				</Grid>
+			</DialogContent>
+			<DialogActions>
+				<Grid container justifyContent="flex-start">
+				<Grid item>
+					<Button sx={{ color: 'red' }} onClick={handleCloseAddReason}>Close</Button>
+				</Grid>
+				</Grid>
+				<Button onClick={updateApplication}>Save</Button>
+			</DialogActions>
+		</Dialog>
 	</div>
 	);
 }
