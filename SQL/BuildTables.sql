@@ -22,7 +22,7 @@ CREATE TABLE SponsorOrganization(
 	
     sponsorOrgID			INTEGER						AUTO_INCREMENT PRIMARY KEY,
     sponsorOrgName			VARCHAR(75),
-    sponsorDolarPointRatio  DOUBLE 						DEFAULT .01,
+    sponsorDollarPointRatio  DOUBLE 						DEFAULT .01,
     sponsorOrgDescription   VARCHAR(500)
 );
 

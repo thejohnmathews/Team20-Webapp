@@ -47,6 +47,34 @@ app.get('/goodReasons', (req, res) => {
     })
 })
 
+app.post('/updateReason', (req, res) => {
+    const {description, ID} = req.body;
+    const sql = "UPDATE Reason SET reasonString = ? WHERE reasonID = ?"
+    const values = [description, ID];
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Error updating reason:', err);
+            res.status(500).send('Error updating reason');
+        } else {
+            res.status(200).json("Reason updated successfully");
+        }
+    });
+})
+
+app.post('/addReason', (req, res) => {
+    const {description, type, sponsorID} = req.body;
+    const sql = "INSERT INTO Reason(reasonString, reasonType, sponsorOrgID) VALUES (?, ?, ?)"
+    const values = [description, type, sponsorID];
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Error adding reason:', err);
+            res.status(500).send('Error adding reason');
+        } else {
+            res.status(200).json("Reason added successfully");
+        }
+    });
+})
+
 app.post('/adminInfoFromSub', (req, res) => {
     const sub = req.body.sub;
     var sql = 'SELECT userID, firstName, lastName, email, userUsername FROM UserInfo WHERE sub = ?';
@@ -81,7 +109,7 @@ app.post('/updateAdmin', (req, res) => {
 
 app.post('/updateOrg', (req, res) => {
     const { name, description, ID, ratio } = req.body;
-    const sql = 'UPDATE SponsorOrganization SET sponsorOrgName = ?, sponsorOrgDescription = ?, sponsorDolarPointRatio = ? WHERE sponsorOrgID = ?';
+    const sql = 'UPDATE SponsorOrganization SET sponsorOrgName = ?, sponsorOrgDescription = ?, sponsorDollarPointRatio = ? WHERE sponsorOrgID = ?';
     const values = [name, description, ratio, ID];
 
     db.query(sql, values, (err, result) => {

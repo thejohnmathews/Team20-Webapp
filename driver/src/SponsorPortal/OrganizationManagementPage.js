@@ -3,6 +3,7 @@ import SponsorAppBar from './SponsorAppBar';
 import { Grid, Typography, Box, Button, TextField, Paper, Stack, Divider, CircularProgress } from '@mui/material'
 import { useFetchUserAttributes } from '../CognitoAPI';
 import BaseURL from '../BaseURL';
+import SponsorReasonsTable from '../UserPoolTables/SponsorReasons'
 
 export default function SponsorManagementPage() {
   const userAttributes = useFetchUserAttributes();
@@ -72,7 +73,7 @@ export default function SponsorManagementPage() {
     .then(data => {
       setName(data[0].sponsorOrgName)
       setDescription(data[0].sponsorOrgDescription)
-      setRatio(data[0].sponsorDolarPointRatio)
+      setRatio(data[0].sponsorDollarPointRatio)
       setLoading(false);
     })
     .catch(err => console.log(err));
@@ -109,59 +110,67 @@ export default function SponsorManagementPage() {
     }
 
     {!loading && 
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
-        <Paper elevation={8} sx={{ padding: '40px', width: '75%', backgroundColor: '#f5f5f5', position: 'relative' }}>
-          <Typography variant="h4" fontWeight="bold">
-            My Organization
-          </Typography>
-          <Divider />
-          <br />
-          <Grid container spacing={3} justifyContent="center">
+      <div>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
+          <Paper elevation={8} sx={{ padding: '40px', width: '75%', backgroundColor: '#f5f5f5', position: 'relative' }}>
+            <Typography variant="h4" fontWeight="bold">
+              My Organization
+            </Typography>
+            <Divider />
+            <br />
+            <Grid container spacing={3} justifyContent="center">
 
-            <Grid item xs={12} sm={4}>
-              <TextField
-                variant="outlined"
-                label="Organization Name"
-                fullWidth
-                value={name}
-                disabled={!editMode}
-                onChange={(e) => setName(e.target.value)}
-              />
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  variant="outlined"
+                  label="Organization Name"
+                  fullWidth
+                  value={name}
+                  disabled={!editMode}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  variant="outlined"
+                  label="Organization Description"
+                  fullWidth
+                  value={description}
+                  disabled={!editMode}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  variant="outlined"
+                  label="$$$ To Point Ratio"
+                  fullWidth
+                  value={ratio}
+                  disabled={!editMode}
+                  onChange={(e) => setRatio(e.target.value)}
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                variant="outlined"
-                label="Organization Description"
-                fullWidth
-                value={description}
-                disabled={!editMode}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <TextField
-                variant="outlined"
-                label="$$$ To Point Ratio"
-                fullWidth
-                value={ratio}
-                disabled={!editMode}
-                onChange={(e) => setRatio(e.target.value)}
-              />
-            </Grid>
-          </Grid>
-          <br />
-          <Divider />
-          <br />
-          <Stack direction="row" justifyContent="flex-end" spacing={2}>
-            {editMode ? (
-              <Button sx={{ color: 'red' }} onClick={handleCancel}>Cancel</Button>
-            ) : (
-              <Button onClick={handleEdit}>Edit</Button>
-            )}
-            <Button onClick={handleSave} disabled={!editMode}>Save</Button>
-          </Stack>
-        </Paper>
-      </Box>
+            <br />
+            <Divider />
+            <br />
+            <Stack direction="row" justifyContent="flex-end" spacing={2}>
+              {editMode ? (
+                <Button sx={{ color: 'red' }} onClick={handleCancel}>Cancel</Button>
+              ) : (
+                <Button onClick={handleEdit}>Edit</Button>
+              )}
+              <Button onClick={handleSave} disabled={!editMode}>Save</Button>
+            </Stack>
+          </Paper>
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
+          <Paper elevation={8} sx={{ padding: '40px', width: '75%', backgroundColor: '#f5f5f5', position: 'relative' }}>
+            <SponsorReasonsTable sponsorID={sponsorOrgID}/>
+          </Paper>
+        </Box>
+        
+      </div>
     }
     </div>
   );

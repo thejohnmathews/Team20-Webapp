@@ -7,7 +7,8 @@ import StoreIcon from '@mui/icons-material/Store';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { useNavigate } from 'react-router-dom';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
-
+import BusinessIcon from '@mui/icons-material/Business';
+import SavingsIcon from '@mui/icons-material/Savings';
 
 export default function SponsorAppBar() {
   const [open, setOpen] = React.useState(false);
@@ -68,7 +69,7 @@ export default function SponsorAppBar() {
         <ListItem key={"Organization Management"} disablePadding>
           <ListItemButton onClick={handleOrgManage}>
             <ListItemIcon>
-              <ManageAccountsIcon/>
+              <BusinessIcon/>
             </ListItemIcon>
             <ListItemText primary={"Organization Management"} />
           </ListItemButton>
@@ -84,7 +85,7 @@ export default function SponsorAppBar() {
         <ListItem key={"Point Management"} disablePadding>
           <ListItemButton onClick={handlePointManagement}>
             <ListItemIcon>
-              <ManageAccountsIcon/>
+              <SavingsIcon/>
             </ListItemIcon>
             <ListItemText primary={"Point Management"} />
           </ListItemButton>

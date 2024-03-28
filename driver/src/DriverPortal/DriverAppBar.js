@@ -4,7 +4,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import InfoIcon from '@mui/icons-material/Info';
 import StoreIcon from '@mui/icons-material/Store';
-import LoyaltyIcon from '@mui/icons-material/Loyalty';
+import SavingsIcon from '@mui/icons-material/Savings';
 import HistoryIcon from '@mui/icons-material/History';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -79,7 +79,7 @@ export default function DriverAppBar() {
         <ListItem key={"Driving Points"} disablePadding>
           <ListItemButton onClick={handleDrivingPoints}>
             <ListItemIcon>
-              <LoyaltyIcon/>
+              <SavingsIcon/>
             </ListItemIcon>
             <ListItemText primary={"Driving Points"} />
           </ListItemButton>
