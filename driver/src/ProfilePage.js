@@ -127,8 +127,12 @@ export default function ProfilePage({userType}) {
       else { console.error('Failed to post'); }
     })
     .then(data => {
-      console.log(data[0].sponsorOrgID);
-      setSponsorOrgName(data[0].sponsorOrgName);			
+      if(userType === 'driver'){ 
+        console.log(data);
+        setSponsorOrgName(data);	
+      } else {
+        setSponsorOrgName(data[0].sponsorOrgName);	 
+      }
     })
     .catch(error => {
       console.error('Error retrieving successfully:', error);
@@ -148,15 +152,20 @@ export default function ProfilePage({userType}) {
             <Divider />
             <br />
             <Grid container spacing={3} justifyContent="center">
-				{userType === "driver" && (
-					<Grid item xs={12}>
-						<Typography variant="h6">My Sponsors: {sponsorOrgName}</Typography>
-				  	</Grid>
+				{(userType === "driver" && sponsorOrgName.length > 0) && (
+					<Grid container item xs={12} alignItems="center">
+            <Typography variant="h6">My Sponsors:<>&nbsp;</></Typography>
+            {sponsorOrgName.map((sponsor, index) => (
+                <React.Fragment key={sponsor.sponsorOrgID}>
+                    <Typography variant="h6">{sponsor.sponsorOrgName}{index < sponsorOrgName.length - 1 && <>,&nbsp;</>}</Typography>
+                </React.Fragment>
+            ))}
+          </Grid>
 				)}
 				{userType === "sponsor" && (
 					<Grid item xs={12}>
 						<Typography variant="h6">My Sponsor: {sponsorOrgName}</Typography>
-				  	</Grid>
+          </Grid>
 				)}
               
               <Grid item xs={12} sm={4}>

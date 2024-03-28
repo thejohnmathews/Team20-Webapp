@@ -301,7 +301,7 @@ app.post('/associatedSponsor', (req, res) => {
 
 app.post('/driverAssociatedSponsor', (req, res) => {
     const sub = req.body.sub;
-    var sql = 'SELECT d.sponsorOrgID, o.sponsorOrgName FROM DriverUser d JOIN UserInfo u ON d.userID = u.userID JOIN SponsorOrganization o ON d.sponsorOrgID = o.sponsorOrgID WHERE u.sub = ?';
+    var sql = 'SELECT o.sponsorOrgID, o.sponsorOrgName FROM UserInfo u JOIN DriverOrganizations d ON u.userID = d.driverID JOIN SponsorOrganization o ON d.sponsorOrgID = o.sponsorOrgID  WHERE u.sub = ?';
 
     db.query(sql, sub, (err, result) => {
             if (err) {
