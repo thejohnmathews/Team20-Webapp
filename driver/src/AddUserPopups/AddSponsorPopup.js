@@ -43,9 +43,28 @@ export default function AddSponsorPopup({ open, handleClose, inherited, callback
 			console.error('Error retrieving successfully:', error);
 		});
   }
+  const checkEmailInDB = () => {
+    fetch(BaseURL + '/userExistsFromEmail', {
+      method: 'POST',
+      headers: {
+      'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({email:email})
+    }).then(response => {
+      if (!response.ok) { throw new Error('Network response was not ok'); }
+      return response.json(); 
+    }).then(data => {
+      // check if the user exists from email in RDS, if not insert info into userinfo, 
+      // if so add info to the user then navigate back to login redirect
+      if(!data.userExists){ addUserToDB(); }
+      else { addUserToSponsorPool(data.userData.userID); }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+	}
 
-
-  const handleSave = () => {
+  const addUserToDB = () => {
     fetch(BaseURL + '/addSponsor', {
 			method: 'POST',
 			headers: {
@@ -63,8 +82,30 @@ export default function AddSponsorPopup({ open, handleClose, inherited, callback
 		.catch(error => {
 			console.error('Error retrieving successfully:', error);
 		});
+  }
 
-    
+  const addUserToSponsorPool = (userID) => {
+    fetch(BaseURL + '/addUserToSponsorPool', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({userID:userID, sponsorID:sponsorID})
+		})
+		.then(response => {
+			if (response.ok) { 
+        callback();
+        handleClose();
+				return response.json(); 
+      } else { console.error('Failed to post'); }
+		})
+		.catch(error => {
+			console.error('Error retrieving successfully:', error);
+		});
+  }
+
+  const handleSave = () => {
+    checkEmailInDB()
   };
 
   return (

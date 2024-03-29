@@ -48,7 +48,7 @@ export default function DriverApplicationStatusPage(){
 								<TableHead>
 								<TableRow>
 									{/* <TableCell align="right">Name</TableCell> */}
-									<TableCell align="Left" style={{ fontWeight: 'bold' }}>Sponsor</TableCell>
+									<TableCell align="left" style={{ fontWeight: 'bold' }}>Sponsor</TableCell>
 									<TableCell align="right" style={{ fontWeight: 'bold' }}>Date Submitted (M/D/Y)</TableCell>
 									<TableCell align="right" style={{ fontWeight: 'bold' }}>Application Status</TableCell>
 									<TableCell align="right" style={{ fontWeight: 'bold' }}>Status Reason</TableCell>
@@ -61,7 +61,7 @@ export default function DriverApplicationStatusPage(){
 										sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
 										>
 											{/* <TableCell align="right">{appRow.firstName + " " + appRow.lastName}</TableCell> */}
-											<TableCell align="Left">{appRow.sponsorOrgName}</TableCell>
+											<TableCell align="left">{appRow.sponsorOrgName}</TableCell>
 											<TableCell align="right">{trimmedDate(appRow.dateOfApplication)}</TableCell>
 											<TableCell align="right">{appRow.applicationStatus}</TableCell>
 											<TableCell align="right">{appRow.statusReason === "" ? "N/A" : appRow.statusReason}</TableCell>

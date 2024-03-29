@@ -19,17 +19,18 @@ INSERT INTO UserInfo (sub, firstName, lastName, email, userUsername, userType) V
 ('64b894f8-a0f1-7051-73a1-0e297f69d6fb', 'bransen', 'eppes', 'eppes.bransen@gmail.com', 'bransen', 'Admin'),
 ('c4b80428-d031-70fc-b7c7-bc83de23fa43', 'john', 'mathews', 'thejohnmathews@gmail.com', 'oCyphyr', 'Driver'),
 ('8418e448-00a1-70b9-ccfc-623a11e30df1', 'Liam', 'Gallagher', 'lmgalla@clemson.edu', 'lmgalla', 'Driver'),
-('14183418-50a1-7058-baf0-e573db9f5b4a', 'Dan', 'Dean', 'driver@google.com', 'Driver_Username', 'Driver'),
+('14183418-50a1-7058-baf0-e573db9f5b4a', 'Dev', 'Driver', 'driver@google.com', 'DevDriver', 'Driver'),
 ('54e81448-e0b1-704d-cb13-a76282121e1a', 'Sam', 'Sellers', 'sponsor@google.com', 'Sponsor_Username', 'Sponsor'),
 ('64d80438-f041-70e4-b2f2-83f501d83606', 'Adam', 'Anderson', 'admin@google.com', 'Admin_Username', 'Admin');
 
-INSERT INTO DriverUser (UserID, driverPoints, sponsorOrgID) VALUES
-(2, 10, 3),
-(4, 100, 2);
--- (5, 0, 1),
+INSERT INTO DriverUser (UserID, driverPoints) VALUES
+(2, 10),
+(3, 100),
+(4, 100);
 
 INSERT INTO DriverOrganizations (driverID, sponsorOrgID) VALUES
-	(2, 1),
+	(3, 1),
+    (2, 1),
     (2, 2),
     (2, 3),
     (4, 1),
@@ -41,12 +42,10 @@ INSERT INTO DriverOrganizations (driverID, sponsorOrgID) VALUES
 -- (3, 3);
 
 INSERT INTO AdminUser (UserID) VALUES
-(2),
+(1),
 (6);
 
-
 INSERT INTO SponsorUser (UserID, sponsorOrgID) VALUES
-(3, 1),
 (5, 1);
 
 INSERT INTO Reason(reasonString, reasonType, sponsorOrgID) VALUES

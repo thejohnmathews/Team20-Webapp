@@ -82,8 +82,8 @@ const updateRows = () => {
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
         <TableCell component="th" scope="row"> {adminRow.userID} </TableCell>
-				<TableCell align="right">{adminRow.sub}</TableCell>
-				<TableCell align="right">{adminRow.firstName + " " + adminRow.lastName}</TableCell>
+				<TableCell align="right">{adminRow.sub === null ? "Cognito Account not created" : adminRow.sub}</TableCell>
+				<TableCell align="right">{adminRow.firstName === null ? " " : adminRow.firstName + " " + adminRow.lastName}</TableCell>
 				<TableCell align="right">{adminRow.email}</TableCell>
 				<TableCell align="right">
 						<Button variant="contained" color="primary" onClick={() => handleClickOpen(adminRow.id)}>View/Edit Profile</Button>

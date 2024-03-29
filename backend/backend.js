@@ -122,33 +122,123 @@ app.post('/updateOrg', (req, res) => {
     });
 });
 
+app.post('/addUserToDriverPool', (req, res) => {
+    const { userID, sponsorID} = req.body;
+    const sql1 = "UPDATE UserInfo SET userType = 'Driver' WHERE userID = ?";
+    const sql2 = 'INSERT INTO DriverUser (userID) VALUES (?)';
+    var sql3 = 'INSERT INTO DriverOrganizations (driverID, sponsorOrgID) VALUES';
+    var values = [];
+    for(var i = 0; i < sponsorID.length; i++){
+        values.push(userID)
+        values.push(sponsorID[i])
+        if (i === 0){
+            sql3 += ' (?, ?)';
+        } else{
+            sql3 += ', (?, ?)';
+        }
+    }
+    sql3 += ';'
 
-app.post('/newDriver', (req, res) => {
-    const { email, sponsorID, firstName, lastName, sub, username } = req.body;
-    const sql1 = 'INSERT INTO UserInfo (email, userType, firstName, lastName, sub, userUsername) VALUES (?, ?, ?, ?, ?, ?)';
-    const sql2 = 'INSERT INTO DriverUser (userID, sponsorOrgID) VALUES (?, ?)'; // Use placeholder for userID
-
-    const values = [email, "Driver", firstName, lastName, sub, username];
-
-    db.query(sql1, values, (err, result) => {
+    db.query(sql1, [userID], (err, result) => {
         if (err) {
-            console.error('Error inserting user:', err);
-            res.status(500).send('Error inserting user');
+            console.error('Error updating user type', err);
+            res.status(500).send('Error updating user type');
         } else {
-            const userID = result.insertId; // Get the ID of the newly inserted user
-
-            db.query(sql2, [userID, sponsorID], (err, result) => { // Pass userID as a parameter
+            db.query(sql2, [userID], (err, result) => { 
                 if (err) {
-                    console.error('Error inserting driver user:', err);
-                    res.status(500).send('Error inserting driver user');
+                    console.error('Error inserting into driver:', err);
+                    res.status(500).send('Error inserting into driver');
                 } else {
-                    res.status(200).json({ userID }); // Send the userID back to the frontend
+                    db.query(sql3, values, (err, result) => { 
+                        if (err) {
+                            console.error('Error inserting into driverOrganizations:', err);
+                            res.status(500).send('Error inserting into driverOrganizations');
+                        } else {
+                            res.status(200).send('driver added');
+                        }
+                    });
                 }
             });
         }
     });
 });
 
+
+app.post('/newDriver', (req, res) => {
+    const { email, sponsorID} = req.body;
+    const sql1 = 'INSERT INTO UserInfo (email, userType) VALUES (?, ?)';
+    const values1 = [email, 'Driver']
+
+    db.query(sql1, values1, (err, result) => {
+        if (err) {
+            console.error('Error inserting user:', err);
+            res.status(500).send('Error inserting user');
+        } else {
+            const userID = result.insertId;
+            const sql2 = 'INSERT INTO DriverUser (userID) VALUES (?)';
+            db.query(sql2, [userID], (err, result) => {
+                if (err) {
+                    console.error('Error inserting into driver:', err);
+                    res.status(500).send('Error inserting into driver');
+                } else {
+                    var sql3 = 'INSERT INTO DriverOrganizations (driverID, sponsorOrgID) VALUES';
+                    var values2 = [];
+                    for(var i = 0; i < sponsorID.length; i++){
+                        values2.push(userID)
+                        values2.push(sponsorID[i])
+                        if (i === 0){
+                            sql3 += ' (?, ?)';
+                        } else{
+                            sql3 += ', (?, ?)';
+                        }
+                    }
+                    sql3 += ';'
+                    db.query(sql3, values2, (err, result) => {
+                        if (err) {
+                            console.error('Error inserting into driverOrganizations:', err);
+                            res.status(500).send('Error inserting into driverOrganizations');
+                        } else {
+                            res.status(200).send('added driver and driver organizations successfully')
+                        }
+                    });
+                }
+            });
+        }
+    });
+});
+
+app.post('/newDriverFromApplication', (req, res) => {
+    const sub = req.body.sub;
+    const sql1 = 'SELECT userID FROM UserInfo WHERE sub = ?'
+
+    db.query(sql1, sub, (err, row) => {
+        if(err){
+            console.error('Error finding user in user table with sub', err);
+            res.status(500).send('Error finding user in user table with sub');
+        }
+        else{
+            const sql2 = 'UPDATE UserInfo SET userType = ? WHERE userID = ?';
+            userID = row[0].userID
+            db.query(sql2, ['Driver', userID], (err, result) => {
+                if (err) {
+                    console.error('Error adding user type', err);
+                    res.status(500).send('Error adding user type');
+                } else {
+                    const sql3 = 'INSERT INTO DriverUser (userID) VALUES (?)'
+                    db.query(sql3, [userID], (err, result) => {
+                        if (err) {
+                            console.error('Error adding to driver table', err);
+                            res.status(500).send('Error adding to driver table');
+                        } else {
+                            res.status(200).json({ userID })
+                        }
+                    });
+                }
+            });
+            
+        }
+    });
+});
 
 app.post('/addAdmin', (req, res) => {
     const { email } = req.body;
@@ -319,6 +409,37 @@ app.post('/driverAssociatedSponsor', (req, res) => {
 
 });
 
+app.post('/addUser', (req, res) => {
+    const { sub, email, firstName, lastName, userUsername } = req.body;
+    const sql1 = 'INSERT INTO UserInfo (sub, email, firstName, lastName, userUsername) VALUES (?, ?, ?, ?, ?)';
+
+    const values = [sub, email, firstName, lastName, userUsername];
+
+    db.query(sql1, values, (err, result) => {
+        if (err) {
+            console.error('Error inserting into user:', err);
+            res.status(500).send('Error inserting into user');
+        } else {
+            res.status(200).send("New user inserted");
+        }
+    });
+});
+
+app.post('/newCognitoExistingDB', (req, res) => {
+    const {sub, id, firstName, lastName, userUsername} = req.body;
+    const sql = 'UPDATE UserInfo SET sub = ?, firstName = ?, lastName = ?, userUsername = ? WHERE userID = ?'
+    const values = [sub, firstName, lastName, userUsername, id]
+    console.log(values);
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Error updating user info:', err);
+            res.status(500).send('Error updating user info');
+        } else {
+            res.status(200).send('User updated successfully');
+        }
+    })
+});
+
 app.post('/addSponsor', (req, res) => {
     const { email, sponsorID } = req.body;
     const sql1 = 'INSERT INTO UserInfo (email, userType) VALUES (?, ?)';
@@ -342,6 +463,52 @@ app.post('/addSponsor', (req, res) => {
                     res.status(200).send('admin inserted successfully');
                 }
 
+            });
+        }
+    });
+});
+
+app.post('/addUserToSponsorPool', (req, res) => {
+    const {userID, sponsorID}  = req.body;
+    const sql1 = "UPDATE UserInfo SET userType = 'Sponsor' WHERE userID = ?";
+    const sql2 = 'INSERT INTO SponsorUser (userID, sponsorOrgID) VALUES (?, ?)';
+
+    const values = [userID, sponsorID];
+
+    db.query(sql1, [userID], (err, result) => {
+        if (err) {
+            console.error('Error updating user type', err);
+            res.status(500).send('Error updating user type');
+        } else {
+            db.query(sql2, values, (err, result) => { 
+                if (err) {
+                    console.error('Error inserting into sponsor:', err);
+                    res.status(500).send('Error inserting into sponsor');
+                } else {
+                    res.status(200).send('sponsor inserted successfully');
+                }
+            });
+        }
+    });
+});
+
+app.post('/addUserToAdminPool', (req, res) => {
+    const userID = req.body.userID;
+    const sql1 = "UPDATE UserInfo SET userType = 'Admin' WHERE userID = ?";
+    const sql2 = 'INSERT INTO AdminUser (userID) VALUES (?)';
+
+    db.query(sql1, [userID], (err, result) => {
+        if (err) {
+            console.error('Error updating user type', err);
+            res.status(500).send('Error updating user type');
+        } else {
+            db.query(sql2, [userID], (err, result) => { 
+                if (err) {
+                    console.error('Error inserting into admin:', err);
+                    res.status(500).send('Error inserting into admin');
+                } else {
+                    res.status(200).send('admin inserted successfully');
+                }
             });
         }
     });
@@ -443,6 +610,26 @@ app.get('/checkDriverApplication/:userID', (req, res) => {
     });
 });
 
+app.get('/driverHasOrg', (req, res) => {
+    const userID = req.query.userID;
+    console.log(userID)
+
+    const sql = 'SELECT * FROM DriverOrganizations WHERE driverID = ?';
+
+    db.query(sql, [userID], (err, result) => {
+        if (err) {
+            console.error('Error searching for driver application:', err);
+            res.status(500).send('Error searching for driver application');
+        } else {
+            if (result.length > 0) {
+                res.status(200).json({ hasOrg: true});
+            } else {
+                console.log('No org for driver found for userID:', userID);
+                res.status(200).json({ hasOrg: false });
+            }
+        }
+    });
+});
 
 app.post('/checkUser', (req, res) => {
     const sub = req.body.sub;
@@ -465,6 +652,27 @@ app.post('/userAttributes', (req, res) => {
     const sql = 'SELECT * FROM UserInfo WHERE sub = ?';
 
     db.query(sql, [sub], (err, rows) => {
+        if (err) {
+            console.error('Error checking user:', err);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        const userExists = rows.length > 0;
+
+        if (userExists) {
+            const userData = rows[0];
+            res.json({ userExists, userData });
+        } else {
+            res.json({ userExists });
+        }
+    });
+});
+
+app.post('/userExistsFromEmail', (req, res) => {
+    const email = req.body.email;
+    const sql = 'SELECT * FROM UserInfo WHERE email = ?';
+
+    db.query(sql, [email], (err, rows) => {
         if (err) {
             console.error('Error checking user:', err);
             res.status(500).json({ error: 'Internal Server Error' });

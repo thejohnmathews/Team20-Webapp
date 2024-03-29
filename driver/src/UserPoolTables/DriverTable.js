@@ -83,7 +83,7 @@ export default function DriverTable({permission, sponsorID}) {
                   {row.userID}
                 </TableCell>
                 {permission === 'admin' && <TableCell align="right">{(row.sub !== null && row.sub !== undefined && row.sub !== '') ? row.sub : "Cognito account not created"}</TableCell> }
-                <TableCell align="right">{row.firstName + " " + row.lastName}</TableCell>
+                <TableCell align="right">{row.firstName === null ? " " : row.firstName + " " + row.lastName}</TableCell>
                 {permission === 'admin' && (
                     <TableCell align="right">
                         {row.organization_names && row.organization_names.split(',').join(', ')}

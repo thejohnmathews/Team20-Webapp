@@ -4,7 +4,7 @@ import BaseURL from '../BaseURL'
 
 export default function DriverProfilePopUp({ open, handleClose, inherited, callback }) {
   const [email, setEmail] = useState('');
-  const [sponsorID, setSponsorID] = useState('');
+  const [sponsorID, setSponsorID] = useState([]);
   const [orgList, setOrgList] = useState([]);
 
   useEffect(() => {
@@ -14,6 +14,72 @@ export default function DriverProfilePopUp({ open, handleClose, inherited, callb
       setSponsorID(inherited);
     }
 	}, []);
+
+  const checkEmailInDB = () => {
+    fetch(BaseURL + '/userExistsFromEmail', {
+      method: 'POST',
+      headers: {
+      'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({email:email})
+    }).then(response => {
+      if (!response.ok) { throw new Error('Network response was not ok'); }
+      return response.json(); 
+    }).then(data => {
+      // check if the user exists from email in RDS, if not insert info into userinfo, 
+      // if so add info to the user then navigate back to login redirect
+      if(!data.userExists){ addUserToDB(); }
+      else { addUserToDriverPool(data.userData.userID); }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+	}
+
+  const addUserToDB = () => {
+    if(sponsorID.length > 0){
+      fetch(BaseURL + '/newDriver', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({email:email, sponsorID:sponsorID})
+      })
+      .then(response => {
+        if (response.ok) { 
+          callback();
+          handleClose();
+          return response.json();
+        } 
+        else { console.error('Failed to post'); }
+      })
+      .catch(error => {
+        console.error('Error retrieving successfully:', error);
+      });
+    } else {
+      alert("Select at least 1 sponsor");
+    }
+  }
+
+  const addUserToDriverPool = (userID) => {
+    fetch(BaseURL + '/addUserToDriverPool', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({userID:userID, sponsorID:sponsorID})
+		})
+		.then(response => {
+			if (response.ok) { 
+        callback();
+        handleClose();
+				return response.json(); 
+      } else { console.error('Failed to post'); }
+		})
+		.catch(error => {
+			console.error('Error retrieving successfully:', error);
+		});
+  }
 
   function getOrgs(){
     fetch(BaseURL + '/getAllOrgs', {
@@ -44,28 +110,7 @@ export default function DriverProfilePopUp({ open, handleClose, inherited, callb
   }
 
   const handleSave = () => {
-    fetch(BaseURL + '/newDriver', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({email, sponsorID})
-		})
-		.then(response => {
-			if (response.ok) { 
-				return response.json();
-			} 
-			else { console.error('Failed to post'); }
-		})
-		.then(data => {
-			console.log(data);			
-      callback();
-		})
-		.catch(error => {
-			console.error('Error retrieving successfully:', error);
-		});
-
-    handleClose();
+    checkEmailInDB();
   };
 
   return (
@@ -97,6 +142,7 @@ export default function DriverProfilePopUp({ open, handleClose, inherited, callb
             <FormControl fullWidth>
               <InputLabel htmlFor="sponsor-select">Sponsor</InputLabel>
               <Select
+                multiple
                 value={sponsorID}
                 onChange={(e) => setSponsorID(e.target.value)}
                 fullWidth

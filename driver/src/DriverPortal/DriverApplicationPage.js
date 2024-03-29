@@ -4,17 +4,6 @@ import { useFetchUserAttributes} from '../CognitoAPI';
 import { useNavigate } from 'react-router-dom';
 import BaseURL from '../BaseURL'
 
-
-class Application{
-	constructor(firstName, lastName, username, email, sub) {
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.username = username;
-		this.email = email;
-		this.sub = sub;
-	  }
-}
-
 export default function DriverApplicationPage() {
 	const [sponsorIDs, setSponsorIDs] = useState([]);
 	const [orgList, setOrgList] = useState([]);
@@ -55,15 +44,15 @@ export default function DriverApplicationPage() {
 	const navigate = useNavigate();
 
 	function submit(){
-		if(sponsorIDs.length > 1){
-			const driverApplication = new Application(userAttributes.given_name, userAttributes.family_name, userAttributes.preferred_username, userAttributes.email, userAttributes.sub)
+		console.log(sponsorIDs)
+		if(sponsorIDs.length > 0){
 
-			fetch(BaseURL + '/newDriver', {
+			fetch(BaseURL + '/newDriverFromApplication', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify(driverApplication)
+				body: JSON.stringify({sub:userAttributes.sub})
 			})
 			.then(response => {
 				if (response.ok) { 

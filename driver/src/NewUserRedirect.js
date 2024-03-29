@@ -1,12 +1,87 @@
-import React, { useState } from 'react';
-import { Button, Grid, TextField, Card, CardHeader, CardContent, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Button, Grid, Card, CardHeader, CardContent, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import BaseURL from './BaseURL'
+import { useFetchUserAttributes} from './CognitoAPI';
 
-
-export default function DriverApplicationPage() {
+export default function NewUserRedirect() {
 	const [sponsor, setSponsor] = useState(false);
 	const [admin, setAdmin] = useState(false);
+	const userAttributes = useFetchUserAttributes();
 	const navigate = useNavigate();
+
+	// searches the db to see if somone already added the user on the admin/sponsor portals
+	// if so it adds their info from cognito to current db entry if not, creates a new db entry with cognito info
+	const checkEmailInDB = () => {
+		if(userAttributes !== null){
+			fetch(BaseURL + '/userExistsFromEmail', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({email: userAttributes.email})
+            })
+			.then(response => {
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}
+				return response.json(); 
+			})
+            .then(data => {
+				// check if the user exists from email in RDS, if not insert info into userinfo, 
+				// if so add info to the user then navigate back to login redirect
+				if(!data.userExists){ insertNewUser(); }
+				else { 
+					if(data.userData.sub === null){
+						updateExistingDBUser(data.userData.userID); 
+					}
+				}
+			})
+            .catch(error => {
+                console.error('Error:', error);
+            });
+		}
+	}
+
+	const insertNewUser = () => {
+		fetch(BaseURL + '/addUser', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({sub:userAttributes.sub, email:userAttributes.email, firstName:userAttributes.given_name, lastName:userAttributes.family_name, userUsername:userAttributes.preferred_username})
+		})
+		.then(response => {
+			if (response.ok) { return response.json(); 
+     	 	} else { console.error('Failed to post'); }
+		})
+		.catch(error => {
+			console.error('Error retrieving successfully:', error);
+		});
+	}
+
+	const updateExistingDBUser = (id) => {
+		fetch(BaseURL + '/newCognitoExistingDB', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({sub:userAttributes.sub, id:id, firstName:userAttributes.given_name, lastName:userAttributes.family_name, userUsername:userAttributes.preferred_username})
+		})
+		.then(response => {
+			if (response.ok) { 
+				navigate('/');
+				return response.json(); 
+     	 	} else { console.error('Failed to post'); }
+		})
+		.catch(error => {
+			console.error('Error retrieving successfully:', error);
+		});
+	}
+
+	useEffect(() => {
+		if(userAttributes !== null){ checkEmailInDB(); }
+	}, [userAttributes]);
 
 	const hanldeDriver = () => {
 		navigate('/driverApplication');
@@ -26,6 +101,8 @@ export default function DriverApplicationPage() {
 	const hanldeAdminClose = () => {
 		setAdmin(false);
 	}
+	
+
 	
 	return (
 		<Grid container alignItems="center" justifyContent="center" sx={{ mt: 10 }} >

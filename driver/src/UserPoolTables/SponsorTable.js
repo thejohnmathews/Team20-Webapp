@@ -84,7 +84,7 @@ export default function SponsorTable({permission, sponsorID}) {
             >
 				<TableCell component="th" scope="row"> {row.userID} </TableCell>
 				{permission === 'admin' && <TableCell align="right">{(row.sub !== null && row.sub !== undefined && row.sub !== '') ? row.sub : "Cognito account not created"}</TableCell>}
-				<TableCell component="th" scope="row"> {row.firstName + " " + row.lastName} </TableCell>
+				<TableCell component="th" scope="row"> {row.firstName === null ? ' ' : row.firstName + " " + row.lastName} </TableCell>
 				{permission === 'admin' && <TableCell align="right">{row.SponsorOrgName}</TableCell>}
 				<TableCell align="right">{row.email}</TableCell>
 				<TableCell align="right">
