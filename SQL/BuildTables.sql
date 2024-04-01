@@ -131,3 +131,10 @@ CREATE TABLE LoginAttempt(
     loginAttemptDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     loginSuccess BOOLEAN
 );
+
+-- Create Catalog Rules Table
+CREATE TABLE CatalogRules (
+	sponsorOrgID int,
+    catalogRuleName VARCHAR(20),
+    FOREIGN KEY (sponsorOrgID) REFERENCES  SponsorOrganization(sponsorOrgID)
+);

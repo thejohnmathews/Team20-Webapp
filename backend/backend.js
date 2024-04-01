@@ -65,9 +65,49 @@ app.get('/passwordChange', (req, res) => {
     })
 })
 
+app.post('/addCatalogRule', (req, res) => {
+    const {sponsorOrgID, catalogRuleName} = req.body;
+    const sql = "INSERT INTO CatalogRules(sponsorOrgID, catalogRuleName) VALUES (?, ?)"
+    const values = [sponsorOrgID, catalogRuleName];
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Error adding reason:', err);
+            res.status(500).send('Error adding reason');
+        } else {
+            res.status(200).json("Reason added successfully");
+        }
+    });
+})
+
+app.post('/removeCatalogRule', (req, res) => {
+    const {sponsorOrgID, catalogRuleName} = req.body;
+    const sql = "DELETE FROM CatalogRules WHERE sponsorOrgID = ? AND catalogRuleName = ?"
+    const values = [sponsorOrgID, catalogRuleName];
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Error adding reason:', err);
+            res.status(500).send('Error adding reason');
+        } else {
+            res.status(200).json("Reason added successfully");
+        }
+    });
+})
+
 app.get('/driverAppInfo', (req, res) => {
     const sql = "SELECT D.applicationID, D.dateOfApplication, D.applicationStatus, D.statusReason, UserInfo.userUsername FROM DriverApplication D\
     JOIN UserInfo ON D.userID = UserInfo.userID  WHERE sponsorOrgID = ? ORDER BY D.dateOfApplication ASC"
+    db.query(sql, req.query.sponsorOrgID, (err, data) => {
+        if(err) {
+            return res.json(err);
+        }
+        else {
+            return res.json(data);
+        }
+    })
+})
+
+app.get('/sponsorCatalogRules', (req, res) => {
+    const sql = "SELECT catalogRuleName FROM CatalogRules WHERE sponsorOrgID = ?"
     db.query(sql, req.query.sponsorOrgID, (err, data) => {
         if(err) {
             return res.json(err);
@@ -117,6 +157,7 @@ app.post('/addReason', (req, res) => {
         }
     });
 })
+
 
 app.post('/driverInfoFromSub', (req, res) => {
     const sub = req.body.sub;

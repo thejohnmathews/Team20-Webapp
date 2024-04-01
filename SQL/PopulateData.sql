@@ -77,3 +77,10 @@ INSERT INTO Reason(reasonString, reasonType, sponsorOrgID) VALUES
 
 INSERT INTO PointChange(driverID, changeDate, changePointAmt, changeReasonID) VALUES
 (2, '2024-03-25', 100, 1);
+
+INSERT INTO CatalogRules VALUES
+(1, "music"),
+(1, "movies"),
+(1, "ebooks"),
+(2, "music"),
+(3, "music");
