@@ -5,6 +5,7 @@ import { useFetchUserAttributes } from '../CognitoAPI';
 import "../App.css";
 import { Box, Tabs, Tab, Typography, Container } from '@mui/material';
 import {Paper, TableRow, TableHead, TableContainer, TableCell, TableBody, Table, Button} from '@mui/material';
+import { csv } from '../ConvertCSV';
 
 export default function SponsorReports() {
     function TabPanel(props) {
@@ -65,7 +66,6 @@ export default function SponsorReports() {
             getLoginAttempts();
             getPasswordChange();
             getDriverAppInfo();
-            console.log("login attempts:" + loginAttempts)
         }
     
     }, [sponsorOrgID]); 
@@ -164,6 +164,8 @@ export default function SponsorReports() {
                           </TableBody>
                         </Table>
                       </TableContainer>
+                      <br></br>
+                      <a href='#' onClick={() => csv(loginAttempts)}>Download as CSV</a>
                     </div>
                       }
                       {!loading && loginAttempts.length == 0 && 
@@ -199,6 +201,8 @@ export default function SponsorReports() {
                           </TableBody>
                         </Table>
                       </TableContainer>
+                      <br></br>
+                      <a href='#' onClick={() => csv(driverApp)}>Download as CSV</a>
                     </div>
                       }
                       {!loading && driverApp.length == 0 && 
@@ -234,6 +238,8 @@ export default function SponsorReports() {
                           </TableBody>
                         </Table>
                       </TableContainer>
+                      <br></br>
+                      <a href='#' onClick={() => csv(passwordChange)}>Download as CSV</a>
                     </div>
                       }
                       {!loading && passwordChange.length == 0 && 
