@@ -75,9 +75,9 @@ app.post('/addReason', (req, res) => {
     });
 })
 
-app.post('/adminInfoFromSub', (req, res) => {
+app.post('/driverInfoFromSub', (req, res) => {
     const sub = req.body.sub;
-    var sql = 'SELECT userID, firstName, lastName, email, userUsername FROM UserInfo WHERE sub = ?';
+    var sql = 'SELECT u.userID, u.firstName, u.lastName, u.email, u.userUsername, u.userPhoneNumber, d.driverAddress FROM UserInfo u JOIN DriverUser d ON u.userID = d.userID WHERE sub = ?';
     db.query(sql, sub, (err, result) => {
         if (err) {
             console.error('Error retrieving user info:', err);
@@ -92,10 +92,123 @@ app.post('/adminInfoFromSub', (req, res) => {
     });
 });
 
+app.post('/sponsorInfoFromSub', (req, res) => {
+    const sub = req.body.sub;
+    var sql = 'SELECT u.userID, u.firstName, u.lastName, u.email, u.userUsername, u.userPhoneNumber FROM UserInfo u JOIN SponsorUser s ON u.userID = s.userID WHERE sub = ?';
+    db.query(sql, sub, (err, result) => {
+        if (err) {
+            console.error('Error retrieving user info:', err);
+            res.status(500).send('Error retrieving user info');
+        } else {
+            if (result.length > 0) {
+                res.status(200).json(result);
+            } else {
+                res.status(404).send('No user found');
+            }
+        }
+    });
+});
+
+app.post('/adminInfoFromSub', (req, res) => {
+    const sub = req.body.sub;
+    var sql = 'SELECT userID, firstName, lastName, email, userUsername, userPhoneNumber FROM UserInfo WHERE sub = ?';
+    db.query(sql, sub, (err, result) => {
+        if (err) {
+            console.error('Error retrieving user info:', err);
+            res.status(500).send('Error retrieving user info');
+        } else {
+            if (result.length > 0) {
+                res.status(200).json(result);
+            } else {
+                res.status(404).send('No user found');
+            }
+        }
+    });
+});
+
+// app.post('/updateDriver', (req, res) => {
+//     const { email, firstName, lastName, userUsername, userPhoneNumber, driverAddress, sub } = req.body;
+//     const sql = 'UPDATE UserInfo SET email = ?, firstName = ?, lastName = ?, userUsername = ?, userPhoneNumber = ? WHERE sub = ?';
+//     const values = [email, firstName, lastName, userUsername, userPhoneNumber, sub];
+
+//     db.query(sql, values, (err, data) => {
+//         if (err) {
+//             console.error('Error updating user:', err);
+//             res.status(500).send('Error updating user');
+//         } else {
+//             const sql2 = 'UPDATE DriverUser SET driverAddress = ? WHERE sub = ?'
+//             db.query(sql2, [driverAddress, sub], (err, result) => {
+//                 if (err) {
+//                     console.error('Error updating user:', err);
+//                     res.status(500).send('Error updating user');
+//                 }
+//                 else{
+//                     res.status(200).json("User updated successfully");
+//                 }
+//             });
+//         }
+//     });
+// });
+
+app.post('/updateDriver', (req, res) => {
+    const { email, firstName, lastName, userUsername, userPhoneNumber, driverAddress, sub } = req.body;
+        const sql1 = 'SELECT userID FROM UserInfo WHERE sub = ?';
+    
+    db.query(sql1, [sub], (err, result) => {
+        if (err) {
+            console.error('Error fetching userID:', err);
+            res.status(500).send('Error updating user');
+        } else {
+            if (result.length > 0) {
+                const userID = result[0].userID;
+                
+                const sql2 = 'UPDATE UserInfo SET email = ?, firstName = ?, lastName = ?, userUsername = ?, userPhoneNumber = ? WHERE sub = ?';
+                const values = [email, firstName, lastName, userUsername, userPhoneNumber, sub];
+
+                db.query(sql2, values, (err, data) => {
+                    if (err) {
+                        console.error('Error updating user:', err);
+                        res.status(500).send('Error updating user');
+                    } else {
+                        // Update DriverUser table using userID
+                        const sql3 = 'UPDATE DriverUser SET driverAddress = ? WHERE userID = ?';
+                        db.query(sql3, [driverAddress, userID], (err, result) => {
+                            if (err) {
+                                console.error('Error updating driver:', err);
+                                res.status(500).send('Error updating driver');
+                            } else {
+                                res.status(200).json("User updated successfully");
+                            }
+                        });
+                    }
+                });
+            } else {
+                res.status(404).send('User not found');
+            }
+        }
+    });
+});
+
+
+app.post('/updateSponsor', (req, res) => {
+    const { email, firstName, lastName, userUsername, userPhoneNumber, sub } = req.body;
+    const sql = 'UPDATE UserInfo SET email = ?, firstName = ?, lastName = ?, userUsername = ?, userPhoneNumber = ? WHERE sub = ?';
+    const values = [email, firstName, lastName, userUsername, userPhoneNumber, sub];
+
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Error updating user:', err);
+            res.status(500).send('Error updating user');
+        } else {
+            res.status(200).json("User updated successfully");
+        }
+    });
+});
+
 app.post('/updateAdmin', (req, res) => {
-    const { email, firstName, lastName, userUsername, sub } = req.body;
-    const sql = 'UPDATE UserInfo SET email = ?, firstName = ?, lastName = ?, userUsername = ? WHERE sub = ?';
-    const values = [email, firstName, lastName, userUsername, sub];
+    const { email, firstName, lastName, userUsername, userPhoneNumber, sub } = req.body;
+    const sql = 'UPDATE UserInfo SET email = ?, firstName = ?, lastName = ?, userUsername = ?, userPhoneNumber = ? WHERE sub = ?';
+    const values = [email, firstName, lastName, userUsername, userPhoneNumber, sub];
 
     db.query(sql, values, (err, result) => {
         if (err) {
@@ -265,7 +378,6 @@ app.post('/addAdmin', (req, res) => {
         }
     });
 });
-
 
 app.get('/adminList', (req, res) => {
     const sql = 'SELECT a.userID, u.sub, u.email, u.firstName, u.lastName FROM AdminUser AS a INNER JOIN UserInfo AS u ON a.userID = u.userID';
@@ -562,8 +674,6 @@ app.post('/editOrg', (req, res) => {
     });
 });
 
-
-
 app.post('/newApplication', (req, res) => {
     const { id, sponsorOrgIDs } = req.body;
 
@@ -766,7 +876,6 @@ app.post('/updateApplicationStatus', (req, res) => {
     })
 });
 
-
 app.get('/badReasons', (req, res) => {
     const sql = "SELECT * FROM Reason WHERE reasonType = 'bad' AND sponsorOrgID = ?"
     db.query(sql, req.query.sponsorOrgID, (err, data) => {
@@ -888,6 +997,7 @@ app.post('/updatePointsGood', (req, res) => {
         }
     });
 });
+
 app.post('/updatePointsBad', (req, res) => {
     console.log("bad");
     // Extracting parameters from request body

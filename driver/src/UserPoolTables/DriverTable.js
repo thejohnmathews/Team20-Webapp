@@ -6,7 +6,7 @@ import BaseURL from '../BaseURL'
 
 export default function DriverTable({permission, sponsorID}) {
   const [open, setOpen] = React.useState(false);
-	const [userID, setUserID] = React.useState(-1);
+	const [userSub, setUserSub] = React.useState(-1);
   const [addDriverOpen, setAddDriverOpen] = React.useState(false);
   const [driverList, setDriverList] = React.useState([]);
 
@@ -41,14 +41,15 @@ export default function DriverTable({permission, sponsorID}) {
 		});
 	};
 
-	const handleClickOpen = (userID) => {
-		setUserID(userID);
+	const handleClickOpen = (sub) => {
+		setUserSub(sub);
 		setOpen(true);
 	};
 	
 	const handleClose = () => {
 		setOpen(false);
-		setUserID(-1);
+		setUserSub(-1);
+    updateRows();
 	};
 
   const handleAddDriver = () => {
@@ -57,6 +58,7 @@ export default function DriverTable({permission, sponsorID}) {
 
   const handleCloseAddDriver = () => {
     setAddDriverOpen(false);
+    // updateRows();
   };
 
   return (
@@ -91,14 +93,14 @@ export default function DriverTable({permission, sponsorID}) {
                 )}
                 <TableCell align="right">{row.email}</TableCell>
                 <TableCell align="right">
-                  <Button variant="contained" color="primary" onClick={() => handleClickOpen(row.id)}>View/Edit Profile</Button>
+                  <Button variant="contained" color="primary" onClick={() => handleClickOpen(row.sub)}>View/Edit Profile</Button>
                 </TableCell>
               </TableRow> 
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-      { open && <ProfilePopup userID={userID} open={open} handleClose={handleClose} permission={permission}/> }
+      { open && <ProfilePopup sub={userSub} open={open} handleClose={handleClose} permission={permission}/> }
 
       <Button variant="contained" color="primary" onClick={handleAddDriver} style={{ marginTop: '20px' }}>Add Driver</Button>
       { addDriverOpen && <AddDriver inherited={sponsorID} open={addDriverOpen} handleClose={handleCloseAddDriver} callback={callback} /> }

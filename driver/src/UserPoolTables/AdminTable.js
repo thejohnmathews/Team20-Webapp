@@ -6,9 +6,9 @@ import BaseURL from '../BaseURL'
 
 export default function AdminTable({refresh, setRefresh}) {
 	const [open, setOpen] = React.useState(false);
-	const [userID, setUserID] = React.useState(-1);
-  const [addAdminOpen, setAddAdminOpen] = React.useState(false);
-  const [adminList, setAdminList] = useState([]);
+	const [userSub, setUserSub] = React.useState(-1);
+	const [addAdminOpen, setAddAdminOpen] = React.useState(false);
+	const [adminList, setAdminList] = useState([]);
 
   	const callback = () => {
 		updateRows();
@@ -42,14 +42,15 @@ const updateRows = () => {
 		});
 	};
 
-	const handleClickOpen = (userID) => {
-		setUserID(userID);
+	const handleClickOpen = (sub) => {
+		setUserSub(sub);
 		setOpen(true);
 	};
 	
 	const handleClose = () => {
 		setOpen(false);
-		setUserID(-1);
+		setUserSub(-1);
+		updateRows();
 	};
 
   const handleAddAdmin = () => {
@@ -86,14 +87,14 @@ const updateRows = () => {
 				<TableCell align="right">{adminRow.firstName === null ? " " : adminRow.firstName + " " + adminRow.lastName}</TableCell>
 				<TableCell align="right">{adminRow.email}</TableCell>
 				<TableCell align="right">
-						<Button variant="contained" color="primary" onClick={() => handleClickOpen(adminRow.id)}>View/Edit Profile</Button>
+						<Button variant="contained" color="primary" onClick={() => handleClickOpen(adminRow.sub)}>View/Edit Profile</Button>
 				</TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </TableContainer>
-    { open && <ProfilePopup userID={userID} open={open} handleClose={handleClose}/> }
+    { open && <ProfilePopup sub={userSub} open={open} handleClose={handleClose}/> }
     
     <Button variant="contained" color="primary" onClick={handleAddAdmin} style={{ marginTop: '20px' }}>Add Admin</Button>
     { addAdminOpen && <AddAdmin open={addAdminOpen} handleClose={handleCloseAddAdmin} callback={callback}/> }

@@ -14,24 +14,28 @@ export default function ProfilePage({userType}) {
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [address, setAddress] = useState('');
-  const [sponsorOrgName, setSponsorOrgName] = React.useState('');
+  const [sponsorOrgName, setSponsorOrgName] = useState('');
 
   const userAttributes = useFetchUserAttributes();
 
   useEffect(() => {
-    if (userAttributes) {
-      setUsername(userAttributes.preferred_username || '');
-      setFirstName(userAttributes.given_name || '');
-      setLastName(userAttributes.family_name || '');
-      setEmail(userAttributes.email || '');
-      setPhoneNumber(userAttributes["custom:Phone"] || '');
-      setAddress(userAttributes.address || '');
-      if(userType !== 'admin'){ getAssociatedSponsor(); }
-      else{ getUserInfo();}
-      
-    }
+    if (userAttributes) { getUserInfo(); }
   }, [userAttributes]);
 
+  const getUserInfo = () => {
+    if(userType === 'admin'){ getAdminInfo(); }
+    else if (userType === 'sponsor'){ getAssociatedSponsor(); getSponsorInfo(); }
+    else{ getAssociatedSponsor(); getDriverInfo();}
+  }
+
+  const setUserAttributes = (user) => {
+    if (userType === 'driver'){ setAddress(user.driverAddress); }
+    setPhoneNumber(user.userPhoneNumber);
+    setEmail(user.email);
+    setLastName(user.lastName);
+    setFirstName(user.firstName);
+    setUsername(user.userUsername);
+  }
   const handleClickOpen2 = () => { setOpen2(true); };
   const handleClose2 = () => { setOpen2(false); };
   const handleEdit = () => { setEditMode(true); };
@@ -42,7 +46,7 @@ export default function ProfilePage({userType}) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({email:email, firstName:firstName, lastName:lastName, userUsername:username, sub:userAttributes.sub })
+      body: JSON.stringify({email:email, firstName:firstName, lastName:lastName, userUsername:username, userPhoneNumber:phoneNumber, sub:userAttributes.sub })
     })
     .then(response => {
       if (response.ok) { 
@@ -56,10 +60,42 @@ export default function ProfilePage({userType}) {
     });
   };
   const updateDriver = () => { 
-    
+    fetch(BaseURL + '/updateDriver', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({email:email, firstName:firstName, lastName:lastName, userUsername:username, userPhoneNumber:phoneNumber, driverAddress:address, sub:userAttributes.sub })
+    })
+    .then(response => {
+      if (response.ok) { 
+        getUserInfo();
+        return response.json();
+      } 
+      else { console.error('Failed to update'); }
+    })
+    .catch(error => {
+      console.error('Error updating successfully:', error);
+    });
   };
   const updateSponsor = () => { 
-    
+    fetch(BaseURL + '/updateSponsor', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({email:email, firstName:firstName, lastName:lastName, userUsername:username, userPhoneNumber:phoneNumber, sub:userAttributes.sub })
+    })
+    .then(response => {
+      if (response.ok) { 
+        getUserInfo();
+        return response.json();
+      } 
+      else { console.error('Failed to update'); }
+    })
+    .catch(error => {
+      console.error('Error updating successfully:', error);
+    });
   };
 
   const handleSave = () => {
@@ -73,13 +109,13 @@ export default function ProfilePage({userType}) {
     setEditMode(false);
   };
 
-  const getUserInfo = () => {
+  const getAdminInfo = () => {
     fetch(BaseURL + '/adminInfoFromSub', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({sub:userAttributes.sub })
+      body: JSON.stringify({ sub:userAttributes.sub })
     })
     .then(response => {
       if (response.ok) { 
@@ -88,10 +124,51 @@ export default function ProfilePage({userType}) {
       else { console.error('Failed to get user'); }
     })
     .then(data => {
-      setUsername(data[0].userUsername || '');
-      setFirstName(data[0].firstName || '');
-      setLastName(data[0].lastName || '');
-      setEmail(data[0].email || '');
+      setUserAttributes(data[0]);
+    })
+    .catch(error => {
+      console.error('Failed to get user:', error);
+    });
+  }
+
+  const getSponsorInfo = () => {
+    fetch(BaseURL + '/sponsorInfoFromSub', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ sub:userAttributes.sub })
+    })
+    .then(response => {
+      if (response.ok) { 
+        return response.json();
+      } 
+      else { console.error('Failed to get user'); }
+    })
+    .then(data => {
+      setUserAttributes(data[0]);
+    })
+    .catch(error => {
+      console.error('Failed to get user:', error);
+    });
+  }
+
+  const getDriverInfo = () => {
+    fetch(BaseURL + '/driverInfoFromSub', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ sub:userAttributes.sub })
+    })
+    .then(response => {
+      if (response.ok) { 
+        return response.json();
+      } 
+      else { console.error('Failed to get user'); }
+    })
+    .then(data => {
+      setUserAttributes(data[0]);
     })
     .catch(error => {
       console.error('Failed to get user:', error);
@@ -100,43 +177,37 @@ export default function ProfilePage({userType}) {
 
   const handleCancel = () => {
     setEditMode(false);
-    // Reset fields to original user attributes
-    setUsername(userAttributes.preferred_username || '');
-    setFirstName(userAttributes.given_name || '');
-    setLastName(userAttributes.family_name || '');
-    setEmail(userAttributes.email || '');
-    setPhoneNumber(userAttributes["custom:Phone"] || '');
-    setAddress(userAttributes.address || '');
+    getUserInfo();
   };
 
   const getAssociatedSponsor = () => {
-	var endpoint = '';
-	if(userType === 'driver'){ endpoint = '/driverAssociatedSponsor' }
-	else{ endpoint = '/associatedSponsor' }
-    fetch(BaseURL + endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({sub: userAttributes.sub})
-    })
-    .then(response => {
-      if (response.ok) { 
-        return response.json();
-      } 
-      else { console.error('Failed to post'); }
-    })
-    .then(data => {
-      if(userType === 'driver'){ 
-        console.log(data);
-        setSponsorOrgName(data);	
-      } else {
-        setSponsorOrgName(data[0].sponsorOrgName);	 
-      }
-    })
-    .catch(error => {
-      console.error('Error retrieving successfully:', error);
-    });
+    var endpoint = '';
+    if(userType === 'driver'){ endpoint = '/driverAssociatedSponsor' }
+    else{ endpoint = '/associatedSponsor' }
+      fetch(BaseURL + endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({sub: userAttributes.sub})
+      })
+      .then(response => {
+        if (response.ok) { 
+          return response.json();
+        } 
+        else { console.error('Failed to post'); }
+      })
+      .then(data => {
+        if(userType === 'driver'){ 
+          console.log(data);
+          setSponsorOrgName(data);	
+        } else {
+          setSponsorOrgName(data[0].sponsorOrgName);	 
+        }
+      })
+      .catch(error => {
+        console.error('Error retrieving successfully:', error);
+      });
     
   }
 

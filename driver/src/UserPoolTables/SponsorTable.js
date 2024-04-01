@@ -6,7 +6,7 @@ import BaseURL from '../BaseURL';
 
 export default function SponsorTable({permission, sponsorID}) {
 	const [open, setOpen] = React.useState(false);
-	const [userID, setUserID] = React.useState(-1);
+	const [userSub, setUserSub] = React.useState(-1);
 	const [addSponsorOpen, setAddSponsorOpen] = React.useState(false);
 	const [sponsorList, setSponsorList] = React.useState([]);
 
@@ -42,14 +42,15 @@ export default function SponsorTable({permission, sponsorID}) {
 		});
 	};
 
-	const handleClickOpen = (userID) => {
-		setUserID(userID);
+	const handleClickOpen = (sub) => {
+		setUserSub(sub);
 		setOpen(true);
 	};
 	
 	const handleClose = () => {
 		setOpen(false);
-		setUserID(-1);
+		setUserSub(-1);
+		updateRows();
 	};
 
 	const handleAddSponsor = () => {
@@ -88,7 +89,7 @@ export default function SponsorTable({permission, sponsorID}) {
 				{permission === 'admin' && <TableCell align="right">{row.SponsorOrgName}</TableCell>}
 				<TableCell align="right">{row.email}</TableCell>
 				<TableCell align="right">
-					<Button variant="contained" color="primary" onClick={() => handleClickOpen(row.id)}>View/Edit Profile</Button>
+					<Button variant="contained" color="primary" onClick={() => handleClickOpen(row.sub)}>View/Edit Profile</Button>
 				</TableCell>
             </TableRow>
           ))}
@@ -96,7 +97,7 @@ export default function SponsorTable({permission, sponsorID}) {
       </Table>
     </TableContainer>
 	) : <p>No sponsors available.</p>}
-	{ open && <ProfilePopUp userID={userID} open={open} handleClose={handleClose} permission={permission} /> }
+	{ open && <ProfilePopUp sub={userSub} open={open} handleClose={handleClose} permission={permission} /> }
 	
 	<Button variant="contained" color="primary" onClick={handleAddSponsor} style={{ marginTop: '20px' }}>Add Sponsor</Button>
     { addSponsorOpen && <AddSponsor inherited={sponsorID} open={addSponsorOpen} handleClose={handleCloseAddSponsor} callback={callback} /> }

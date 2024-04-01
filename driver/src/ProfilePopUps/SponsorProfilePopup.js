@@ -1,34 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextField, Select, MenuItem } from '@mui/material';
-import { useFetchUserAttributes, handleUpdateUserAttributes } from '../CognitoAPI';
+import BaseURL from '../BaseURL';
 
-export default function SponsorProfilePopUp({ userID, open, handleClose, permission }) {
+export default function SponsorProfilePopUp({ sub, open, handleClose, permission }) {
 
   const [editMode, setEditMode] = useState(false);
-  const [firstName, setFirstName] = useState('Given Name');
-  const [lastName, setLastName] = useState('Family Name');
-  const [username, setUsername] = useState('Preferred Username');
-  const [password, setPassword] = useState('PSWD');
-  const [sponsor, setSponsor] = useState('Sponsor');
-  const [phoneNumber, setPhoneNumber] = useState('1111111111');
+  const [username, setUsername] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
 
-  // get cognito attributes
-  const userAttributes = useFetchUserAttributes();
-  // https://docs.amplify.aws/react/build-a-backend/auth/manage-user-profile/
-
-  // CALL FROM COGNITO TO SET USER USESTATE ATTRIBUTES ABOVE
   useEffect(() => {
+    getSponsorInfo();
+  }, []);
 
-    // when Cognito sends information back, update useState attributes
-    if (userAttributes) {
-      setFirstName(userAttributes.given_name || 'Given Name');
-      setLastName(userAttributes.family_name || 'Family Name');
-      setUsername(userAttributes.preferred_username || 'Preferred Username');
-      setSponsor(userAttributes["custom:Sponsor"] || 'Sponsor');
-      setPhoneNumber(userAttributes["custom:Phone"] || '1111111111');
-      console.log(userAttributes);
-    }
-  }, [userAttributes]);
+  const getSponsorInfo = () => {
+    fetch(BaseURL + '/sponsorInfoFromSub', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ sub:sub })
+    })
+    .then(response => {
+      if (response.ok) { 
+        return response.json();
+      } 
+      else { console.error('Failed to get user'); }
+    })
+    .then(data => {
+      setUserAttributes(data[0]);
+    })
+    .catch(error => {
+      console.error('Failed to get user:', error);
+    });
+  }
+
+  const setUserAttributes = (user) => {
+    setPhoneNumber(user.userPhoneNumber);
+    setEmail(user.email);
+    setLastName(user.lastName);
+    setFirstName(user.firstName);
+    setUsername(user.userUsername);
+  }
 
   const handleEdit = () => {
     setEditMode(true);
@@ -41,19 +56,24 @@ export default function SponsorProfilePopUp({ userID, open, handleClose, permiss
 
   // update all attributes in edit profile screen everytime
   const handleSave = async () => {
-    try {
-      await handleUpdateUserAttributes(
-        firstName,
-        lastName,
-        phoneNumber,
-        username,
-      );
-    } catch (error) {
-      console.log(error);
-    } finally {
-      handleClose();
-      setEditMode(false);
-    }
+    fetch(BaseURL + '/updateSponsor', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({email:email, firstName:firstName, lastName:lastName, userUsername:username, userPhoneNumber:phoneNumber, sub:sub })
+    })
+    .then(response => {
+      if (response.ok) { 
+        getSponsorInfo();
+        handleClose();
+        return response.json();
+      } 
+      else { console.error('Failed to update'); }
+    })
+    .catch(error => {
+      console.error('Error updating successfully:', error);
+    });
   };
 
   return (
@@ -96,16 +116,6 @@ export default function SponsorProfilePopUp({ userID, open, handleClose, permiss
               disabled={!editMode}
             />
           </Grid>
-          {/* <Grid item xs={6}>
-            <TextField
-              type="password"
-              label="Password"
-              fullWidth
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={!editMode}
-            />
-          </Grid> */}
           <Grid item xs={6}>
             <TextField
               label="Phone Number"
@@ -115,7 +125,7 @@ export default function SponsorProfilePopUp({ userID, open, handleClose, permiss
               disabled={!editMode}
             />
           </Grid>
-          {permission.permission == "admin" &&
+          {/* {permission.permission == "admin" &&
           <Grid item xs={6}>
             <Select
               value={sponsor}
@@ -128,7 +138,7 @@ export default function SponsorProfilePopUp({ userID, open, handleClose, permiss
               <MenuItem value="Sponsor 3">Sponsor 3</MenuItem>
             </Select>
           </Grid>
-          }
+          } */}
         </Grid>
       </DialogContent>
       <DialogActions>

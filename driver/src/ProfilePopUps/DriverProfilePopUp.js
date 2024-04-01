@@ -1,38 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextField, Select, MenuItem } from '@mui/material';
-import { useFetchUserAttributes, handleUpdateUserAttributes, handleConfirmUserAttribute } from '../CognitoAPI';
+import BaseURL from '../BaseURL';
 
 export default function DriverProfilePopUp({ sub, open, handleClose, permission }) {
   const [editMode, setEditMode] = useState(false);
-  const [firstName, setFirstName] = useState('Given Name');
-  const [lastName, setLastName] = useState('Family Name');
-  const [username, setUsername] = useState('Preferred Username');
-  const [email, setEmail] = useState('email@email.com');
-  const [sponsor, setSponsor] = useState('Sponsor');
-  const [address, setAddress] = useState('123 Street Rd, City, State, 11111');
-  const [phoneNumber, setPhoneNumber] = useState('1111111111');
-  const [applicationStatus, setApplicationStatus] = useState('Pending');
-  const [password, setPassword] = useState('PSWD');
+  const [username, setUsername] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [address, setAddress] = useState('');
 
-  // get Cognito attributes
-  const userAttributes = useFetchUserAttributes();
-
-  // CALL FROM COGNITO TO SET USER USESTATE ATTRIBUTES ABOVE
   useEffect(() => {
+    getDriverInfo();
+  }, []);
 
-    // when Cognito sends information back, update useState attributes
-    if (userAttributes) {
-      setFirstName(userAttributes.given_name || 'Given Name');
-      setLastName(userAttributes.family_name || 'Family Name');
-      setUsername(userAttributes.preferred_username || 'Preferred Username');
-      setSponsor(userAttributes["custom:Sponsor"] || 'Sponsor');
-      setPhoneNumber(userAttributes["custom:Phone"] || '1111111111');
-      setEmail(userAttributes.email || 'email@email.com');
-      setAddress(userAttributes.address || '123 Street Rd, City, State, 11111');
-      setPassword(userAttributes.address || '123 Street Rd, City, State, 11111');
-      console.log(userAttributes);
-    }
-  }, [userAttributes]);
+  const getDriverInfo = () => {
+    fetch(BaseURL + '/driverInfoFromSub', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ sub:sub })
+    })
+    .then(response => {
+      if (response.ok) { 
+        return response.json();
+      } 
+      else { console.error('Failed to get user'); }
+    })
+    .then(data => {
+      setUserAttributes(data[0]);
+    })
+    .catch(error => {
+      console.error('Failed to get user:', error);
+    });
+  }
+
+  const setUserAttributes = (user) => {
+    setAddress(user.driverAddress);
+    setPhoneNumber(user.userPhoneNumber);
+    setEmail(user.email);
+    setLastName(user.lastName);
+    setFirstName(user.firstName);
+    setUsername(user.userUsername);
+  }
 
   const handleEdit = () => {
     setEditMode(true);
@@ -44,18 +56,26 @@ export default function DriverProfilePopUp({ sub, open, handleClose, permission 
   };
 
   // update all attributes in edit profile screen everytime
-  const handleSave = async () => {
-    try {
-
-      // change normal attributes
-      await handleUpdateUserAttributes(email,firstName,lastName,phoneNumber,username,address);
-
-    } catch (error) {
-      console.log(error);
-    } finally {
-      handleClose();
-      setEditMode(false);
-    }
+  const handleSave = () => {
+    fetch(BaseURL + '/updateDriver', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({email:email, firstName:firstName, lastName:lastName, userUsername:username, userPhoneNumber:phoneNumber, driverAddress:address, sub:sub })
+    })
+    .then(response => {
+      if (response.ok) { 
+        getDriverInfo();
+        setEditMode(false);
+        handleClose();
+        return response.json();
+      } 
+      else { console.error('Failed to update'); }
+    })
+    .catch(error => {
+      console.error('Error updating successfully:', error);
+    });
   };
 
   return (
@@ -126,7 +146,7 @@ export default function DriverProfilePopUp({ sub, open, handleClose, permission 
             />
           </Grid>
           {/* only allow sponsor change by an admin */}
-          {permission.permission === "admin" && <Grid item xs={6}>
+          {/* {permission.permission === "admin" && <Grid item xs={6}>
             <Select
               value={sponsor}
               onChange={(e) => setSponsor(e.target.value)}
@@ -137,9 +157,9 @@ export default function DriverProfilePopUp({ sub, open, handleClose, permission 
               <MenuItem value="Sponsor 2">Sponsor 2</MenuItem>
               <MenuItem value="Sponsor 3">Sponsor 3</MenuItem>
             </Select>
-          </Grid>}
+          </Grid>} */}
           {/* only allow application status change by sponsor or admin */}
-          {(permission.permission === "admin" || permission.permission === "sponsor") && 
+          {/* {(permission.permission === "admin" || permission.permission === "sponsor") && 
           <Grid item xs={6}>
             <Select
               value={applicationStatus}
@@ -152,7 +172,7 @@ export default function DriverProfilePopUp({ sub, open, handleClose, permission 
               <MenuItem value="Rejected">Rejected</MenuItem>
             </Select>
           </Grid>
-        }
+        } */}
         </Grid>
       </DialogContent>
       <DialogActions>

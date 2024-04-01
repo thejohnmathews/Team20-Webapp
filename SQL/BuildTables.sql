@@ -14,6 +14,7 @@ CREATE TABLE UserInfo(
     lastName                VARCHAR(50),
     email                   VARCHAR(75),
     userUsername            VARCHAR(50),
+    userPhoneNumber 		VARCHAR(15),
     userType                VARCHAR(10)
 );
 
@@ -32,10 +33,8 @@ CREATE TABLE DriverUser(
     userID					INTEGER						PRIMARY KEY,
     driverStartDate			DATE,
     driverEndDate			DATE DEFAULT NULL,
-    driverNumTrips			INTEGER,
-    driverMilesDriven		INTEGER,
+    driverAddress			INTEGER,
     driverPoints 			INTEGER 					DEFAULT 0, 
-    sponsorOrgID			INTEGER,
     FOREIGN KEY (userID) REFERENCES UserInfo(userID)
 );
 

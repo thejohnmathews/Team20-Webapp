@@ -1,29 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextField, Select, MenuItem } from '@mui/material';
-import { useFetchUserAttributes, handleUpdateUserAttributes } from '../CognitoAPI';
+import BaseURL from '../BaseURL';
 
-export default function SponsorProfilePopUp({ userID, open, handleClose }) {
+export default function AdminProfilePopup({ sub, open, handleClose }) {
   const [editMode, setEditMode] = useState(false);
-  const [firstName, setFirstName] = useState('Given Name');
-  const [lastName, setLastName] = useState('Family Name');
-  const [username, setUsername] = useState('Preferred Username');
-  const [password, setPassword] = useState('PSWD');
-  const [phoneNumber, setPhoneNumber] = useState('1111111111');
+  const [username, setUsername] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
 
-  // get cognito attributes
-  const userAttributes = useFetchUserAttributes();
-
-  // CALL FROM COGNITO TO SET USER USESTATE ATTRIBUTES ABOVE
   useEffect(() => {
+    getAdminInfo();
+  }, []);
 
-    // when Cognito sends information back, update useState attributes
-    if (userAttributes) {
-      setFirstName(userAttributes.given_name || 'Given Name');
-      setLastName(userAttributes.family_name || 'Family Name');
-      setUsername(userAttributes.preferred_username || 'Preferred Username');
-      setPhoneNumber(userAttributes["custom:Phone"] || '1111111111');
-    }
-  }, [userAttributes]);
+  const getAdminInfo = () => {
+    fetch(BaseURL + '/adminInfoFromSub', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ sub:sub })
+    })
+    .then(response => {
+      if (response.ok) { 
+        return response.json();
+      } 
+      else { console.error('Failed to get user'); }
+    })
+    .then(data => {
+      setUserAttributes(data[0]);
+    })
+    .catch(error => {
+      console.error('Failed to get user:', error);
+    });
+  }
+
+  const setUserAttributes = (user) => {
+    setPhoneNumber(user.userPhoneNumber);
+    setEmail(user.email);
+    setLastName(user.lastName);
+    setFirstName(user.firstName);
+    setUsername(user.userUsername);
+  }
 
   const handleEdit = () => {
     setEditMode(true);
@@ -34,21 +53,25 @@ export default function SponsorProfilePopUp({ userID, open, handleClose }) {
     handleClose();
   };
 
-  // update all attributes in edit profile screen everytime
   const handleSave = async () => {
-    try {
-      await handleUpdateUserAttributes(
-        firstName,
-        lastName,
-        phoneNumber,
-        username,
-      );
-    } catch (error) {
-      console.log(error);
-    } finally {
-      handleClose();
-      setEditMode(false);
-    }
+    fetch(BaseURL + '/updateAdmin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({email:email, firstName:firstName, lastName:lastName, userUsername:username, userPhoneNumber:phoneNumber, sub:sub })
+    })
+    .then(response => {
+      if (response.ok) { 
+        getAdminInfo();
+        handleClose();
+        return response.json();
+      } 
+      else { console.error('Failed to update'); }
+    })
+    .catch(error => {
+      console.error('Error updating successfully:', error);
+    });
   };
 
   return (
