@@ -6,6 +6,8 @@ import "../App.css";
 import { Box, Tabs, Tab, Typography, Container } from '@mui/material';
 import {Paper, TableRow, TableHead, TableContainer, TableCell, TableBody, Table, Button} from '@mui/material';
 import { csv } from '../ConvertCSV';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 export default function SponsorReports() {
     function TabPanel(props) {
@@ -32,8 +34,12 @@ export default function SponsorReports() {
     const [sponsorOrgID, setSponsorOrgID] = React.useState(null);
     const [loading, setLoading] = React.useState(true);
     const [loginAttempts, setLoginAttempts] = React.useState([]);
+    const [loginAttemptsDesc, setLoginAttemptsDesc] = React.useState([]);
     const [passwordChange, setPasswordChange] = React.useState([]);
+    const [passwordChangeDesc, setPasswordChangeDesc] = React.useState([]);
     const [driverApp, setDriverApp] = React.useState([]);
+    const [driverAppDesc, setDriverAppDesc] = React.useState([]);
+    const [dateOrder, setDateOrder] = React.useState(true)
     
     const userAttributes = useFetchUserAttributes();
     
@@ -78,7 +84,9 @@ export default function SponsorReports() {
         fetch(url)
         .then(res => res.json())
         .then(data => setLoginAttempts(data))
+        .then(data => setLoginAttemptsDesc(loginAttempts.reverse()))
         .catch(err => console.log(err));
+
     }
 
     //get password change table
@@ -89,6 +97,7 @@ export default function SponsorReports() {
         fetch(url)
         .then(res => res.json())
         .then(data => setPasswordChange(data))
+        .then(data => setPasswordChangeDesc(passwordChange.reverse()))
         .catch(err => console.log(err));
     }
 
@@ -99,7 +108,13 @@ export default function SponsorReports() {
         fetch(url)
         .then(res => res.json())
         .then(data => setDriverApp(data))
+        .then(data => setDriverAppDesc(driverApp.reverse()))
         .catch(err => console.log(err));
+    }
+
+    const handleDateChange = () => {
+        setDateOrder(!dateOrder)
+
     }
 
     const getAssociatedSponsor = () => {
@@ -124,7 +139,7 @@ export default function SponsorReports() {
           console.error('Error retrieving successfully:', error);
         });
     }
-      
+
         return (
           <div>
               <SponsorAppBar/>
@@ -144,12 +159,35 @@ export default function SponsorReports() {
                           <TableHead>
                             <TableRow>
                               <TableCell align="center">Username</TableCell>
-                              <TableCell align="center">Date</TableCell>
+                                {dateOrder &&
+                                <TableCell align="center">
+                                    Date
+                                    <ArrowDropUpIcon sx={{position: "absolute", marginTop: "2px"}} cursor="pointer" onClick={() => handleDateChange()}/>
+                                </TableCell>
+                                }
+                                {!dateOrder &&
+                                <TableCell align="center">
+                                    Date
+                                    <ArrowDropDownIcon cursor="pointer" sx={{position: "absolute", marginTop: "2px"}} onClick={() => handleDateChange()}/>
+                                </TableCell>
+                                }
                               <TableCell align="right">Success</TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {loginAttempts.map((row) => (
+                            {dateOrder && loginAttempts.map((row) => (
+                              <TableRow
+                                key={row.loginAttemptID}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                              >
+                                <TableCell component="th" scope="row">
+                                  {row.userName}
+                                </TableCell>
+                                <TableCell align="center">{row.loginAttemptDate}</TableCell>
+                                <TableCell align="right">{row.loginSuccess}</TableCell>
+                              </TableRow> 
+                            ))}
+                            {!dateOrder && loginAttemptsDesc.map((row) => (
                               <TableRow
                                 key={row.loginAttemptID}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -181,13 +219,35 @@ export default function SponsorReports() {
                           <TableHead>
                             <TableRow>
                               <TableCell align="center">Username</TableCell>
-                              <TableCell align="center">Date of Application</TableCell>
+                              {dateOrder &&
+                                <TableCell align="center">
+                                    Date of Application
+                                    <ArrowDropUpIcon sx={{position: "absolute", marginTop: "2px"}} cursor="pointer" onClick={() => handleDateChange()}/>
+                                </TableCell>
+                                }
+                                {!dateOrder &&
+                                <TableCell align="center">
+                                    Date of Application
+                                    <ArrowDropDownIcon cursor="pointer" sx={{position: "absolute", marginTop: "2px"}} onClick={() => handleDateChange()}/>
+                                </TableCell>
+                                }
                               <TableCell align="center">Application Status</TableCell>
                               <TableCell align="center">Status Reason</TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {driverApp.map((row) => (
+                            {dateOrder && driverApp.map((row) => (
+                              <TableRow
+                                key={row.applicationID}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                              >
+                                <TableCell align="center">{row.userUsername}</TableCell>
+                                <TableCell align="center">{row.dateOfApplication}</TableCell>
+                                <TableCell align="center">{row.applicationStatus}</TableCell>
+                                <TableCell align="center">{row.statusReason}</TableCell>
+                              </TableRow> 
+                            ))}
+                            {!dateOrder && driverAppDesc.map((row) => (
                               <TableRow
                                 key={row.applicationID}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -218,12 +278,35 @@ export default function SponsorReports() {
                           <TableHead>
                             <TableRow>
                               <TableCell align="center">Username</TableCell>
-                              <TableCell align="center">Date</TableCell>
+                              {dateOrder &&
+                                <TableCell align="center">
+                                    Date
+                                    <ArrowDropUpIcon sx={{position: "absolute", marginTop: "2px"}} cursor="pointer" onClick={() => handleDateChange()}/>
+                                </TableCell>
+                                }
+                                {!dateOrder &&
+                                <TableCell align="center">
+                                    Date
+                                    <ArrowDropDownIcon cursor="pointer" sx={{position: "absolute", marginTop: "2px"}} onClick={() => handleDateChange()}/>
+                                </TableCell>
+                                }
                               <TableCell align="right">Type of Change</TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {passwordChange.map((row) => (
+                            {dateOrder && passwordChange.map((row) => (
+                              <TableRow
+                                key={row.passwordChangeID}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                              >
+                                <TableCell component="th" scope="row">
+                                  {row.userID}
+                                </TableCell>
+                                <TableCell align="center">{row.changeDate}</TableCell>
+                                <TableCell align="right">Password Reset</TableCell>
+                              </TableRow> 
+                            ))}
+                            {!dateOrder && passwordChangeDesc.map((row) => (
                               <TableRow
                                 key={row.passwordChangeID}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

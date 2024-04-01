@@ -39,7 +39,7 @@ app.get('/loginAttempts', (req, res) => {
     const sql = "SELECT loginAttemptID, userName, loginAttemptDate, loginSuccess FROM LoginAttempt\
     JOIN UserInfo ON LoginAttempt.userName = UserInfo.userUsername\
     JOIN DriverOrganizations DO on DO.driverID = UserInfo.userID\
-    WHERE DO.sponsorOrgID =  ?;"
+    WHERE DO.sponsorOrgID =  ? ORDER BY loginAttemptDate ASC;"
     db.query(sql, req.query.sponsorOrgID, (err, data) => {
         if(err) {
             return res.json(err);
@@ -54,7 +54,7 @@ app.get('/passwordChange', (req, res) => {
     const sql = "SELECT passwordChangeID, PasswordChange.userID, changeDate, oldPassword, newPassword FROM PasswordChange\
     JOIN UserInfo ON PasswordChange.userID = UserInfo.userID\
     JOIN DriverOrganizations ON UserInfo.userID = DriverOrganizations.driverID\
-    WHERE DriverOrganizations.sponsorOrgID = ?;"
+    WHERE DriverOrganizations.sponsorOrgID = ? ORDER BY changeDate ASC;"
     db.query(sql, req.query.sponsorOrgID, (err, data) => {
         if(err) {
             return res.json(err);
@@ -67,7 +67,7 @@ app.get('/passwordChange', (req, res) => {
 
 app.get('/driverAppInfo', (req, res) => {
     const sql = "SELECT D.applicationID, D.dateOfApplication, D.applicationStatus, D.statusReason, UserInfo.userUsername FROM DriverApplication D\
-    JOIN UserInfo ON D.userID = UserInfo.userID  WHERE sponsorOrgID = ?"
+    JOIN UserInfo ON D.userID = UserInfo.userID  WHERE sponsorOrgID = ? ORDER BY D.dateOfApplication ASC"
     db.query(sql, req.query.sponsorOrgID, (err, data) => {
         if(err) {
             return res.json(err);
