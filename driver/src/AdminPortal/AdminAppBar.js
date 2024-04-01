@@ -8,9 +8,12 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import BusinessIcon from '@mui/icons-material/Business';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { useAuthenticator } from '@aws-amplify/ui-react';
 
 export default function AdminAppBar() {
   const [open, setOpen] = React.useState(false);
+  const { user, signOut } = useAuthenticator((context) => [context.user]);
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
@@ -82,6 +85,14 @@ export default function AdminAppBar() {
               <InfoIcon/>
             </ListItemIcon>
             <ListItemText primary={"About"} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem key={"Sign Out"} disablePadding>
+          <ListItemButton onClick={signOut}>
+            <ListItemIcon>
+              <LogoutIcon/>
+            </ListItemIcon>
+            <ListItemText primary={"Sign Out"} />
           </ListItemButton>
         </ListItem>
       </List>
