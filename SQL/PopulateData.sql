@@ -22,7 +22,7 @@ INSERT INTO UserInfo (sub, firstName, lastName, email, userUsername, userType) V
 ('14183418-50a1-7058-baf0-e573db9f5b4a', 'Dev', 'Driver', 'driver@google.com', 'DevDriver', 'Driver'),
 ('54e81448-e0b1-704d-cb13-a76282121e1a', 'Sam', 'Sellers', 'sponsor@google.com', 'Sponsor_Username', 'Sponsor'),
 ('64d80438-f041-70e4-b2f2-83f501d83606', 'Adam', 'Anderson', 'admin@google.com', 'Admin_Username', 'Admin'),
-('14083448-d061-708b-78c4-200c38880108', 'emma', 'scalabrino', 'emsca2002@gmail.com', 'emkand3','440-759-3656', 'Driver');
+('14083448-d061-708b-78c4-200c38880108', 'emma', 'scalabrino', 'emsca2002@gmail.com', 'emkand3', 'Driver');
 
 INSERT INTO DriverUser (UserID, driverPoints) VALUES
 (2, 10),
