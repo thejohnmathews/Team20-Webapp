@@ -35,6 +35,49 @@ app.get('/About', (req, res) => {
     })
 })
 
+app.get('/loginAttempts', (req, res) => {
+    const sql = "SELECT loginAttemptID, userName, loginAttemptDate, loginSuccess FROM LoginAttempt\
+    JOIN UserInfo ON LoginAttempt.userName = UserInfo.userUsername\
+    JOIN DriverOrganizations DO on DO.driverID = UserInfo.userID\
+    WHERE DO.sponsorOrgID =  ?;"
+    db.query(sql, req.query.sponsorOrgID, (err, data) => {
+        if(err) {
+            return res.json(err);
+        }
+        else {
+            return res.json(data);
+        }
+    })
+})
+
+app.get('/passwordChange', (req, res) => {
+    const sql = "SELECT passwordChangeID, PasswordChange.userID, changeDate, oldPassword, newPassword FROM PasswordChange\
+    JOIN UserInfo ON PasswordChange.userID = UserInfo.userID\
+    JOIN DriverOrganizations ON UserInfo.userID = DriverOrganizations.driverID\
+    WHERE DriverOrganizations.sponsorOrgID = ?;"
+    db.query(sql, req.query.sponsorOrgID, (err, data) => {
+        if(err) {
+            return res.json(err);
+        }
+        else {
+            return res.json(data);
+        }
+    })
+})
+
+app.get('/driverAppInfo', (req, res) => {
+    const sql = "SELECT D.applicationID, D.dateOfApplication, D.applicationStatus, D.statusReason, UserInfo.userUsername FROM DriverApplication D\
+    JOIN UserInfo ON D.userID = UserInfo.userID  WHERE sponsorOrgID = ?"
+    db.query(sql, req.query.sponsorOrgID, (err, data) => {
+        if(err) {
+            return res.json(err);
+        }
+        else {
+            return res.json(data);
+        }
+    })
+})
+
 app.get('/goodReasons', (req, res) => {
     const sql = "SELECT * FROM Reason WHERE reasonType = 'good' AND sponsorOrgID = ?"
     db.query(sql, req.query.sponsorOrgID, (err, data) => {

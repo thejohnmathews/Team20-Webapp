@@ -33,6 +33,7 @@ import { Amplify } from 'aws-amplify';
 import { Authenticator, PhoneNumberField, TextField } from '@aws-amplify/ui-react';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import config from './amplifyconfiguration.json';
+import SponsorReports from './SponsorPortal/SponsorReports';
 Amplify.configure(config);
 
 export default function App() {
@@ -124,6 +125,7 @@ export default function App() {
             <Route exact path="/adminDriverApplicaitons" element={<DriverApplicationTable permissions={'Admin'}/>}/>
             <Route exact path="/sponsorDriverApplicaitons" element={<DriverApplicationTable permissions={'Sponsor'}/>}/>
             <Route exact path="/AdminPointChanges" element={<AdminPointChanges permissions={'Admin'}/>}/>
+            <Route exact path="/sponsorReports" element={<SponsorReports/>}/>
           </Routes>
       </Router>
       )}

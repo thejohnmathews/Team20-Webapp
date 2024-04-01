@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import BusinessIcon from '@mui/icons-material/Business';
 import SavingsIcon from '@mui/icons-material/Savings';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import { useEffect, useState } from 'react';
 import { useFetchUserAttributes, handleUpdateUserAttributes } from '../CognitoAPI';
 import BaseURL from '../BaseURL'
@@ -29,6 +30,10 @@ export default function SponsorAppBar() {
 
   const handleAbout = () => {
     navigate('/sponsorAbout');
+  };
+
+  const handleReports = () => {
+    navigate('/sponsorReports');
   };
 
   const handleAccountManage = () => {
@@ -187,6 +192,14 @@ export default function SponsorAppBar() {
               <SavingsIcon/>
             </ListItemIcon>
             <ListItemText primary={"Point Management"} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem key={"Reports"} disablePadding>
+          <ListItemButton onClick={handleReports}>
+            <ListItemIcon>
+              <AssessmentIcon/>
+            </ListItemIcon>
+            <ListItemText primary={"Reports"} />
           </ListItemButton>
         </ListItem>
         <ListItem key={"About"} disablePadding>
