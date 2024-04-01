@@ -1,49 +1,91 @@
 import React, { useEffect, useState } from 'react';
 import DriverAppBar from './DriverPortal/DriverAppBar';
-import { Card, CardContent, Typography, Grid, Divider } from '@mui/material';
+import { Card, CardContent, Typography, Grid, Button, Divider } from '@mui/material';
+import BaseURL from './BaseURL';
 
 export default function PastPurchases() {
-    // Mock data for past purchases (replace with actual data)
-    const [pastPurchases, setPastPurchases] = useState([
-        {
-            id: 1,
-            status: 'Delivered',
-            items: [
-                { id: 1, name: 'Item 1', price: 10 },
-                { id: 2, name: 'Item 2', price: 15 },
-                // Add more items as needed
-            ]
-        },
-        // Add more past purchases as needed
-    ]);
+    const [pastPurchases, setPastPurchases] = useState([]);
+
+    const handleCancelOrder = (orderId) => {
+        console.log(`Cancelled order ${orderId}`);
+    };
+
+    const getPurchases = () => {
+        fetch(BaseURL + '/getPurchases', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'purchase/json'
+            },
+        })
+        .then(response => {
+            if (response.ok) { 
+                console.log('Lists retrieved successfully'); 
+                return response.json();
+            } 
+            else { 
+                console.error('Failed to retrieve'); 
+            }
+        })
+        .then(data => {
+            console.log('Received data:', data);
+
+            // This groups mulitple RDS entries to the same purchaseOrderNum
+            const groupedPurchases = data.reduce((acc, purchase) => {
+                const orderNum = purchase.purchaseOrderNum;
+                if (!acc[orderNum]) {
+                    acc[orderNum] = [];
+                }
+                acc[orderNum].push(purchase);
+                return acc;
+            }, {});
+            setPastPurchases(groupedPurchases);
+        })
+        .catch(error => {
+            console.error('Error retrieving data:', error);
+        });
+    };
+
+    useEffect(() => {
+        getPurchases();
+    }, []);
 
     return (
         <div>
             <DriverAppBar />
             <h1 style={{ textAlign: 'center' }}>Past Purchases</h1>
-            <Grid container spacing={3} justifyContent="center">
-                {pastPurchases.map((purchase) => (
-                    <Grid item key={purchase.id} xs={12} sm={6} md={4}>
-                        <Card>
-                            <CardContent>
-                                <Typography variant="h6" gutterBottom>
-                                    Order {purchase.id}
-                                </Typography>
-                                <Typography color="textSecondary">
-                                    Status: {purchase.status}
-                                </Typography>
-                                <Divider style={{ margin: '12px 0' }} />
-                                <Typography variant="subtitle1">Items:</Typography>
-                                {purchase.items.map((item) => (
-                                    <Typography key={item.id} variant="body2">
-                                        {item.name} - ${item.price}
+            {Object.keys(pastPurchases).length === 0 ? (
+                <Typography variant="h6" align="center">
+                    There have been no purchases on this account.
+                </Typography>
+            ) : (
+                <Grid container spacing={3} justifyContent="center">
+                    {Object.entries(pastPurchases).map(([orderNum, purchases]) => (
+                        <Grid item key={orderNum} xs={12} md={6} lg={4}>
+                            <Card style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                                <CardContent>
+                                    <Typography variant="h6" gutterBottom>
+                                        Order {orderNum}
                                     </Typography>
-                                ))}
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                ))}
-            </Grid>
+                                    <Typography color="textSecondary">
+                                        Order Date: {purchases[0].purchaseDate}
+                                    </Typography>
+                                    <Divider />
+                                    {purchases.map((purchase, index) => (
+                                        <div key={purchase.purchaseID}>
+                                            <Typography variant="subtitle1">
+                                                {purchase.purchaseName} - ${purchase.purchaseCost}
+                                            </Typography>
+                                            <Typography color="textSecondary">
+                                                Status: {purchase.purchaseStatus}
+                                            </Typography>
+                                        </div>
+                                    ))}
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    ))}
+                </Grid>
+            )}
         </div>
     );
 }
