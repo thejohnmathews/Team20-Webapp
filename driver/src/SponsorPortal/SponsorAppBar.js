@@ -10,12 +10,15 @@ import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import BusinessIcon from '@mui/icons-material/Business';
 import SavingsIcon from '@mui/icons-material/Savings';
 import AssessmentIcon from '@mui/icons-material/Assessment';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { useEffect, useState } from 'react';
 import { useFetchUserAttributes, handleUpdateUserAttributes } from '../CognitoAPI';
-import BaseURL from '../BaseURL'
+import BaseURL from '../BaseURL';
+import { useAuthenticator } from '@aws-amplify/ui-react';
 
 
 export default function SponsorAppBar() {
+  const { user, signOut } = useAuthenticator((context) => [context.user]);
   const [open, setOpen] = React.useState(false);
   const userType = 'sponsor'
 
@@ -208,6 +211,14 @@ export default function SponsorAppBar() {
               <InfoIcon/>
             </ListItemIcon>
             <ListItemText primary={"About"} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem key={"Sign Out"} disablePadding>
+          <ListItemButton onClick={signOut}>
+            <ListItemIcon>
+              <LogoutIcon/>
+            </ListItemIcon>
+            <ListItemText primary={"Sign Out"} />
           </ListItemButton>
         </ListItem>
       </List>

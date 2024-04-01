@@ -6,15 +6,17 @@ import InfoIcon from '@mui/icons-material/Info';
 import StoreIcon from '@mui/icons-material/Store';
 import SavingsIcon from '@mui/icons-material/Savings';
 import HistoryIcon from '@mui/icons-material/History';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import BaseURL from '../BaseURL'
-
+import BaseURL from '../BaseURL';
+import { useAuthenticator } from '@aws-amplify/ui-react';
 
 export default function DriverAppBar() {
   const [open, setOpen] = React.useState(false);
   const [pointTotal, setPointTotal] = useState("");
   const userID = 5;
+  const { user, signOut } = useAuthenticator((context) => [context.user]);
 
   const [drivers, setDrivers, data] = useState([])
     useEffect(() => {
@@ -90,6 +92,14 @@ export default function DriverAppBar() {
               <InfoIcon/>
             </ListItemIcon>
             <ListItemText primary={"About"} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem key={"Sign Out"} disablePadding>
+          <ListItemButton onClick={signOut}>
+            <ListItemIcon>
+              <LogoutIcon/>
+            </ListItemIcon>
+            <ListItemText primary={"Sign Out"} />
           </ListItemButton>
         </ListItem>
       </List>
