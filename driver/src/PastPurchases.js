@@ -6,12 +6,14 @@ import BaseURL from './BaseURL';
 export default function PastPurchases() {
     const [pastPurchases, setPastPurchases] = useState([]);
 
+    // logic for cancel order button
     const handleCancelOrder = (orderId) => {
         console.log(`Cancelled order ${orderId}`);
     };
 
+    // get purchase information from RDS
     const getPurchases = () => {
-        fetch(BaseURL + '/getPurchases', {
+        fetch(BaseURL + '/getPurchase', {
             method: 'GET',
             headers: {
                 'Content-Type': 'purchase/json'
@@ -45,6 +47,8 @@ export default function PastPurchases() {
         });
     };
 
+
+    // useEffect(): request to RDS if there are any changes
     useEffect(() => {
         getPurchases();
     }, []);

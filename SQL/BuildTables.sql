@@ -78,8 +78,11 @@ CREATE TABLE DriverOrganizations(
 CREATE TABLE Purchase(
 
 	purchaseID				INTEGER						AUTO_INCREMENT PRIMARY KEY,
+    purchaseName			VARCHAR(100),
+    purchaseStatus			VARCHAR(25)					DEFAULT "Processing",
     purchaseDate			DATE,
     purchaseCost			NUMERIC(5,2),
+    purchaseOrderNum		INTEGER,
     driverID				INTEGER,
     FOREIGN KEY (driverID) REFERENCES DriverUser(userID)
 );

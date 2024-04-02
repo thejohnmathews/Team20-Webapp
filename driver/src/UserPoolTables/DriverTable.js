@@ -73,6 +73,7 @@ export default function DriverTable({permission, sponsorID}) {
               {permission === 'admin' && <TableCell align="right">Sponsor</TableCell>}
               <TableCell align="right">Email</TableCell>
               <TableCell align="right">Actions</TableCell>
+              <TableCell align="right">Cart</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -95,6 +96,9 @@ export default function DriverTable({permission, sponsorID}) {
                 <TableCell align="right">
                   <Button variant="contained" color="primary" onClick={() => handleClickOpen(row.sub)}>View/Edit Profile</Button>
                 </TableCell>
+                <TableCell align="right">
+					        <Button variant="contained" color="primary">View/Edit Cart</Button>
+				        </TableCell>
               </TableRow> 
             ))}
           </TableBody>

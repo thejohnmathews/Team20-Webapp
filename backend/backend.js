@@ -1168,7 +1168,8 @@ app.get('/driverInfo/:userID', (req, res) => {
 })
 
 // Get Purchase
-app.get('/getPurchases', (req, res) => {
+// NEED TO UPDATE THIS SO IT ONLY GETS DATA FROM CURRENT USER ID!!
+app.get('/getPurchase', (req, res) => {
     const sql = "SELECT * FROM Purchase";
     db.query(sql,(err, data) => {
         if (err) {
@@ -1180,36 +1181,43 @@ app.get('/getPurchases', (req, res) => {
     });
 });
 
-// Update Purchase
-/* app.post('/updatePurchases', (req, res) => {
+// Get Max OrderNum -> helper RDS call for Driver Cart
+app.get('/getMaxOrderNum', (req, res) => {
+    const sql = "SELECT MAX(purchaseOrderNum) AS maxPurchaseOrderNum FROM Purchase";
+    db.query(sql,(err, data) => {
+        if (err) {
+            console.log("Backend.js: Error getting MAX from Purchase table in RDS.");
+            return res.status(500).json({ error: "Error getting MAX from the database." });
+        } else {
+            return res.json(data);
+        }
+    });
+});
 
-    // Extracting parameters from request body
-    const { userID, reasonID, driverPoints } = req.body;
-    // Perform validation on parameters if necessary
+// Update Purchase
+app.post('/updatePurchase', (req, res) => {
+
+    const {driverID, purchaseName, purchaseCost, purchaseOrderNum} = req.body;
+    const sql = 'INSERT INTO Purchase (driverID, purchaseName, purchaseDate, purchaseCost, purchaseOrderNum) VALUES (?, ?, CURDATE(), ?, ?);';
+    
     console.log(req.body)
-    if (!userID || !reasonID || !driverPoints) {
+    if (!driverID || !purchaseName || !purchaseCost) {
         return res.status(400).json({ error: "Missing parameters" });
     }
-
-    // const sql = 'INSERT INTO PointChange (driverID, changeDate, changePointAmt, changeReasonID) VALUES ((SELECT userID FROM DriverUser WHERE userID = ?), CURDATE(), ?, ?);';
-    const sql = 'INSERT INTO Purchase (purchaseName, purchaseStatus, purchaseDate, purchaseCost, purchaseOrderNum, driverID) VALUES ((SELECT userID FROM DriverUser WHERE userID = ?), CURDATE(), ?, ?);';
+    
+    // integer conversion
+    const ordernumint = parseInt(purchaseOrderNum);
+    const values = [driverID, purchaseName, purchaseCost, ordernumint];
 
     db.query(sql, values, (err, result) => {
         if (err) {
-            console.error('Error updating user:', err);
-            res.status(500).json({ error: 'Error updating user' });
+            console.error('Error inserting into Purchase', err);
+            res.status(500).json({ error: 'Error inserting into Purchase' });
         } else {
-            db.query(sql2, [userID, driverPointsInt, reasonID], (err, result2) => {
-                if (err) {
-                    console.error('Error inserting point change:', err);
-                    res.status(500).json({ error: 'Error inserting point change' });
-                } else {
-                    res.status(200).json("Points updated successfully");
-                }
-            });
+            res.status(200).json("Purchase updated successfully");
         }
     });
-}); */
+}); 
 
 // Listen on port number listed
 app.listen(8080, ()=> {

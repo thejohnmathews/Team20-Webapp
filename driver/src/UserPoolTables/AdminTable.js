@@ -73,7 +73,7 @@ const updateRows = () => {
             <TableCell align="right">Sub</TableCell>
 			<TableCell align="right">Name</TableCell>
             <TableCell align="right">Email</TableCell>
-			      <TableCell align="right">Actions</TableCell>
+			<TableCell align="right">Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
