@@ -407,10 +407,10 @@ export default function SponsorReports() {
                     <br></br>
                     <Container>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                            <h1 style={{marginTop: "0px", marginBottom: "30px"}}> Driver Point Change Tracking</h1>
+                            <h1 style={{marginTop: "0px", marginBottom: "20px"}}> Driver Point Change Tracking</h1>
                               <Button onClick={sortRowsByDate}>Sort by Date ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
                               <Button onClick={sortRowsByChangePointAmt}>Sort by Point Change Amount ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
-                              <Button onClick={sortRowsByDriverName}>Sort by Driver Name ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
+                              <Button style={{marginBottom: "30px"}}onClick={sortRowsByDriverName}>Sort by Driver Name ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
                               <div style={{ position: 'absolute', marginTop: '10px', right: '40px' }}>
                                   <a href='#' onClick={() => csv(passwordChange)}>Download as CSV</a>
                               </div>
