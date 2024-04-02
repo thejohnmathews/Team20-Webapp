@@ -1019,6 +1019,7 @@ app.get('/pointChanges', (req, res) => {
     })
 })
 
+
 //returns active drivers in DB 
 app.get('/activeDrivers', (req, res) => {
     const sql = "SELECT * FROM DriverUser INNER JOIN UserInfo ON DriverUser.userID = UserInfo.userID";

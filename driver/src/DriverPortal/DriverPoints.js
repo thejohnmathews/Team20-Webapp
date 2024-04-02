@@ -2,9 +2,89 @@ import React, { useEffect, useState } from 'react';
 import { TableRow, TableHead, TableContainer, TableCell, TableBody, Table, Button, Container, Paper } from '@mui/material';
 import PointPage from "../PointPage";
 import DriverAppBar from "./DriverAppBar";
+import { useFetchUserAttributes, handleUpdateUserAttributes } from '../CognitoAPI';
+import { Grid, Typography, Box, TextField, Stack, Divider } from '@mui/material';
 import BaseURL from "../BaseURL";
 
 export default function DriverPoints(){
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [address, setAddress] = useState('');
+    const [sponsorOrgName, setSponsorOrgName] = useState('');
+    const [username, setUsername] = useState('');
+
+    const userAttributes = useFetchUserAttributes();
+
+    useEffect(() => {
+        if (userAttributes) { getUserInfo(); }
+    }, [userAttributes]);
+
+    const getUserInfo = () => {
+        getAssociatedSponsor(); 
+        getDriverInfo();
+    }
+    
+
+    const setUserAttributes = (user) => {
+        setAddress(user.driverAddress);
+        setPhoneNumber(user.userPhoneNumber);
+        setEmail(user.email);
+        setLastName(user.lastName);
+        setFirstName(user.firstName);
+        setUsername(user.userUsername);
+        console.log(firstName)
+        console.log(lastName)
+    }
+    const getAssociatedSponsor = () => {
+        fetch(BaseURL + "/driverAssociatedSponsor", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({sub: userAttributes.sub})
+        })
+        .then(response => {
+        if (response.ok) { 
+            return response.json();
+        } 
+        else { console.error('Failed to post'); }
+        })
+        .then(data => {
+        console.log(data);
+        setSponsorOrgName(data);	
+        })
+        .catch(error => {
+        console.error('Error retrieving successfully:', error);
+        });
+        
+      }
+      const getDriverInfo = () => {
+        fetch(BaseURL + '/driverInfoFromSub', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ sub:userAttributes.sub })
+        })
+        .then(response => {
+          if (response.ok) { 
+            return response.json();
+          } 
+          else { console.error('Failed to get user'); }
+        })
+        .then(data => {
+          setUserAttributes(data[0]);
+        })
+        .catch(error => {
+          console.error('Failed to get user:', error);
+        });
+      }
+
+
+
+
     const [changes, setChanges] = useState([]);
     const [changeTypes, setChangeTypes] = useState([]);
 
@@ -31,6 +111,7 @@ export default function DriverPoints(){
         .then(data => {
             console.log(data);
             setChanges(data);
+            console.log(Array.isArray(data));
         })
         .catch(error => {
             console.error('Error retrieving data:', error);
@@ -79,16 +160,23 @@ export default function DriverPoints(){
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {changes.map((change, index) => (
-                                    <TableRow key={index}>
-                                        <TableCell style={{ color: change['Change Type'] === "bad" ? "red" : change['Change Type'] === "good" ? "green" : "yellow"}}>{trimmedDate(change['Date (M/D/Y)'])}</TableCell>
-                                        <TableCell style={{ color: change['Change Type'] === "bad" ? 'red' : change['Change Type'] === "good" ? 'green' : 'inherit' }}>{change['Driver Name']}</TableCell>
-                                        <TableCell style={{ color: change['Change Type'] === "bad" ? 'red' : change['Change Type'] === "good" ? 'green' : 'inherit' }}>{change['Sponsor Name']}</TableCell>
-                                        <TableCell style={{ color: change['Change Type'] === "bad" ? 'red' : change['Change Type'] === "good" ? 'green' : 'inherit' }}>{change['Point Change Reason']}</TableCell>
-                                        <TableCell style={{ color: change['Change Type'] === "bad" ? 'red' : change['Change Type'] === "good" ? 'green' : 'inherit' }}>{change['Points Added/Reduced']}</TableCell>                                        
-                                        <TableCell style={{ color: change['Change Type'] === "bad" ? 'red' : change['Change Type'] === "good" ? 'green' : 'inherit' }}>{change['Total Points']}</TableCell>
-                                    </TableRow>
-                                ))}
+                                {changes.map((change, index) => {
+                                    if(change['Driver Name'] === `${firstName} ${lastName}`){
+                                        return (
+                                            <TableRow key={index}>
+                                                <TableCell style={{ color: change['Change Type'] === "bad" ? "red" : change['Change Type'] === "good" ? "green" : "yellow"}}>{trimmedDate(change['Date (M/D/Y)'])}</TableCell>
+                                                <TableCell style={{ color: change['Change Type'] === "bad" ? 'red' : change['Change Type'] === "good" ? 'green' : 'inherit' }}>{change['Driver Name']}</TableCell>
+                                                <TableCell style={{ color: change['Change Type'] === "bad" ? 'red' : change['Change Type'] === "good" ? 'green' : 'inherit' }}>{change['Sponsor Name']}</TableCell>
+                                                <TableCell style={{ color: change['Change Type'] === "bad" ? 'red' : change['Change Type'] === "good" ? 'green' : 'inherit' }}>{change['Point Change Reason']}</TableCell>
+                                                <TableCell style={{ color: change['Change Type'] === "bad" ? 'red' : change['Change Type'] === "good" ? 'green' : 'inherit' }}>{change['Points Added/Reduced']}</TableCell>                                        
+                                                <TableCell style={{ color: change['Change Type'] === "bad" ? 'red' : change['Change Type'] === "good" ? 'green' : 'inherit' }}>{change['Total Points']}</TableCell>
+                                            </TableRow>
+                                        );
+                                    }
+                                    else{
+                                        return null;
+                                    }
+                                })}
                             </TableBody>
                         </Table>
                     </TableContainer>

@@ -140,6 +140,78 @@ export default function SponsorReports() {
         });
     }
 
+//BELOW ARE USED FOR POINT TRACKING REPORTING
+    const [changes, setChanges] = useState([]);
+    const [changeTypes, setChangeTypes] = useState([]);
+
+    useEffect(() => {
+        updateRows();
+    }, []);
+
+    const updateRows = () => {
+        fetch(BaseURL + '/pointChanges', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => {
+            if (response.ok) { 
+                console.log('lists retrieved successfully'); 
+                return response.json();
+            } 
+            else { 
+                throw new Error('Failed to retrieve data'); 
+            }
+        })
+        .then(data => {
+            console.log(data);
+            setChanges(data);
+            console.log(Array.isArray(data));
+        })
+        .catch(error => {
+            console.error('Error retrieving data:', error);
+        });
+    };
+
+    const trimmedDate = (dateStr) => new Date(dateStr).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    });
+
+    //used for direction of sort 
+    const [sortDirection, setSortDirection] = useState('asc'); // 'asc' or 'desc'
+
+    const sortRowsByDate = () => {
+      const sortedList = [...changes].sort((a, b) => {
+          const dateA = new Date(a['Date (M/D/Y)']);
+          const dateB = new Date(b['Date (M/D/Y)']);
+          return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+      });
+      setChanges(sortedList);
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    };
+
+    const sortRowsByChangePointAmt = () => {
+        const sortedList = [...changes].sort((a, b) => {
+            return sortDirection === 'asc' ? a['Points Added/Reduced'] - b['Points Added/Reduced'] : b['Points Added/Reduced'] - a['Points Added/Reduced'];
+        });
+        setChanges(sortedList);
+        setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    };
+
+    const sortRowsByDriverName = () => {
+        const sortedList = [...changes].sort((a, b) => {
+            const nameA = a['Driver Name'].toUpperCase();
+            const nameB = b['Driver Name'].toUpperCase();
+            return sortDirection === 'asc' ? (nameA < nameB ? -1 : nameA > nameB ? 1 : 0) : (nameA > nameB ? -1 : nameA < nameB ? 1 : 0);
+        });
+        setChanges(sortedList);
+        setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    };
+      
+
         return (
           <div>
               <SponsorAppBar/>
@@ -149,6 +221,7 @@ export default function SponsorReports() {
                           <Tab label="Login Attempts" />
                           <Tab label="Driver Applications" />
                           <Tab label="Password Changes" />
+                          <Tab label="Driver Point Changes"/>
                       </Tabs>
                   </Box>
                   <TabPanel value={value} index={0}>
@@ -329,6 +402,47 @@ export default function SponsorReports() {
                       <div>
                       <p align="center">No data to display.</p>
                       </div>}
+                  </TabPanel>
+                  <TabPanel value={value} index={3}>
+                    <br></br>
+                    <Container>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                            <h1 style={{marginTop: "0px", marginBottom: "30px"}}> Driver Point Change Tracking</h1>
+                              <Button onClick={sortRowsByDate}>Sort by Date ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
+                              <Button onClick={sortRowsByChangePointAmt}>Sort by Point Change Amount ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
+                              <Button onClick={sortRowsByDriverName}>Sort by Driver Name ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
+                              <div style={{ position: 'absolute', marginTop: '10px', right: '40px' }}>
+                                  <a href='#' onClick={() => csv(passwordChange)}>Download as CSV</a>
+                              </div>
+                            <TableContainer component={Paper}>
+                                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Date (M/D/Y)</TableCell>
+                                            <TableCell>Driver Name</TableCell>
+                                            <TableCell>Sponsor Name</TableCell>
+                                            <TableCell>Point Change Reason</TableCell>
+                                            <TableCell>Points Added/Reduced</TableCell>
+                                            <TableCell>Total Points</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {changes.map((change, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell style={{ color: change['Change Type'] === "bad" ? "red" : change['Change Type'] === "good" ? "green" : "yellow"}}>{trimmedDate(change['Date (M/D/Y)'])}</TableCell>
+                                                <TableCell style={{ color: change['Change Type'] === "bad" ? 'red' : change['Change Type'] === "good" ? 'green' : 'inherit' }}>{change['Driver Name']}</TableCell>
+                                                <TableCell style={{ color: change['Change Type'] === "bad" ? 'red' : change['Change Type'] === "good" ? 'green' : 'inherit' }}>{change['Sponsor Name']}</TableCell>
+                                                <TableCell style={{ color: change['Change Type'] === "bad" ? 'red' : change['Change Type'] === "good" ? 'green' : 'inherit' }}>{change['Point Change Reason']}</TableCell>
+                                                <TableCell style={{ color: change['Change Type'] === "bad" ? 'red' : change['Change Type'] === "good" ? 'green' : 'inherit' }}>{change['Points Added/Reduced']}</TableCell>                                        
+                                                <TableCell style={{ color: change['Change Type'] === "bad" ? 'red' : change['Change Type'] === "good" ? 'green' : 'inherit' }}>{change['Total Points']}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </div>
+                    </Container>
+                  
                   </TabPanel>
               </Container>
           </div>
