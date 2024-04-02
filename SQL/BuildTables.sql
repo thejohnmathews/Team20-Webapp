@@ -109,6 +109,7 @@ CREATE TABLE PointChange(
     changeDate DATE,
 	changePointAmt INT,
     changeReasonID INT,
+    changeCurrPointTotal INT,
     FOREIGN KEY (driverID) REFERENCES DriverUser(userID),
     FOREIGN KEY (changeReasonID) REFERENCES Reason(reasonID),
     FOREIGN KEY (sponsorID) REFERENCES SponsorUser(userID)

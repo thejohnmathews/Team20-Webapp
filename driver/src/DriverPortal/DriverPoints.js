@@ -67,22 +67,20 @@ export default function DriverPoints(){
             data.forEach((driver, index) => {
               console.log(`Driver ${index + 1} points:`, driver.driverPoints);
             });
-
         })
         .catch(err => console.error('Error fetching driver data:', err));
   }, []);
-
   const sortRowsByDate = () => {
     // Sort the appList by date
     const sortedList = [...appList].sort((a, b) => new Date(a.changeDate) - new Date(b.changeDate));
     setAppList(sortedList);
   };
-
   const sortRowsByChangePointAmt = () => {
     // Sort the appList by changePointAmt
     const sortedList = [...appList].sort((a, b) => a.changePointAmt - b.changePointAmt);
     setAppList(sortedList);
   };
+
 
 	return(
 		<div>
@@ -108,22 +106,22 @@ export default function DriverPoints(){
 					</TableRow>
 					</TableHead>
 					<TableBody>
-						{appList
-							.filter(appRow => appRow.driverID === 5)
-							.map((appRow) => (
-								<TableRow
-								key={appRow.applicationID}
-								sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-								>
-								<TableCell component="th" scope="row">{trimmedDate(appRow.changeDate)}</TableCell>
-								<TableCell>{appRow.firstName} {appRow.lastName}</TableCell>
-								<TableCell>{appRow.sponsorOrgName}</TableCell>
-								<TableCell>{appRow.reasonString}</TableCell>
-								<TableCell>{appRow.changePointAmt}</TableCell>
-								<TableCell>{drivers.length > 0 && drivers[2] && drivers[2].driverPoints !== null ? `Current Point Total: ${drivers[2].driverPoints}` : "No points available"}</TableCell>
-								</TableRow>
-							))}
-					</TableBody>
+                        {Array.isArray(appList) && appList
+                            .filter(appRow => appRow.driverID === 5)
+                            .map((appRow) => (
+                                <TableRow
+                                    key={appRow.applicationID}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                    <TableCell component="th" scope="row">{trimmedDate(appRow.changeDate)}</TableCell>
+                                    <TableCell>{appRow.firstName} {appRow.lastName}</TableCell>
+                                    <TableCell>{appRow.sponsorOrgName}</TableCell>
+                                    <TableCell>{appRow.reasonString}</TableCell>
+                                    <TableCell>{appRow.changePointAmt}</TableCell>
+                                    <TableCell>{drivers.length > 0 && drivers[2] && drivers[2].driverPoints !== null ? `Current Point Total: ${drivers[2].driverPoints}` : "No points available"}</TableCell>
+                                </TableRow>
+                            ))}
+                    </TableBody>
 				</Table>
 				</TableContainer>
 				</div>

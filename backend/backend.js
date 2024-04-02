@@ -1014,10 +1014,10 @@ app.get('/pointChanges', (req, res) => {
         }
     })
 })
+
 //returns active drivers in DB 
-app.get('/activeSponsors', (req, res) => {
-    const sql = 
-    'SELECT su.*, so.*, FROM SponsorUser su, INNER JOIN SponsorOrganization so ON su.sponsorOrgID = so.sponsorOrgID;SELECT * FROM DriverUser;'
+app.get('/activeDrivers', (req, res) => {
+    const sql = "SELECT * FROM DriverUser INNER JOIN UserInfo ON DriverUser.userID = UserInfo.userID";
     db.query(sql, (err, data) => {
         if(err) {
             return res.json(err);
