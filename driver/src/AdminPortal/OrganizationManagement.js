@@ -5,6 +5,7 @@ import AddOrgPopup from '../AddUserPopups/AddOrganizationPopup';
 import EditOrgPopup from '../ProfilePopUps/OrganizationPopup';
 import { Organization } from '../Pojo';
 import BaseURL from '../BaseURL';
+import PastPurchases from '../PastPurchases';
 
 
 function OrganizationManagement() {
@@ -14,7 +15,7 @@ function OrganizationManagement() {
   const [orgList, setOrgList] = useState([new Organization()]);
   const [org, setOrg] = useState(new Organization());
   const [isFirstRender, setIsFirstRender] = useState(true);
-  
+
 
 	useEffect(() => {
 		updateRows()
