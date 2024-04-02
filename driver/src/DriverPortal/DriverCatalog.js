@@ -29,7 +29,7 @@ export default function DriverCatalog(){
     //get sponsor id (will need to fanagle with this to see multiple sponsors)
     const userAttributes = useFetchUserAttributes();
     const getAssociatedSponsor = () => {
-        fetch(BaseURL + '/associatedSponsor', {
+        fetch(BaseURL + '/driverAssociatedSponsor', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
