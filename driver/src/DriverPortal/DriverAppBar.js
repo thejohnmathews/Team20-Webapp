@@ -127,7 +127,7 @@ export default function DriverAppBar() {
             Driver Portal
           </Typography>
           <Typography variant="h6" style={{marginRight: '20px'}}>
-            {drivers.length > 0 && drivers[2] && drivers[2].driverPoints !== null ? `Current Point Total: ${drivers[2].driverPoints}` : "No points available"}
+            {drivers.length > 0 && drivers[1] && drivers[1].driverPoints !== null ? `Current Point Total: ${drivers[1].driverPoints}` : "No points available"}
           </Typography>           
           
               <IconButton

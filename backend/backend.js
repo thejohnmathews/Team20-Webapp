@@ -988,21 +988,25 @@ app.get('/pointChanges', (req, res) => {
     const sql = `
 
     SELECT 
-        PointChange.*, 
-        UserInfo.firstName, 
-        UserInfo.lastName, 
-        SponsorOrganization.sponsorOrgName,
-        Reason.reasonString
+        pc.changeDate AS 'Date (M/D/Y)',
+        CONCAT(ui.firstName, ' ', ui.lastName) AS 'Driver Name',
+        so.sponsorOrgName AS 'Sponsor Name',
+        r.reasonString AS 'Point Change Reason',
+        pc.changePointAmt AS 'Points Added/Reduced',
+        pc.changeCurrPointTotal AS 'Total Points',
+        pc.changeType AS 'Change Type'
     FROM 
-        PointChange 
-    JOIN 
-        UserInfo ON PointChange.driverID = UserInfo.userID 
-    JOIN 
-        DriverUser ON UserInfo.userID = DriverUser.userID 
-    JOIN 
-        SponsorOrganization ON DriverUser.sponsorOrgID = SponsorOrganization.sponsorOrgID
-    JOIN 
-        Reason ON PointChange.changeReasonID = Reason.reasonID;
+        PointChange pc
+    INNER JOIN 
+        DriverUser du ON pc.driverID = du.userID
+    INNER JOIN 
+        UserInfo ui ON du.userID = ui.userID
+    INNER JOIN 
+        DriverOrganizations doz ON pc.driverID = doz.driverID
+    INNER JOIN 
+        SponsorOrganization so ON doz.sponsorOrgID = so.sponsorOrgID
+    INNER JOIN 
+        Reason r ON pc.changeReasonID = r.reasonID;
     `;
     
     db.query(sql, (err, data) => {
@@ -1042,17 +1046,21 @@ app.get('/activeSponsors', (req, res) => {
 })
 
 app.post('/updatePointsGood', (req, res) => {
-    console.log("good");
     // Extracting parameters from request body
-    const { userID, reasonID, driverPoints } = req.body;
+    const { userID, reasonID, driverPoints, changeType} = req.body;
     // Perform validation on parameters if necessary
     console.log(req.body)
-    if (!userID || !reasonID || !driverPoints) {
+    if (!userID || !reasonID || !driverPoints || !changeType) {
         return res.status(400).json({ error: "Missing parameters" });
     }
 
     // Convert driverPoints to integer
     const driverPointsInt = parseInt(driverPoints);
+    const values = [driverPointsInt, userID]; 
+
+    console.log(driverPointsInt);
+    const data = {userID, driverPointsInt, reasonID, changeType, driverPointsInt, userID}
+    console.log(data)
 
     // Check if driverPointsInt is a valid integer
     if (isNaN(driverPointsInt)) {
@@ -1060,17 +1068,26 @@ app.post('/updatePointsGood', (req, res) => {
     }
 
     const sql1 = 'UPDATE DriverUser SET driverPoints = driverPoints + ? WHERE userID = ?;'
-    console.log(userID, driverPointsInt);
-    const values = [driverPointsInt, userID]; 
+    //const values = [driverPointsInt, userID]; 
 
-    const sql2 = 'INSERT INTO PointChange (driverID, changeDate, changePointAmt, changeReasonID) VALUES ((SELECT userID FROM DriverUser WHERE userID = ?), CURDATE(), ?, ?);';
+    const sql2 = `
+    INSERT INTO PointChange (driverID, changeDate, changePointAmt, changeReasonID, changeType, changeCurrPointTotal) 
+        VALUES (
+            (SELECT userID FROM DriverUser WHERE userID = ?), 
+            CURDATE(), 
+            ?, 
+            ?, 
+            ?, 
+            (SELECT driverPoints + ? FROM DriverUser WHERE userID = ? LIMIT 1)
+        );
+    `;
 
-    db.query(sql1, values, (err, result1) => {
+    db.query(sql2, [userID, driverPointsInt, reasonID, changeType, driverPointsInt, userID], (err, result2) => {
         if (err) {
             console.error('Error updating user:', err);
             res.status(500).json({ error: 'Error updating user' });
         } else {
-            db.query(sql2, [userID, driverPointsInt, reasonID], (err, result2) => {
+            db.query(sql1, values, (err, result1) => {
                 if (err) {
                     console.error('Error inserting point change:', err);
                     res.status(500).json({ error: 'Error inserting point change' });
@@ -1082,37 +1099,50 @@ app.post('/updatePointsGood', (req, res) => {
     });
 });
 
+
 app.post('/updatePointsBad', (req, res) => {
-    console.log("bad");
     // Extracting parameters from request body
-    const { userID, reasonID, driverPoints } = req.body;
+    const { userID, reasonID, driverPoints, changeType} = req.body;
     // Perform validation on parameters if necessary
     console.log(req.body)
-    if (!userID || !reasonID || !driverPoints) {
+    if (!userID || !reasonID || !driverPoints || !changeType) {
         return res.status(400).json({ error: "Missing parameters" });
     }
 
     // Convert driverPoints to integer
     const driverPointsInt = parseInt(driverPoints);
+    const values = [driverPointsInt, userID]; 
+
+    console.log(driverPointsInt);
+    const data = {userID, driverPointsInt, reasonID, changeType, driverPointsInt, userID}
+    console.log(data)
 
     // Check if driverPointsInt is a valid integer
     if (isNaN(driverPointsInt)) {
         return res.status(400).json({ error: "Invalid driverPoints value" });
     }
 
-    const sql1 = 'UPDATE DriverUser SET driverPoints = driverPoints - ? WHERE userID = ?;'
-    console.log(userID, driverPointsInt);
-    const values = [driverPointsInt, userID]; 
+    const sql1 = 'UPDATE DriverUser SET driverPoints = driverPoints + ? WHERE userID = ?;'
+    //const values = [driverPointsInt, userID]; 
 
-    const sql2 = 'INSERT INTO PointChange (driverID, changeDate, changePointAmt, changeReasonID) VALUES ((SELECT userID FROM DriverUser WHERE userID = ?), CURDATE(), ?, ?);';
+    const sql2 = `
+    INSERT INTO PointChange (driverID, changeDate, changePointAmt, changeReasonID, changeType, changeCurrPointTotal) 
+        VALUES (
+            (SELECT userID FROM DriverUser WHERE userID = ?), 
+            CURDATE(), 
+            ?, 
+            ?, 
+            ?, 
+            (SELECT driverPoints + ? FROM DriverUser WHERE userID = ? LIMIT 1)
+        );
+    `;
 
-
-    db.query(sql1, values, (err, result1) => {
+    db.query(sql2, [userID, driverPointsInt, reasonID, changeType, driverPointsInt, userID], (err, result2) => {
         if (err) {
             console.error('Error updating user:', err);
             res.status(500).json({ error: 'Error updating user' });
         } else {
-            db.query(sql2, [userID, driverPointsInt, reasonID], (err, result2) => {
+            db.query(sql1, values, (err, result1) => {
                 if (err) {
                     console.error('Error inserting point change:', err);
                     res.status(500).json({ error: 'Error inserting point change' });

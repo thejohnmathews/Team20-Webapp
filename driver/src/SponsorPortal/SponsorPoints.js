@@ -78,17 +78,15 @@ export default function SponsorPoints(){
         setSelectedDriver(event.target.value);
     };
 
-    const [reason, setReason] = useState("")
+    const [selectedReason, setSelectedReason] = useState("")
     const handleReasonChange = (event) => {
-        if(event && event.currentTarget){
-            setReason(event.currentTarget.value)
-            console.log(reason)
-        }
+            setSelectedReason(event.target.value)
     };
 
     const [pointValue, setPointValue] = useState("");
     const handlePointValueChange = (event) => {
-        setPointValue(event.target.value);
+        let value = event.target.value;
+        setPointValue(value);
     };
     const [drivers, setDrivers] = useState("")
     useEffect(() => {
@@ -101,13 +99,17 @@ export default function SponsorPoints(){
         .catch(err => console.error('Error fetching driver data:', err));
     }, []);
     const handleSubmit = () => {
-        const data = {
-            userID: selectedDriver,
-            reasonID: reason, 
-            driverPoints: pointValue 
-        };
-        console.log(data)
+        const reasonIDInt = parseInt(selectedReason)
+        var pointValueInt = parseInt(pointValue)
+        
         if(checked){
+            const data = {
+                userID: selectedDriver,
+                reasonID: selectedReason, 
+                driverPoints: pointValueInt, 
+                changeType: checked ? "good" : "bad"
+            };
+            console.log(data)
             fetch(BaseURL + "/updatePointsGood", {
                 method: 'POST',
                 headers: {
@@ -125,6 +127,14 @@ export default function SponsorPoints(){
             });
         }
         if(!checked){
+            pointValueInt = -Math.abs(parseFloat(pointValueInt));
+            const data = {
+                userID: selectedDriver,
+                reasonID: selectedReason, 
+                driverPoints: pointValueInt, 
+                changeType: checked ? "good" : "bad"
+            };
+            console.log(data);
             fetch(BaseURL + "/updatePointsBad", {
                 method: 'POST',
                 headers: {
@@ -143,8 +153,7 @@ export default function SponsorPoints(){
         }
     }
 
-    console.log(goodReasons)
-	return(
+    return(
 		<div>
 			<SponsorAppBar/>
             <h1>Point Management</h1>
@@ -182,12 +191,12 @@ export default function SponsorPoints(){
                 id="demo-simple-select"
                 label="Good Reasons"
                 sx={{minWidth: 200}}
-                value={reason}
+                value={selectedReason}
                 onChange={handleReasonChange}
             >
                 {goodReasons.map((reasonItem, index) => (
                     <MenuItem key={reasonItem.reasonID} value={reasonItem.reasonID}>
-                        {reason === reasonItem.reasonID ? reasonItem.reasonString : `${reasonItem.reasonString} (Other)`}
+                        {selectedReason === reasonItem.reasonID ? reasonItem.reasonString : `${reasonItem.reasonString} (Other)`}
                     </MenuItem>
                 ))}
                 <MenuItem value={"Other"}>Other</MenuItem>
@@ -198,12 +207,12 @@ export default function SponsorPoints(){
                 id="demo-simple-select"
                 label="Good Reasons"
                 sx={{minWidth: 200}}
-                value={reason}
+                value={selectedReason}
                 onChange={handleReasonChange}
             >
-                {badReasons.map((reason, index) => (
-                    <MenuItem key={reason.reasonID} value={reason.reasonID}>
-                        {reason.reasonString}
+                {badReasons.map((reasonItem, index) => (
+                    <MenuItem key={reasonItem.reasonID} value={reasonItem.reasonID}>
+                        {reasonItem.reasonString}
                     </MenuItem>
                 ))}
                 <MenuItem value={"Other"}>Other</MenuItem>

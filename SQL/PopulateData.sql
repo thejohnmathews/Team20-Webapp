@@ -75,8 +75,9 @@ INSERT INTO Reason(reasonString, reasonType, sponsorOrgID) VALUES
 ("Impaired driving.", "bad", 2),
 ("Off-roading.", "bad", 2);
 
-INSERT INTO PointChange(driverID, changeDate, changePointAmt, changeReasonID) VALUES
-(2, '2024-03-25', 100, 1);
+INSERT INTO PointChange(driverID, sponsorID, changeDate, changePointAmt, changeReasonID, changeType, changeCurrPointTotal) VALUES
+(3, (SELECT sponsorOrgID FROM DriverOrganizations WHERE driverID = 3), '2024-03-25', 0, 1, 'good',(SELECT driverPoints + 0 FROM DriverUser WHERE userID = 3)
+);
 
 INSERT INTO CatalogRules VALUES
 (1, "music"),

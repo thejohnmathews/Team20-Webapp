@@ -26,7 +26,6 @@ SELECT
         UserInfo.firstName, 
         UserInfo.lastName, 
         SponsorOrganization.sponsorOrgName,
-        DriverUser.driverPoints,
         Reason.reasonString
     FROM 
         PointChange 
@@ -35,7 +34,6 @@ SELECT
     JOIN 
         DriverUser ON UserInfo.userID = DriverUser.userID 
     JOIN 
-        SponsorOrganization ON DriverUser.sponsorOrgID = SponsorOrganization.sponsorOrgID
+        DriverOrganizations ON DriverUser.userID = DriverOrganizations.driverID
     JOIN 
         Reason ON PointChange.changeReasonID = Reason.reasonID;
-
