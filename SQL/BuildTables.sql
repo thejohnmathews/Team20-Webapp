@@ -33,7 +33,7 @@ CREATE TABLE DriverUser(
     userID					INTEGER						PRIMARY KEY,
     driverStartDate			DATE,
     driverEndDate			DATE DEFAULT NULL,
-    driverAddress			INTEGER,
+    driverAddress			VARCHAR(255),
     driverPoints 			INTEGER 					DEFAULT 0, 
     FOREIGN KEY (userID) REFERENCES UserInfo(userID)
 );
