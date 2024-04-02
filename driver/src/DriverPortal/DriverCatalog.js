@@ -14,8 +14,66 @@ import TextField from '@mui/material/TextField';
 import {Button} from '@mui/material';
 import { Link } from 'react-router-dom'
 import DriverCart from './DriverCart';
+import BaseURL from '../BaseURL';
+import { useFetchUserAttributes } from '../CognitoAPI';
+import SearchIcon from '@mui/icons-material/Search';
 
 export default function DriverCatalog(){
+
+    const MOVIES = "movies"
+    const MUSIC = "music"
+    const TVSHOWS = "tvShows"
+    const AUDIOBOOKS = "audiobooks"
+    const EBOOKS = "ebooks"
+
+    //get sponsor id (will need to fanagle with this to see multiple sponsors)
+    const userAttributes = useFetchUserAttributes();
+    const getAssociatedSponsor = () => {
+        fetch(BaseURL + '/associatedSponsor', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({sub: userAttributes.sub})
+        })
+        .then(response => {
+          if (response.ok) { 
+            return response.json();
+          } 
+          else { console.error('Failed to post'); }
+        })
+        .then(data => {
+          setSponsorOrgID(data[0].sponsorOrgID);
+        })
+        .catch(error => {
+          console.error('Error retrieving successfully:', error);
+        });
+    }
+    useEffect(() => {
+        if (userAttributes && sponsorOrgID === null) {
+            getAssociatedSponsor();
+        }
+    }, [userAttributes]); 
+    const [sponsorOrgID, setSponsorOrgID] = React.useState(null);
+    const [databaseInfo, setDatabaseInfo] = useState([])
+    const [loading, setLoading] = useState([])
+
+    useEffect(() => {
+        if(sponsorOrgID != null){
+            console.log(sponsorOrgID)
+            getCatalogRules();
+        }
+        else {
+            console.log("womp womp")
+        }
+    }, [sponsorOrgID]); 
+
+    useEffect(() => {
+        sponsorOrgID != null ? setLoading(false) : setLoading(true);
+        
+    }, [sponsorOrgID]);
+
+    
 	const navigate = useNavigate();
     const [dataFetched, setDataFetched] = useState(false);
 	const [albums, setAlbums] = useState([]);
@@ -32,7 +90,14 @@ export default function DriverCatalog(){
     const [priceFilter, setPriceFilter] = useState({ min: '', max: '' });
     const [filteredAlbums, setFilteredAlbums] = useState([]);
     const [cartItems, setCartItems] = useState([]);
+    const [sponsorRules, setSponsorRules] = useState([])
+    const [catalogItems, setCatalogItems] = useState([])
 
+    const [movieList, setMovieList] = useState([])
+    const [musicList, setMusicList] = useState([])
+    const [tvList, setTvList] = useState([])
+    const [audioList, setAudioList] = useState([])
+    const [ebookList, setEbookList] = useState([])
 
     const addToCart = album => {
         const updatedCartItems = [...cartItems, album];
@@ -52,13 +117,13 @@ export default function DriverCatalog(){
     const handleSortOptionSelect = (option) => {
         let sorted; 
         if(option.id === 0){
-            sorted = [...albums].sort((a, b) => a.collectionName.localeCompare(b.collectionName));
+            sorted = [...musicList].sort((a, b) => a.collectionName.localeCompare(b.collectionName));
         }
         else if(option.id === 1){
-            sorted = [...albums].sort((a, b) => a.collectionPrice - b.collectionPrice);
+            sorted = [...musicList].sort((a, b) => a.collectionPrice - b.collectionPrice);
         }
         else if(option.id === 2){
-            sorted = [...albums].sort((a, b) => new Date(a.releaseDate) - new Date(b.releaseDate));
+            sorted = [...musicList].sort((a, b) => new Date(a.releaseDate) - new Date(b.releaseDate));
         }
         setSortedAlbums(sorted);
 
@@ -72,7 +137,7 @@ export default function DriverCatalog(){
         setIsSortOpen(false);
     };
     const handleUndoSort = () => {
-        setAlbums(originalAlbums);
+        setMusicList(originalAlbums);
         setSortedAlbums([]);
         setSortOptions(prevOptions => prevOptions.map(opt => ({ ...opt, selected: false })));
     };
@@ -86,7 +151,7 @@ export default function DriverCatalog(){
 
     const handleApplyFilter = () => {
         // Filter albums based on price range
-        const filtered = albums.filter(album => {
+        const filtered = musicList.filter(album => {
             const price = parseFloat(album.collectionPrice);
             const min = parseFloat(priceFilter.min);
             const max = parseFloat(priceFilter.max);
@@ -97,29 +162,130 @@ export default function DriverCatalog(){
         setIsFilterOpen(false);
     };
 
-
-
-	// Dependency Array
+    const getCatalogRules = () => {
+        const url = new URL(BaseURL + "/sponsorCatalogRules");
+        url.searchParams.append('sponsorOrgID', sponsorOrgID);
+        console.log("hi " + sponsorOrgID)
+        fetch(url, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(response => {
+            if (response.ok) { 
+              return response.json();
+            } 
+            else { console.error('Failed to post'); }
+          })
+          .then(data => {
+            setDatabaseInfo(data)
+          })
+        //console.log(databaseInfo)
+    }
     useEffect(() => {
-        fetch('https://itunes.apple.com/search?term=glass+animals&limit=10&entity=album')
+        var rules = databaseInfo.map((x) => x.catalogRuleName)
+        setSponsorRules(rules)
+        console.log(sponsorRules)
+    }, [databaseInfo])
+    
+    const handleCatalog = () => {
+        //handle searchbar text
+        setLoading(true)
+        var text = document.getElementById('searchbar').value
+        var content = text.replace(" ","+")
+        setCatalogItems([])
+        setMusicList([])
+        //1. check what rules are available
+        //call fetch from within these checks
+        if (sponsorRules.includes(MOVIES)) {
+            fetch('https://itunes.apple.com/search?limit=10&media=movie&term='+content)
             .then(response => response.json())
             .then(data => {
-                setAlbums(data.results);
-                setOriginalAlbums(data.results);
+                //console.log(data)
+                setMovieList(data)
             })
 			// Handle any errors that occur during the fetch
             .catch(error => {
-                
                 console.error('Error fetching data:', error);
             });
-    }, []); // This Empties the dependency array to ensure useEffect runs only once
+        }
+        if (sponsorRules.includes(MUSIC)) {
+            fetch('https://itunes.apple.com/search?limit=10&entity=album&term='+content)
+            .then(response => response.json())
+            .then(data => {
+                //console.log(data)
+                setMusicList(data.results)
+                setOriginalAlbums(data.results)
+            })
+			// Handle any errors that occur during the fetch
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+        }
+        if (sponsorRules.includes(TVSHOWS)) {
+            fetch('https://itunes.apple.com/search?limit=10&media=tvShow&term='+content)
+            .then(response => response.json())
+            .then(data => {
+                //console.log(data)
+                setTvList(data)
+            })
+			// Handle any errors that occur during the fetch
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+        }
+        if (sponsorRules.includes(AUDIOBOOKS)) {
+            fetch('https://itunes.apple.com/search?limit=10&media=audiobook&term='+content)
+            .then(response => response.json())
+            .then(data => {
+                //console.log(data)
+                setAudioList(data)
+            })
+			// Handle any errors that occur during the fetch
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+        }
+        if (sponsorRules.includes(EBOOKS)) {
+            fetch('https://itunes.apple.com/search?limit=10&media=ebook&term='+content)
+            .then(response => response.json())
+            .then(data => {
+                //console.log(data)
+                setEbookList(data)
+            })
+			// Handle any errors that occur during the fetch
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+        }
+        setLoading(false)
+        //1.5 set loading to true
+        //2. fetch all types with valid rules
+        //3. get all the data in one place
+        //4. map the data
+        //4.5 set loading to false
+        //5. show the data to the user
+    }
+
+	// Dependency Array
 	return (
         <div>
             <DriverAppBar />        
             <Catalog />
+            <Box sx={{ marginLeft: '10px', display: 'flex', alignItems: 'flex-end' }}>
+                <SearchIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
+                <TextField 
+                    id="searchbar" 
+                    label="Search the catalog..." 
+                    variant="standard" 
+                    sx={{width: "300px"}}/>
+                <Button variant='contained' onClick={handleCatalog}>Search</Button>
+            </Box>
+            {!loading && musicList.length != 0 && 
             <div style={{ marginLeft: '25px' }}>
                 {/* Loops through returned data and displays it */}
-                {(sortedAlbums.length > 0 ? sortedAlbums : albums).map(album => (
+                {(sortedAlbums.length > 0 ? sortedAlbums : musicList).map(album => (
                 <div key={album.collectionId}>
                     <h2>{album.collectionName}</h2>
                     <img src={album.artworkUrl100} alt="Album Artwork" />
@@ -132,6 +298,7 @@ export default function DriverCatalog(){
                 </div>
                 ))}
             </div>
+            }
             
             <div style={{ position: 'absolute', top: 100, right: 25, padding: '10px' }}>
                 <button style={{ border: 'none', background: 'none', cursor: 'pointer' }}>

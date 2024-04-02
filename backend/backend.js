@@ -1137,8 +1137,51 @@ app.get('/driverInfo/:userID', (req, res) => {
     })
 })
 
+// Get Purchase
+app.get('/getPurchases', (req, res) => {
+    const sql = "SELECT * FROM Purchase";
+    db.query(sql,(err, data) => {
+        if (err) {
+            console.log("Backend.js: Error getting information from Purchase table in RDS.");
+            return res.status(500).json({ error: "Error getting purchases from the database." });
+        } else {
+            return res.json(data);
+        }
+    });
+});
 
-// John - I changed this to 3001 for testing!!
+// Update Purchase
+/* app.post('/updatePurchases', (req, res) => {
+
+    // Extracting parameters from request body
+    const { userID, reasonID, driverPoints } = req.body;
+    // Perform validation on parameters if necessary
+    console.log(req.body)
+    if (!userID || !reasonID || !driverPoints) {
+        return res.status(400).json({ error: "Missing parameters" });
+    }
+
+    // const sql = 'INSERT INTO PointChange (driverID, changeDate, changePointAmt, changeReasonID) VALUES ((SELECT userID FROM DriverUser WHERE userID = ?), CURDATE(), ?, ?);';
+    const sql = 'INSERT INTO Purchase (purchaseName, purchaseStatus, purchaseDate, purchaseCost, purchaseOrderNum, driverID) VALUES ((SELECT userID FROM DriverUser WHERE userID = ?), CURDATE(), ?, ?);';
+
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Error updating user:', err);
+            res.status(500).json({ error: 'Error updating user' });
+        } else {
+            db.query(sql2, [userID, driverPointsInt, reasonID], (err, result2) => {
+                if (err) {
+                    console.error('Error inserting point change:', err);
+                    res.status(500).json({ error: 'Error inserting point change' });
+                } else {
+                    res.status(200).json("Points updated successfully");
+                }
+            });
+        }
+    });
+}); */
+
+// Listen on port number listed
 app.listen(8080, ()=> {
     console.log("listening")
 })
