@@ -1221,6 +1221,6 @@ app.post('/updatePurchase', (req, res) => {
 }); 
 
 // Listen on port number listed
-app.listen(8080, ()=> {
+app.listen(3000, ()=> {
     console.log("listening")
 })
