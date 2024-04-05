@@ -109,7 +109,7 @@ CREATE TABLE Reason (
 CREATE TABLE PointChange(
 	driverID INT,
     sponsorID INT,
-    changeDate DATE,
+    changeDate TIMESTAMP,
 	changePointAmt INT,
     changeReasonID INT,
     changeType VARCHAR(5),

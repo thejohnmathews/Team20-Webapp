@@ -44,6 +44,10 @@ export default function AdminAppBar() {
     navigate('/AdminPointChanges');
   };
 
+  const handleSignOut = () => {
+    window.location.href = "/";
+  }
+
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
       <List>
@@ -88,7 +92,7 @@ export default function AdminAppBar() {
           </ListItemButton>
         </ListItem>
         <ListItem key={"Sign Out"} disablePadding>
-          <ListItemButton onClick={signOut}>
+          <ListItemButton onClick={signOut, handleSignOut}>
             <ListItemIcon>
               <LogoutIcon/>
             </ListItemIcon>

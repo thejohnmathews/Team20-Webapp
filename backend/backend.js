@@ -1075,7 +1075,7 @@ app.post('/updatePointsGood', (req, res) => {
     INSERT INTO PointChange (driverID, changeDate, changePointAmt, changeReasonID, changeType, changeCurrPointTotal) 
         VALUES (
             (SELECT userID FROM DriverUser WHERE userID = ?), 
-            CURDATE(), 
+            NOW(), 
             ?, 
             ?, 
             ?, 
@@ -1130,7 +1130,7 @@ app.post('/updatePointsBad', (req, res) => {
     INSERT INTO PointChange (driverID, changeDate, changePointAmt, changeReasonID, changeType, changeCurrPointTotal) 
         VALUES (
             (SELECT userID FROM DriverUser WHERE userID = ?), 
-            CURDATE(), 
+            NOW(), 
             ?, 
             ?, 
             ?, 
