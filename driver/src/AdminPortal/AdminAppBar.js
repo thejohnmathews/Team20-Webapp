@@ -46,6 +46,7 @@ export default function AdminAppBar() {
 
   const handleSignOut = () => {
     window.location.href = "/";
+    signOut();
   }
 
   const DrawerList = (
@@ -92,7 +93,7 @@ export default function AdminAppBar() {
           </ListItemButton>
         </ListItem>
         <ListItem key={"Sign Out"} disablePadding>
-          <ListItemButton onClick={signOut, handleSignOut}>
+          <ListItemButton onClick={handleSignOut}>
             <ListItemIcon>
               <LogoutIcon/>
             </ListItemIcon>

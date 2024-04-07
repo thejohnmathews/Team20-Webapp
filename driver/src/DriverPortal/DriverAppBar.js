@@ -60,6 +60,7 @@ export default function DriverAppBar() {
   }
   const handleSignOut = () => {
     window.location.href = "/";
+    signOut();
   }
   
   const DrawerList = (
@@ -98,7 +99,7 @@ export default function DriverAppBar() {
           </ListItemButton>
         </ListItem>
         <ListItem key={"Sign Out"} disablePadding>
-          <ListItemButton onClick={signOut, handleSignOut}>
+          <ListItemButton onClick={handleSignOut}>
             <ListItemIcon>
               <LogoutIcon/>
             </ListItemIcon>

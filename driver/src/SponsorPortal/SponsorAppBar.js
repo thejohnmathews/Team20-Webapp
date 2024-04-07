@@ -60,6 +60,7 @@ export default function SponsorAppBar() {
   };
   const handleSignOut = () => {
     window.location.href = "/";
+    signOut();
   }
 
   const [open2, setOpen2] = useState(false);
@@ -217,7 +218,7 @@ export default function SponsorAppBar() {
           </ListItemButton>
         </ListItem>
         <ListItem key={"Sign Out"} disablePadding>
-          <ListItemButton onClick={signOut, handleSignOut}>
+          <ListItemButton onClick={handleSignOut}>
             <ListItemIcon>
               <LogoutIcon/>
             </ListItemIcon>
