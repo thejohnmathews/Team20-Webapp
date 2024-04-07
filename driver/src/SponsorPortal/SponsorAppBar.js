@@ -58,6 +58,9 @@ export default function SponsorAppBar() {
   const handleDriverApplications = () => {
     navigate('/sponsorDriverApplicaitons');
   };
+  const handleSignOut = () => {
+    window.location.href = "/";
+  }
 
   const [open2, setOpen2] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -214,7 +217,7 @@ export default function SponsorAppBar() {
           </ListItemButton>
         </ListItem>
         <ListItem key={"Sign Out"} disablePadding>
-          <ListItemButton onClick={signOut}>
+          <ListItemButton onClick={signOut, handleSignOut}>
             <ListItemIcon>
               <LogoutIcon/>
             </ListItemIcon>

@@ -33,7 +33,7 @@ CREATE TABLE DriverUser(
     userID					INTEGER						PRIMARY KEY,
     driverStartDate			DATE,
     driverEndDate			DATE DEFAULT NULL,
-    driverAddress			INTEGER,
+    driverAddress			VARCHAR(255),
     driverPoints 			INTEGER 					DEFAULT 0, 
     FOREIGN KEY (userID) REFERENCES UserInfo(userID)
 );
@@ -109,7 +109,7 @@ CREATE TABLE Reason (
 CREATE TABLE PointChange(
 	driverID INT,
     sponsorID INT,
-    changeDate DATE,
+    changeDate TIMESTAMP,
 	changePointAmt INT,
     changeReasonID INT,
     changeType VARCHAR(5),

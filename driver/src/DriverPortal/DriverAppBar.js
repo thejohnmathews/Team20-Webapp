@@ -58,6 +58,9 @@ export default function DriverAppBar() {
   const handleDrivingPoints = () => {
     navigate('/driverPoints')
   }
+  const handleSignOut = () => {
+    window.location.href = "/";
+  }
   
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
@@ -95,7 +98,7 @@ export default function DriverAppBar() {
           </ListItemButton>
         </ListItem>
         <ListItem key={"Sign Out"} disablePadding>
-          <ListItemButton onClick={signOut}>
+          <ListItemButton onClick={signOut, handleSignOut}>
             <ListItemIcon>
               <LogoutIcon/>
             </ListItemIcon>

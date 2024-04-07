@@ -49,6 +49,7 @@ export default function NewUserRedirect() {
 			headers: {
 				'Content-Type': 'application/json'
 			},
+			//Add address and phone number 
 			body: JSON.stringify({sub:userAttributes.sub, email:userAttributes.email, firstName:userAttributes.given_name, lastName:userAttributes.family_name, userUsername:userAttributes.preferred_username})
 		})
 		.then(response => {
