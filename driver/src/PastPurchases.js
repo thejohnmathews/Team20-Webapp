@@ -8,6 +8,7 @@ export default function PastPurchases() {
     const [pastPurchases, setPastPurchases] = useState([]);
     const userAttributes = useFetchUserAttributes();
     const [driverID, setID] = useState('');
+    const [totalPointsSpent, setTotalPointsSpent] = useState(0); 
 
     // Get current user from UserInfo RDS table
     if(userAttributes !== null){
@@ -25,7 +26,6 @@ export default function PastPurchases() {
             return response.json(); 
         })
         .then(data => {
-            console.log("userID is :" + data.userData.userID);
             setID(data.userData.userID);
         })
         .catch(error => {
@@ -66,18 +66,52 @@ export default function PastPurchases() {
         });
     };
 
+    // Call getPurchases when the component mounts
     useEffect(() => {
-        // Call getPurchases when the component mounts
+        
         getPurchases();
     }, [driverID]); 
 
-    // logic for cancel order button
-    const handleCancelOrder = (orderId) => {
-        
-        // remove all items associated from Purchase table
-        fetch(BaseURL + '/removePurchase', (req, res) => {
+    // Calculate total points spent
+    useEffect(() => {
+        let totalPoints = 0;
+        Object.values(pastPurchases).forEach(purchases => {
+            purchases.forEach(purchase => {
+                totalPoints += purchase.purchaseCost;
+            });
+        });
+        setTotalPointsSpent(totalPoints);
+    }, [pastPurchases]);
 
-            
+    // logic for cancel order button
+    const handleCancelOrder = (orderNum) => {
+        
+        // Extracting purchase IDs associated with the orderNum
+        const purchaseIDs = pastPurchases[orderNum].map(purchase => purchase.purchaseID);
+
+        // Sending purchase IDs to backend to delete entries from the Purchase table
+        fetch(BaseURL + '/removePurchase',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ purchaseIDs: purchaseIDs })
+        })
+        .then(response => {
+            if (response.ok) { 
+                
+                // Fetch updated data
+                getPurchases(); 
+                const updatedPastPurchases = { ...pastPurchases };
+                delete updatedPastPurchases[orderNum];
+                setPastPurchases(updatedPastPurchases);
+            } 
+            else { 
+                console.error('Failed to cancel order'); 
+            }
+        })
+        .catch(error => {
+            console.error('Failed to cancel order', error);
         });
     };
 
@@ -88,6 +122,9 @@ export default function PastPurchases() {
             <DriverAppBar />
             <Typography variant="h3" align="center" gutterBottom>
                 Past Purchases
+            </Typography>
+            <Typography variant="h6" align="center">
+                Total Points Spent: {totalPointsSpent}
             </Typography>
             {Object.keys(pastPurchases).length === 0 ? (
                 <Typography variant="h6" align="center">
