@@ -25,7 +25,6 @@ export default function PastPurchases() {
             return response.json(); 
         })
         .then(data => {
-            console.log("userID is :" + data.userData.userID);
             setID(data.userData.userID);
         })
         .catch(error => {
@@ -72,12 +71,34 @@ export default function PastPurchases() {
     }, [driverID]); 
 
     // logic for cancel order button
-    const handleCancelOrder = (orderId) => {
+    const handleCancelOrder = (orderNum) => {
         
-        // remove all items associated from Purchase table
-        fetch(BaseURL + '/removePurchase', (req, res) => {
+        // Extracting purchase IDs associated with the orderNum
+        const purchaseIDs = pastPurchases[orderNum].map(purchase => purchase.purchaseID);
 
-            
+        // Sending purchase IDs to backend to delete entries from the Purchase table
+        fetch(BaseURL + '/removePurchase',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ purchaseIDs: purchaseIDs })
+        })
+        .then(response => {
+            if (response.ok) { 
+                
+                // Fetch updated data
+                getPurchases(); 
+                const updatedPastPurchases = { ...pastPurchases };
+                delete updatedPastPurchases[orderNum];
+                setPastPurchases(updatedPastPurchases);
+            } 
+            else { 
+                console.error('Failed to cancel order'); 
+            }
+        })
+        .catch(error => {
+            console.error('Failed to cancel order', error);
         });
     };
 
