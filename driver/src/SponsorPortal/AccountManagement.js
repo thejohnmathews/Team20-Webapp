@@ -27,7 +27,7 @@ function TabPanel(props) {
   );
 }
 
-function AccountManagement() {
+function AccountManagement({inheritedSub}) {
   const [value, setValue] = React.useState(0);  
   const [sponsorOrgID, setSponsorOrgID] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
@@ -52,7 +52,7 @@ function AccountManagement() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({sub: userAttributes.sub})
+      body: JSON.stringify({sub: inheritedSub?.value ? inheritedSub.value : userAttributes.sub})
     })
     .then(response => {
       if (response.ok) { 
@@ -77,7 +77,7 @@ function AccountManagement() {
 
   return (
 	<div>
-		<SponsorAppBar/>
+		<SponsorAppBar inheritedSub={inheritedSub}/>
 		<Container>
 			<Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
 				<Tabs value={value} onChange={handleChange} aria-label="basic tabs example">

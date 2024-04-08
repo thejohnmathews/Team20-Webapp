@@ -5,7 +5,7 @@ import UpdatePassword from './UpdatePassword';
 import { Grid, Typography, Box, Button, TextField, Paper, Stack, Divider } from '@mui/material';
 import BaseURL from './BaseURL';
 
-export default function ProfilePage({userType}) {
+export default function ProfilePage({userType, inheritedSub}) {
   const [open2, setOpen2] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [username, setUsername] = useState('');
@@ -17,7 +17,6 @@ export default function ProfilePage({userType}) {
   const [sponsorOrgName, setSponsorOrgName] = useState('');
 
   const userAttributes = useFetchUserAttributes();
-
   useEffect(() => {
     if (userAttributes) { getUserInfo(); }
   }, [userAttributes]);
@@ -65,7 +64,7 @@ export default function ProfilePage({userType}) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({email:email, firstName:firstName, lastName:lastName, userUsername:username, userPhoneNumber:phoneNumber, driverAddress:address, sub:userAttributes.sub })
+      body: JSON.stringify({email:email, firstName:firstName, lastName:lastName, userUsername:username, userPhoneNumber:phoneNumber, driverAddress:address, sub: inheritedSub?.value2 ? inheritedSub.value2 : userAttributes.sub })
     })
     .then(response => {
       if (response.ok) { 
@@ -84,7 +83,7 @@ export default function ProfilePage({userType}) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({email:email, firstName:firstName, lastName:lastName, userUsername:username, userPhoneNumber:phoneNumber, sub:userAttributes.sub })
+      body: JSON.stringify({email:email, firstName:firstName, lastName:lastName, userUsername:username, userPhoneNumber:phoneNumber, sub: inheritedSub?.value ? inheritedSub.value : userAttributes.sub })
     })
     .then(response => {
       if (response.ok) { 
@@ -137,7 +136,7 @@ export default function ProfilePage({userType}) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ sub:userAttributes.sub })
+      body: JSON.stringify({ sub: inheritedSub?.value ? inheritedSub.value : userAttributes.sub })
     })
     .then(response => {
       if (response.ok) { 
@@ -159,7 +158,7 @@ export default function ProfilePage({userType}) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ sub:userAttributes.sub })
+      body: JSON.stringify({ sub: inheritedSub?.value2 ? inheritedSub.value2 : userAttributes.sub })
     })
     .then(response => {
       if (response.ok) { 
@@ -189,7 +188,7 @@ export default function ProfilePage({userType}) {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({sub: userAttributes.sub})
+        body: JSON.stringify({sub: inheritedSub?.value2 ? inheritedSub.value2 : (inheritedSub?.value ? inheritedSub.value : userAttributes.sub)})
       })
       .then(response => {
         if (response.ok) { 

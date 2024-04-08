@@ -9,7 +9,8 @@ import IconButton from '@mui/material/IconButton';
 import ClearIcon from '@mui/icons-material/Clear';
 import Chart from 'chart.js/auto';
 
-export default function DriverPoints() {
+
+export default function DriverPoints({ inheritedSub }){
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -51,11 +52,11 @@ export default function DriverPoints() {
 
     const getAssociatedSponsor = () => {
         fetch(BaseURL + "/driverAssociatedSponsor", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ sub: userAttributes.sub })
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({sub: inheritedSub?.value2 ? inheritedSub.value2 : userAttributes.sub})
         })
             .then(response => {
                 if (response.ok) {
@@ -74,11 +75,11 @@ export default function DriverPoints() {
 
     const getDriverInfo = () => {
         fetch(BaseURL + '/driverInfoFromSub', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ sub: userAttributes.sub })
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ sub: inheritedSub?.value2 ? inheritedSub.value2 : userAttributes.sub })
         })
             .then(response => {
                 if (response.ok) {

@@ -6,7 +6,7 @@ import DriverProfilePopUp from '../ProfilePopUps/DriverProfilePopUp'
 import BaseURL from '../BaseURL';
 import { useFetchUserAttributes } from '../CognitoAPI';
 
-export default function DriverApplicationTable({permissions}) {
+export default function DriverApplicationTable({permissions, inheritedSub}) {
   const [viewProfile, setViewProfile] = React.useState(false);
   const [refresh, setRefresh] = React.useState(false);
   const [appList, setAppList] = useState([]);
@@ -47,7 +47,7 @@ export default function DriverApplicationTable({permissions}) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({sub: userAttributes.sub})
+      body: JSON.stringify({sub: inheritedSub?.value ? inheritedSub.value : userAttributes.sub})
     })
     .then(response => {
       if (response.ok) { 
@@ -155,7 +155,7 @@ export default function DriverApplicationTable({permissions}) {
   return (
 	<div>
 		{permissions === 'Admin' && <AdminAppBar/>}
-		{permissions === 'Sponsor' && <SponsorAppBar/>}
+		{permissions === 'Sponsor' && <SponsorAppBar inheritedSub={inheritedSub}/>}
 		<br></br>
 		<Container>
 		<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

@@ -25,7 +25,7 @@ import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 
 
-export default function DriverCatalog(){
+export default function DriverCatalog({inheritedSub}){
 
     const MOVIES = "movies"
     const MUSIC = "music"
@@ -41,7 +41,7 @@ export default function DriverCatalog(){
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({sub: userAttributes.sub})
+          body: JSON.stringify({sub: inheritedSub?.value2 ? inheritedSub.value2 : userAttributes.sub})
         })
         .then(response => {
           if (response.ok) { 

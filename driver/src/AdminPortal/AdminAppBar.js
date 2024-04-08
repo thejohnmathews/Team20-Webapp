@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {AppBar, Box, Toolbar, Typography, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider, Drawer} from '@mui/material';
+import {AppBar, Box, Toolbar, Typography, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider, Drawer, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import InfoIcon from '@mui/icons-material/Info';
@@ -10,11 +10,14 @@ import AssessmentIcon from '@mui/icons-material/Assessment';
 import BusinessIcon from '@mui/icons-material/Business';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import LogoutIcon from '@mui/icons-material/Logout';
+import SwitchAccessShortcutIcon from '@mui/icons-material/SwitchAccessShortcut';
 import { useAuthenticator } from '@aws-amplify/ui-react';
+import ViewAsSponsor from './ViewAsSponsor';
 
 export default function AdminAppBar() {
   const [open, setOpen] = React.useState(false);
   const { user, signOut } = useAuthenticator((context) => [context.user]);
+  const [openSelect, setOpenSelect] = React.useState(false);
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
@@ -24,6 +27,14 @@ export default function AdminAppBar() {
   const handleProfile = () => {
     navigate('/adminProfile');
   };
+
+  const handleSponsorView = () => {
+    setOpenSelect(true);
+  }
+
+  const handleSponsorViewClose = () => {
+    setOpenSelect(false);
+  }
 
   const handleAbout = () => {
     navigate('/adminAbout');
@@ -97,6 +108,14 @@ export default function AdminAppBar() {
             <ListItemText primary={"Reports"} />
           </ListItemButton>
         </ListItem>
+        <ListItem key={"Sponsor View"} disablePadding>
+          <ListItemButton onClick={handleSponsorView}>
+            <ListItemIcon>
+              <SwitchAccessShortcutIcon/>
+            </ListItemIcon>
+            <ListItemText primary={"Sponsor View"} />
+          </ListItemButton>
+        </ListItem>
         <ListItem key={"About"} disablePadding>
           <ListItemButton onClick={handleAbout}>
             <ListItemIcon>
@@ -119,6 +138,7 @@ export default function AdminAppBar() {
   );
 
   return (
+    <div>
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
@@ -153,5 +173,22 @@ export default function AdminAppBar() {
         {DrawerList}
       </Drawer>
     </Box>
+    <Dialog
+				open={openSelect}
+				onClose={handleSponsorViewClose}
+				aria-labelledby="alert-dialog-title"
+				aria-describedby="alert-dialog-description"
+			>
+				<DialogTitle id="alert-dialog-title">{"View As A Sponsor"}</DialogTitle>
+				<DialogContent>
+          <ViewAsSponsor/>
+				</DialogContent>
+				<DialogActions>
+				<Button onClick={handleSponsorViewClose} autoFocus>
+					Close
+				</Button>
+				</DialogActions>
+			</Dialog>
+    </div>
   );
 }

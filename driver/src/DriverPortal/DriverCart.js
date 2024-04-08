@@ -6,7 +6,7 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextFi
 import BaseURL from '../BaseURL';
 import { useFetchUserAttributes } from '../CognitoAPI';
 
-export default function DriverCart(){
+export default function DriverCart({inheritedSub}){
 
     // const local variables
     const [cartItems, setCartItems] = useState([]);
@@ -63,7 +63,7 @@ export default function DriverCart(){
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({sub: userAttributes.sub})
+            body: JSON.stringify({sub: inheritedSub?.value2 ? inheritedSub.value2 : userAttributes.sub})
         })
         .then(response => {
             if (!response.ok) {

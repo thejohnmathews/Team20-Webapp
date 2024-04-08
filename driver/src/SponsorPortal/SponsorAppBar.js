@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {AppBar, Box, Toolbar, Typography, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider, Drawer} from '@mui/material';
+import {AppBar, Box, Toolbar, Typography, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider, Drawer, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import InfoIcon from '@mui/icons-material/Info';
@@ -11,16 +11,19 @@ import BusinessIcon from '@mui/icons-material/Business';
 import SavingsIcon from '@mui/icons-material/Savings';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { useEffect, useState } from 'react';
-import { useFetchUserAttributes, handleUpdateUserAttributes } from '../CognitoAPI';
+import { useEffect } from 'react';
+import { useFetchUserAttributes } from '../CognitoAPI';
 import BaseURL from '../BaseURL';
 import { useAuthenticator } from '@aws-amplify/ui-react';
+import SwitchAccessShortcutIcon from '@mui/icons-material/SwitchAccessShortcut';
+import inheritedUser from '../App.js'
+import UndoIcon from '@mui/icons-material/Undo';
+import ViewAsDriver from './ViewAsDriver.js';
 
-
-export default function SponsorAppBar() {
+export default function SponsorAppBar({inheritedSub}) {
   const { user, signOut } = useAuthenticator((context) => [context.user]);
   const [open, setOpen] = React.useState(false);
-  const userType = 'sponsor'
+  const [openSelect, setOpenSelect] = React.useState(false);
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
@@ -39,6 +42,19 @@ export default function SponsorAppBar() {
     navigate('/sponsorReports');
   };
 
+  const handleBackToAdmin = () => {
+    inheritedUser.value = ''
+    navigate('/adminProfile');
+  };
+
+  const handleViewAsDriver = () => {
+    setOpenSelect(true);
+  };
+
+  const handleDriverViewClose = () => {
+    setOpenSelect(false);
+  };
+  
   const handleAccountManage = () => {
     navigate('/sponsorAccountManagement');
   };
@@ -63,80 +79,23 @@ export default function SponsorAppBar() {
     signOut();
   }
 
-  const [open2, setOpen2] = useState(false);
-  const [editMode, setEditMode] = useState(false);
-  const [username, setUsername] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [address, setAddress] = useState('');
   const [sponsorOrgName, setSponsorOrgName] = React.useState('');
 
   const userAttributes = useFetchUserAttributes();
 
   useEffect(() => {
     if (userAttributes) {
-      setUsername(userAttributes.preferred_username || '');
-      setFirstName(userAttributes.given_name || '');
-      setLastName(userAttributes.family_name || '');
-      setEmail(userAttributes.email || '');
-      setPhoneNumber(userAttributes["custom:Phone"] || '');
-      setAddress(userAttributes.address || '');
-      if(userType !== 'admin'){ getAssociatedSponsor(); }
-      else{ getUserInfo();}
-      
+      getAssociatedSponsor();
     }
   }, [userAttributes]);
 
-  const getUserInfo = () => {
-    fetch(BaseURL + '/adminInfoFromSub', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({sub:userAttributes.sub })
-    })
-    .then(response => {
-      if (response.ok) { 
-        return response.json();
-      } 
-      else { console.error('Failed to get user'); }
-    })
-    .then(data => {
-      setUsername(data[0].userUsername || '');
-      setFirstName(data[0].firstName || '');
-      setLastName(data[0].lastName || '');
-      setEmail(data[0].email || '');
-    })
-    .catch(error => {
-      console.error('Failed to get user:', error);
-    });
-  }
-
-  const [sponsors, setSponsors] = useState([])
-    useEffect(() => {
-        fetch(BaseURL + "/activeSponsors")
-        .then(res => res.json())
-        .then(data => {
-            // Store the fetched driver data in state
-            setSponsors(data);  
-            console.log(data);
-
-        })
-        .catch(err => console.error('Error fetching driver data:', err));
-  }, []);
-
   const getAssociatedSponsor = () => {
-    var endpoint = '';
-    if(userType === 'driver'){ endpoint = '/driverAssociatedSponsor' }
-    else{ endpoint = '/associatedSponsor' }
-      fetch(BaseURL + endpoint, {
+      fetch(BaseURL + '/associatedSponsor', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({sub: userAttributes.sub})
+        body: JSON.stringify({sub: inheritedSub?.value ? inheritedSub.value : userAttributes.sub})
       })
       .then(response => {
         if (response.ok) { 
@@ -145,12 +104,7 @@ export default function SponsorAppBar() {
         else { console.error('Failed to post'); }
       })
       .then(data => {
-        if(userType === 'driver'){ 
-          console.log(data);
-          setSponsorOrgName(data);	
-        } else {
-          setSponsorOrgName(data[0].sponsorOrgName);	 
-        }
+        setSponsorOrgName(data[0].sponsorOrgName);	 
       })
       .catch(error => {
         console.error('Error retrieving successfully:', error);
@@ -209,6 +163,24 @@ export default function SponsorAppBar() {
             <ListItemText primary={"Reports"} />
           </ListItemButton>
         </ListItem>
+        {inheritedSub?.value && 
+        <ListItem key={"Back To Admin"} disablePadding>
+          <ListItemButton onClick={handleBackToAdmin}>
+            <ListItemIcon>
+              <UndoIcon/>
+            </ListItemIcon>
+            <ListItemText primary={"Back To Admin"} />
+          </ListItemButton>
+        </ListItem>
+        }
+        <ListItem key={"View As Driver"} disablePadding>
+          <ListItemButton onClick={handleViewAsDriver}>
+            <ListItemIcon>
+              <SwitchAccessShortcutIcon/>
+            </ListItemIcon>
+            <ListItemText primary={"View As Driver"} />
+          </ListItemButton>
+        </ListItem>
         <ListItem key={"About"} disablePadding>
           <ListItemButton onClick={handleAbout}>
             <ListItemIcon>
@@ -231,6 +203,7 @@ export default function SponsorAppBar() {
   );
 
   return (
+    <div>
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
@@ -266,5 +239,22 @@ export default function SponsorAppBar() {
         {DrawerList}
       </Drawer>
     </Box>
+    <Dialog
+      open={openSelect}
+      onClose={handleDriverViewClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">{"View As A Driver"}</DialogTitle>
+      <DialogContent>
+        <ViewAsDriver inheritedSub={inheritedSub}/>
+      </DialogContent>
+      <DialogActions>
+      <Button onClick={handleDriverViewClose} autoFocus>
+        Close
+      </Button>
+      </DialogActions>
+  </Dialog>
+  </div>
   );
 }
