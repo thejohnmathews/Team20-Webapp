@@ -6,6 +6,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import { useNavigate } from 'react-router-dom';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import BusinessIcon from '@mui/icons-material/Business';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -43,6 +44,10 @@ export default function AdminAppBar() {
   const handlePointChanges = () => {
     navigate('/AdminPointChanges');
   };
+
+  const handleReports = () => {
+    navigate('/adminReports')
+  }
 
   const handleSignOut = () => {
     window.location.href = "/";
@@ -82,6 +87,14 @@ export default function AdminAppBar() {
               <BusinessIcon/>
             </ListItemIcon>
             <ListItemText primary={"Organization Management"} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem key={"Reports"} disablePadding>
+          <ListItemButton onClick={handleReports}>
+            <ListItemIcon>
+              <AssessmentIcon/>
+            </ListItemIcon>
+            <ListItemText primary={"Reports"} />
           </ListItemButton>
         </ListItem>
         <ListItem key={"About"} disablePadding>

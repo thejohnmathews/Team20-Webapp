@@ -42,12 +42,13 @@ export default function LoginRedirect() {
             });
 
 			// login auditing
+			console.log(userAttributes.sub)
 			fetch(BaseURL+'/loginAudit', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({username: userAttributes.username})
+                body: JSON.stringify({sub: userAttributes.sub})
             })
 			.then(response => {
 				if (!response.ok) {

@@ -93,6 +93,18 @@ app.post('/removeCatalogRule', (req, res) => {
     });
 })
 
+app.get('/getSponsorRatio', (req, res) => {
+    const sql = 'SELECT sponsorDollarPointRatio from SponsorOrganization WHERE sponsorOrgID = ?';
+    db.query(sql, req.query.sponsorOrgID, (err, data) => {
+        if(err) {
+            return res.json(err);
+        }
+        else {
+            return res.json(data);
+        }
+    })
+});
+
 app.get('/driverAppInfo', (req, res) => {
     const sql = "SELECT D.applicationID, D.dateOfApplication, D.applicationStatus, D.statusReason, UserInfo.userUsername FROM DriverApplication D\
     JOIN UserInfo ON D.userID = UserInfo.userID  WHERE sponsorOrgID = ? ORDER BY D.dateOfApplication ASC"
@@ -884,10 +896,11 @@ app.post('/userExistsFromEmail', (req, res) => {
 });
 
 app.post('/loginAudit', (req, res) => {
-    const username = req.body.username;
-    const sql1 = 'INSERT INTO LoginAttempt(userName, loginSuccess) VALUES (?, ?)';
+    const sub = req.body.sub;
+    const sql1 = 'INSERT INTO LoginAttempt(userName, loginSuccess) VALUES (\
+        (SELECT userUsername FROM UserInfo WHERE sub = ?), ?)';
 
-    const values = [username, true];
+    const values = [sub, true];
     db.query(sql1, values, (err, result) => {
         if (err) {
             console.error('Error inserting login:', err);
@@ -1221,6 +1234,6 @@ app.post('/updatePurchase', (req, res) => {
 }); 
 
 // Listen on port number listed
-app.listen(3000, ()=> {
+app.listen(8080, ()=> {
     console.log("listening")
 })
