@@ -8,6 +8,7 @@ export default function PastPurchases() {
     const [pastPurchases, setPastPurchases] = useState([]);
     const userAttributes = useFetchUserAttributes();
     const [driverID, setID] = useState('');
+    const [totalPointsSpent, setTotalPointsSpent] = useState(0); 
 
     // Get current user from UserInfo RDS table
     if(userAttributes !== null){
@@ -65,10 +66,22 @@ export default function PastPurchases() {
         });
     };
 
+    // Call getPurchases when the component mounts
     useEffect(() => {
-        // Call getPurchases when the component mounts
+        
         getPurchases();
     }, [driverID]); 
+
+    // Calculate total points spent
+    useEffect(() => {
+        let totalPoints = 0;
+        Object.values(pastPurchases).forEach(purchases => {
+            purchases.forEach(purchase => {
+                totalPoints += purchase.purchaseCost;
+            });
+        });
+        setTotalPointsSpent(totalPoints);
+    }, [pastPurchases]);
 
     // logic for cancel order button
     const handleCancelOrder = (orderNum) => {
@@ -109,6 +122,9 @@ export default function PastPurchases() {
             <DriverAppBar />
             <Typography variant="h3" align="center" gutterBottom>
                 Past Purchases
+            </Typography>
+            <Typography variant="h6" align="center">
+                Total Points Spent: {totalPointsSpent}
             </Typography>
             {Object.keys(pastPurchases).length === 0 ? (
                 <Typography variant="h6" align="center">
