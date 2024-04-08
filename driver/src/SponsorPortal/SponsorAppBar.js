@@ -74,6 +74,10 @@ export default function SponsorAppBar({inheritedSub}) {
   const handleDriverApplications = () => {
     navigate('/sponsorDriverApplicaitons');
   };
+  const handleSignOut = () => {
+    window.location.href = "/";
+    signOut();
+  }
 
   const [sponsorOrgName, setSponsorOrgName] = React.useState('');
 
@@ -186,7 +190,7 @@ export default function SponsorAppBar({inheritedSub}) {
           </ListItemButton>
         </ListItem>
         <ListItem key={"Sign Out"} disablePadding>
-          <ListItemButton onClick={signOut}>
+          <ListItemButton onClick={handleSignOut}>
             <ListItemIcon>
               <LogoutIcon/>
             </ListItemIcon>

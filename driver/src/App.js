@@ -34,6 +34,7 @@ import { Authenticator, PhoneNumberField, TextField } from '@aws-amplify/ui-reac
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import config from './amplifyconfiguration.json';
 import SponsorReports from './SponsorPortal/SponsorReports';
+import AdminReports from './AdminPortal/AdminReports';
 Amplify.configure(config);
 
 export const inheritedUser = { value: '',
@@ -126,6 +127,7 @@ export default function App() {
             <Route exact path="/adminDriverApplicaitons" element={<DriverApplicationTable permissions={'Admin'}/>}/>
             <Route exact path="/sponsorDriverApplicaitons" element={<DriverApplicationTable permissions={'Sponsor'} inheritedSub={inheritedUser}/>}/>
             <Route exact path="/AdminPointChanges" element={<AdminPointChanges permissions={'Admin'}/>}/>
+            <Route exact path="/adminReports" element={<AdminReports/>}/>
             <Route exact path="/sponsorReports" element={<SponsorReports inheritedSub={inheritedUser}/>}/>
           </Routes>
       </Router>

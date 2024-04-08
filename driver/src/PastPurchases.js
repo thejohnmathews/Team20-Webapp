@@ -2,23 +2,42 @@ import React, { useEffect, useState } from 'react';
 import DriverAppBar from './DriverPortal/DriverAppBar';
 import { Card, CardContent, Typography, Grid, Button, Divider } from '@mui/material';
 import BaseURL from './BaseURL';
+import { useFetchUserAttributes } from './CognitoAPI';
 
 export default function PastPurchases() {
     const [pastPurchases, setPastPurchases] = useState([]);
+    const userAttributes = useFetchUserAttributes();
+    const [driverID, setID] = useState('');
+    const [totalPointsSpent, setTotalPointsSpent] = useState(0); 
 
-    // logic for cancel order button
-    const handleCancelOrder = (orderId) => {
-        console.log(`Cancelled order ${orderId}`);
-    };
+    // Get current user from UserInfo RDS table
+    if(userAttributes !== null){
+        fetch(BaseURL+'/userAttributes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({sub: userAttributes.sub})
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json(); 
+        })
+        .then(data => {
+            setID(data.userData.userID);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+    }
 
     // get purchase information from RDS
     const getPurchases = () => {
-        fetch(BaseURL + '/getPurchase', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'purchase/json'
-            },
-        })
+        console.log("PastPurchse.js driverID: " + driverID);
+        fetch(BaseURL + '/getPurchase/' + driverID)
         .then(response => {
             if (response.ok) { 
                 console.log('Lists retrieved successfully'); 
@@ -47,35 +66,85 @@ export default function PastPurchases() {
         });
     };
 
-
-    // useEffect(): request to RDS if there are any changes
+    // Call getPurchases when the component mounts
     useEffect(() => {
+        
         getPurchases();
-    }, []);
+    }, [driverID]); 
+
+    // Calculate total points spent
+    useEffect(() => {
+        let totalPoints = 0;
+        Object.values(pastPurchases).forEach(purchases => {
+            purchases.forEach(purchase => {
+                totalPoints += purchase.purchaseCost;
+            });
+        });
+        setTotalPointsSpent(totalPoints);
+    }, [pastPurchases]);
+
+    // logic for cancel order button
+    const handleCancelOrder = (orderNum) => {
+        
+        // Extracting purchase IDs associated with the orderNum
+        const purchaseIDs = pastPurchases[orderNum].map(purchase => purchase.purchaseID);
+
+        // Sending purchase IDs to backend to delete entries from the Purchase table
+        fetch(BaseURL + '/removePurchase',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ purchaseIDs: purchaseIDs })
+        })
+        .then(response => {
+            if (response.ok) { 
+                
+                // Fetch updated data
+                getPurchases(); 
+                const updatedPastPurchases = { ...pastPurchases };
+                delete updatedPastPurchases[orderNum];
+                setPastPurchases(updatedPastPurchases);
+            } 
+            else { 
+                console.error('Failed to cancel order'); 
+            }
+        })
+        .catch(error => {
+            console.error('Failed to cancel order', error);
+        });
+    };
+
+
 
     return (
         <div>
             <DriverAppBar />
-            <h1 style={{ textAlign: 'center' }}>Past Purchases</h1>
+            <Typography variant="h3" align="center" gutterBottom>
+                Past Purchases
+            </Typography>
+            <Typography variant="h6" align="center">
+                Total Points Spent: {totalPointsSpent}
+            </Typography>
             {Object.keys(pastPurchases).length === 0 ? (
                 <Typography variant="h6" align="center">
                     There have been no purchases on this account.
                 </Typography>
             ) : (
-                <Grid container spacing={3} justifyContent="center">
+                <div>
                     {Object.entries(pastPurchases).map(([orderNum, purchases]) => (
-                        <Grid item key={orderNum} xs={12} md={6} lg={4}>
-                            <Card style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                        <div key={orderNum}>
+                            <Card style={{ marginBottom: '20px' }}>
                                 <CardContent>
                                     <Typography variant="h6" gutterBottom>
                                         Order {orderNum}
                                     </Typography>
-                                    <Typography color="textSecondary">
+                                    <Typography color="textSecondary" gutterBottom>
                                         Order Date: {purchases[0].purchaseDate}
                                     </Typography>
                                     <Divider />
                                     {purchases.map((purchase, index) => (
-                                        <div key={purchase.purchaseID}>
+                                        <div key={purchase.purchaseID} style={{ marginBottom: '10px' }}>
                                             <Typography variant="subtitle1">
                                                 {purchase.purchaseName} - ${purchase.purchaseCost}
                                             </Typography>
@@ -84,11 +153,14 @@ export default function PastPurchases() {
                                             </Typography>
                                         </div>
                                     ))}
+                                    <Button onClick={() => handleCancelOrder(orderNum)} variant="contained" color="secondary" style={{ marginTop: '10px' }}>
+                                        Cancel Order
+                                    </Button>
                                 </CardContent>
                             </Card>
-                        </Grid>
+                        </div>
                     ))}
-                </Grid>
+                </div>
             )}
         </div>
     );

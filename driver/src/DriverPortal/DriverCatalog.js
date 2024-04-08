@@ -17,6 +17,13 @@ import DriverCart from './DriverCart';
 import BaseURL from '../BaseURL';
 import { useFetchUserAttributes } from '../CognitoAPI';
 import SearchIcon from '@mui/icons-material/Search';
+import {Card} from '@mui/material';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+
 
 export default function DriverCatalog({inheritedSub}){
 
@@ -43,7 +50,9 @@ export default function DriverCatalog({inheritedSub}){
           else { console.error('Failed to post'); }
         })
         .then(data => {
-          setSponsorOrgID(data[0].sponsorOrgID);
+            //console.log('list:')
+            setSponsorList(data)
+            setSponsorOrgID(data[0].sponsorOrgID);
         })
         .catch(error => {
           console.error('Error retrieving successfully:', error);
@@ -55,12 +64,20 @@ export default function DriverCatalog({inheritedSub}){
         }
     }, [userAttributes]); 
     const [sponsorOrgID, setSponsorOrgID] = React.useState(null);
+    const [sponsorName, setSponsorName] = useState("")
+    const [sponsorList, setSponsorList] = useState([])
     const [databaseInfo, setDatabaseInfo] = useState([])
     const [loading, setLoading] = useState([])
 
     useEffect(() => {
         if(sponsorOrgID != null){
             console.log(sponsorOrgID)
+            console.log(sponsorList)
+            for (let i = 0; i < sponsorList.length; i++) {
+                if (sponsorList[i].sponsorOrgID === sponsorOrgID) {
+                    setSponsorName(sponsorList[i].sponsorOrgName)
+                }
+            }
             getCatalogRules();
         }
         else {
@@ -72,7 +89,6 @@ export default function DriverCatalog({inheritedSub}){
         sponsorOrgID != null ? setLoading(false) : setLoading(true);
         
     }, [sponsorOrgID]);
-
     
 	const navigate = useNavigate();
     const [dataFetched, setDataFetched] = useState(false);
@@ -98,6 +114,7 @@ export default function DriverCatalog({inheritedSub}){
     const [tvList, setTvList] = useState([])
     const [audioList, setAudioList] = useState([])
     const [ebookList, setEbookList] = useState([])
+    const [pointConversion, setPointConversion] = useState(0)
 
     const addToCart = album => {
         const updatedCartItems = [...cartItems, album];
@@ -165,7 +182,6 @@ export default function DriverCatalog({inheritedSub}){
     const getCatalogRules = () => {
         const url = new URL(BaseURL + "/sponsorCatalogRules");
         url.searchParams.append('sponsorOrgID', sponsorOrgID);
-        console.log("hi " + sponsorOrgID)
         fetch(url, {
             method: 'GET',
             headers: {
@@ -181,12 +197,12 @@ export default function DriverCatalog({inheritedSub}){
           .then(data => {
             setDatabaseInfo(data)
           })
-        //console.log(databaseInfo)
     }
     useEffect(() => {
         var rules = databaseInfo.map((x) => x.catalogRuleName)
         setSponsorRules(rules)
-        console.log(sponsorRules)
+        console.log("rules:")
+        console.log(rules)
     }, [databaseInfo])
     
     const handleCatalog = () => {
@@ -196,6 +212,11 @@ export default function DriverCatalog({inheritedSub}){
         var content = text.replace(" ","+")
         setCatalogItems([])
         setMusicList([])
+        setSortedAlbums([])
+        setMovieList([])
+        setTvList([])
+        setAudioList([])
+        setEbookList([])
         //1. check what rules are available
         //call fetch from within these checks
         if (sponsorRules.includes(MOVIES)) {
@@ -203,7 +224,11 @@ export default function DriverCatalog({inheritedSub}){
             .then(response => response.json())
             .then(data => {
                 //console.log(data)
-                setMovieList(data)
+                let newData = data.results
+                //console.log(data.results)
+                newData = newData.filter((element) => element.collectionPrice > 0)
+                setMovieList(newData)
+                //console.log(data.results)
             })
 			// Handle any errors that occur during the fetch
             .catch(error => {
@@ -215,7 +240,10 @@ export default function DriverCatalog({inheritedSub}){
             .then(response => response.json())
             .then(data => {
                 //console.log(data)
-                setMusicList(data.results)
+                let newData = data.results
+                //console.log(newData)
+                newData = newData.filter((element) => element.collectionPrice > 0)
+                setMusicList(newData)
                 setOriginalAlbums(data.results)
             })
 			// Handle any errors that occur during the fetch
@@ -228,7 +256,10 @@ export default function DriverCatalog({inheritedSub}){
             .then(response => response.json())
             .then(data => {
                 //console.log(data)
-                setTvList(data)
+                let newData = data.results
+                //console.log(data.results)
+                newData = newData.filter((element) => element.collectionPrice > 0)
+                setTvList(newData)
             })
 			// Handle any errors that occur during the fetch
             .catch(error => {
@@ -240,7 +271,10 @@ export default function DriverCatalog({inheritedSub}){
             .then(response => response.json())
             .then(data => {
                 //console.log(data)
-                setAudioList(data)
+                let newData = data.results
+                //console.log(data.results)
+                newData = newData.filter((element) => element.collectionPrice > 0)
+                setAudioList(newData)
             })
 			// Handle any errors that occur during the fetch
             .catch(error => {
@@ -252,7 +286,12 @@ export default function DriverCatalog({inheritedSub}){
             .then(response => response.json())
             .then(data => {
                 //console.log(data)
-                setEbookList(data)
+                //setEbookList(data.results)
+                let newData = data.results
+                //console.log(data.results)
+                newData = newData.filter((element) => element.price > 0)
+                //console.log("new data:")
+                setEbookList(newData)
             })
 			// Handle any errors that occur during the fetch
             .catch(error => {
@@ -268,12 +307,52 @@ export default function DriverCatalog({inheritedSub}){
         //5. show the data to the user
     }
 
-	// Dependency Array
+    const handleSelectSponsor = (e) => {
+        setSponsorName(e.target.value)
+        for (let i = 0; i < sponsorList.length; i++) {
+            if (sponsorList[i].sponsorOrgName == e.target.value) {
+                setSponsorOrgID(sponsorList[i].sponsorOrgID)
+            }
+        }
+    }
+
+    useEffect(() => {
+        if (sponsorOrgID != null) {
+            const url = new URL(BaseURL + "/getSponsorRatio");
+            url.searchParams.append('sponsorOrgID', sponsorOrgID);
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) { 
+                return response.json();
+                } 
+                else { console.error('Failed to post'); }
+            })
+            .then(data => {
+                setPointConversion(data[0].sponsorDollarPointRatio)
+            })
+        }
+    }, [sponsorOrgID])
+
 	return (
         <div>
-            <DriverAppBar />        
+            <DriverAppBar />
             <Catalog />
-            <Box sx={{ marginLeft: '10px', display: 'flex', alignItems: 'flex-end' }}>
+            <InputLabel id="selectLabel" style={{marginLeft:"20px"}}>Current Sponsor</InputLabel>
+            <Select
+                label="Current Sponsor"
+                value={sponsorName}
+                onChange={handleSelectSponsor}
+                style={{width: "180px", marginLeft:"20px"}}>
+                {sponsorList?.map(id => (
+                    <MenuItem value={id.sponsorOrgName}>{id.sponsorOrgName}</MenuItem>
+                ))}
+            </Select>
+            <Box sx={{ marginLeft: '10px', display: 'flex', alignItems: 'flex-end', paddingBottom:"20px"}}>
                 <SearchIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
                 <TextField 
                     id="searchbar" 
@@ -282,21 +361,105 @@ export default function DriverCatalog({inheritedSub}){
                     sx={{width: "300px"}}/>
                 <Button variant='contained' onClick={handleCatalog}>Search</Button>
             </Box>
-            {!loading && musicList.length != 0 && 
-            <div style={{ marginLeft: '25px' }}>
+            {!loading && 
+            <div style={{ marginLeft: '25px', display:"flex", flexWrap:"wrap", justifyContent:"center", gap:"30px"}}>
                 {/* Loops through returned data and displays it */}
-                {(sortedAlbums.length > 0 ? sortedAlbums : musicList).map(album => (
-                <div key={album.collectionId}>
-                    <h2>{album.collectionName}</h2>
-                    <img src={album.artworkUrl100} alt="Album Artwork" />
-                    <p>Artist: {album.artistName}</p>
-                    <p>Genre: {album.primaryGenreName}</p>
-                    <p>Price: {Math.ceil(album.collectionPrice)} Points</p>
-                    <p>Release Date: {album.releaseDate}</p>
-                    <Button style={{ cursor: 'pointer', marginRight: '25px' }} variant="contained" color="primary" onClick={() => addToCart(album)}>Add to Cart</Button>
-                    <a href={album.collectionViewUrl} target="_blank">View on iTunes</a>
-                </div>
+                {musicList.length > 0 && (sortedAlbums.length > 0 ? sortedAlbums : musicList).map(album => (
+                
+                <Card key={album.collectionId} sx={{width: '300px'}}>
+                    <CardContent>
+                        <h2 style={{textAlign:"center"}}>{album.collectionName}</h2>
+                        <img style={{margin:"auto", marginTop:"-10px", width:"100px", display:"block"}} src={album.artworkUrl100} alt="Album Artwork" />
+                        <p style={{fontSize: "large", textAlign:"center"}}>{album.artistName}</p>
+                        <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>{album.primaryGenreName}</p>
+                        <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>Album</p>
+                        <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(album.collectionPrice / pointConversion)} Points</p>
+                    </CardContent>
+                    <CardActions>
+                        <div style={{display: "flex", justifyContent:"center"}}>
+                            <Button style={{ cursor: 'pointer', marginRight: '25px'}} variant="contained" color="primary" onClick={() => addToCart(album)}>Add to Cart</Button>
+                            <a href={album.collectionViewUrl} target="_blank">View on iTunes</a>
+                        </div>
+                    </CardActions>
+                </Card>
                 ))}
+                {movieList.length > 0 && movieList.map(movie => (
+                     <Card key={movie.collectionId} sx={{width: '300px'}}>
+                     <CardContent>
+                         <h2 style={{textAlign:"center"}}>{movie.trackName}</h2>
+                         <img style={{margin:"auto", marginTop:"-10px", width:"100px", display:"block"}} src={movie.artworkUrl100} alt="Movie Artwork" />
+                         <p style={{fontSize: "large", textAlign:"center"}}>{movie.artistName}</p>
+                         <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>{movie.primaryGenreName}</p>
+                         <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>Movie</p>
+                         <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(movie.collectionPrice/ pointConversion)} Points</p>
+                     </CardContent>
+                     <CardActions>
+                         <div style={{display: "flex", justifyContent:"center"}}>
+                             <Button style={{ cursor: 'pointer', marginRight: '25px'}} variant="contained" color="primary" onClick={() => addToCart(movie)}>Add to Cart</Button>
+                             <a href={movie.collectionViewUrl} target="_blank">View on iTunes</a>
+                         </div>
+                     </CardActions>
+                 </Card>
+                ))
+                }
+                {tvList.length > 0 && tvList.map(tvShow => (
+                     <Card key={tvShow.collectionId} sx={{width: '300px'}}>
+                     <CardContent>
+                         <h2 style={{textAlign:"center"}}>{tvShow.collectionName}</h2>
+                         <img style={{margin:"auto", marginTop:"-10px", width:"100px", display:"block"}} src={tvShow.artworkUrl100} alt="Movie Artwork" />
+                         <p style={{fontSize: "large", textAlign:"center"}}>{tvShow.contentAdvisoryRating}</p>
+                         <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>{tvShow.primaryGenreName}</p>
+                         <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>TV-Show</p>
+                         <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(tvShow.collectionPrice / pointConversion)} Points</p>
+                     </CardContent>
+                     <CardActions>
+                         <div style={{display: "flex", justifyContent:"center"}}>
+                             <Button style={{ cursor: 'pointer', marginRight: '25px'}} variant="contained" color="primary" onClick={() => addToCart(tvShow)}>Add to Cart</Button>
+                             <a href={tvShow.collectionViewUrl} target="_blank">View on iTunes</a>
+                         </div>
+                     </CardActions>
+                 </Card>
+                ))
+                }
+                {audioList.length > 0 && audioList.map(audio => (
+                     <Card key={audio.collectionId} sx={{width: '300px'}}>
+                     <CardContent>
+                         <h2 style={{textAlign:"center"}}>{audio.collectionName}</h2>
+                         <img style={{margin:"auto", marginTop:"-10px", width:"100px", display:"block"}} src={audio.artworkUrl100} alt="Movie Artwork" />
+                         <p style={{fontSize: "large", textAlign:"center"}}>{audio.artistName}</p>
+                         <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>{audio.primaryGenreName}</p>
+                         <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>Audio Book</p>
+                         <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(audio.collectionPrice / pointConversion)} Points</p>
+                     </CardContent>
+                     <CardActions>
+                         <div style={{display: "flex", justifyContent:"center"}}>
+                             <Button style={{ cursor: 'pointer', marginRight: '25px'}} variant="contained" color="primary" onClick={() => addToCart(audio)}>Add to Cart</Button>
+                             <a href={audio.collectionViewUrl} target="_blank">View on iTunes</a>
+                         </div>
+                     </CardActions>
+                 </Card>
+                ))
+                }
+                {ebookList.length > 0 && ebookList.map(ebook => (
+                    <div>
+                     <Card key={ebook.collectionId} sx={{width: '300px'}}>
+                     <CardContent>
+                         <h2 style={{textAlign:"center"}}>{ebook.trackName}</h2>
+                         <img style={{margin:"auto", marginTop:"-10px", width:"100px", display:"block"}} src={ebook.artworkUrl100} alt="Movie Artwork" />
+                         <p style={{fontSize: "large", textAlign:"center"}}>{ebook.artistName}</p>
+                         <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>E-Book</p>
+                         <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(ebook.price / pointConversion)} Points</p>
+                     </CardContent>
+                     <CardActions>
+                         <div style={{display: "flex", justifyContent:"center"}}>
+                             <Button style={{ cursor: 'pointer', marginRight: '25px'}} variant="contained" color="primary" onClick={() => addToCart(ebook)}>Add to Cart</Button>
+                             <a href={ebook.trackViewUrl} target="_blank">View on iTunes</a>
+                         </div>
+                     </CardActions>
+                 </Card>
+                 </div>
+                ))
+                }
             </div>
             }
             

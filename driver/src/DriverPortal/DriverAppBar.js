@@ -27,9 +27,9 @@ export default function DriverAppBar({inheritedSub}) {
         .then(data => {
             // Store the fetched driver data in state
             setDrivers(data);  
-            console.log(data);
+            //console.log(data);
             data.forEach((driver, index) => {
-              console.log(`Driver ${index + 1} points:`, driver.driverPoints);
+              // console.log(`Driver ${index + 1} points:`, driver.driverPoints);
             });
 
         })
@@ -59,6 +59,10 @@ export default function DriverAppBar({inheritedSub}) {
   };
   const handleDrivingPoints = () => {
     navigate('/driverPoints')
+  }
+  const handleSignOut = () => {
+    window.location.href = "/";
+    signOut();
   }
   const handleBackToSponsor = () => {
     inheritedUser.value2 = '';
@@ -111,7 +115,7 @@ export default function DriverAppBar({inheritedSub}) {
           </ListItemButton>
         </ListItem>
         <ListItem key={"Sign Out"} disablePadding>
-          <ListItemButton onClick={signOut}>
+          <ListItemButton onClick={handleSignOut}>
             <ListItemIcon>
               <LogoutIcon/>
             </ListItemIcon>

@@ -93,6 +93,18 @@ app.post('/removeCatalogRule', (req, res) => {
     });
 })
 
+app.get('/getSponsorRatio', (req, res) => {
+    const sql = 'SELECT sponsorDollarPointRatio from SponsorOrganization WHERE sponsorOrgID = ?';
+    db.query(sql, req.query.sponsorOrgID, (err, data) => {
+        if(err) {
+            return res.json(err);
+        }
+        else {
+            return res.json(data);
+        }
+    })
+});
+
 app.get('/driverAppInfo', (req, res) => {
     const sql = "SELECT D.applicationID, D.dateOfApplication, D.applicationStatus, D.statusReason, UserInfo.userUsername FROM DriverApplication D\
     JOIN UserInfo ON D.userID = UserInfo.userID  WHERE sponsorOrgID = ? ORDER BY D.dateOfApplication ASC"
@@ -884,10 +896,11 @@ app.post('/userExistsFromEmail', (req, res) => {
 });
 
 app.post('/loginAudit', (req, res) => {
-    const username = req.body.username;
-    const sql1 = 'INSERT INTO LoginAttempt(userName, loginSuccess) VALUES (?, ?)';
+    const sub = req.body.sub;
+    const sql1 = 'INSERT INTO LoginAttempt(userName, loginSuccess) VALUES (\
+        (SELECT userUsername FROM UserInfo WHERE sub = ?), ?)';
 
-    const values = [username, true];
+    const values = [sub, true];
     db.query(sql1, values, (err, result) => {
         if (err) {
             console.error('Error inserting login:', err);
@@ -1075,7 +1088,7 @@ app.post('/updatePointsGood', (req, res) => {
     INSERT INTO PointChange (driverID, changeDate, changePointAmt, changeReasonID, changeType, changeCurrPointTotal) 
         VALUES (
             (SELECT userID FROM DriverUser WHERE userID = ?), 
-            CURDATE(), 
+            NOW(), 
             ?, 
             ?, 
             ?, 
@@ -1130,7 +1143,7 @@ app.post('/updatePointsBad', (req, res) => {
     INSERT INTO PointChange (driverID, changeDate, changePointAmt, changeReasonID, changeType, changeCurrPointTotal) 
         VALUES (
             (SELECT userID FROM DriverUser WHERE userID = ?), 
-            CURDATE(), 
+            NOW(), 
             ?, 
             ?, 
             ?, 
@@ -1170,9 +1183,10 @@ app.get('/driverInfo/:userID', (req, res) => {
 
 // Get Purchase
 // NEED TO UPDATE THIS SO IT ONLY GETS DATA FROM CURRENT USER ID!!
-app.get('/getPurchase', (req, res) => {
-    const sql = "SELECT * FROM Purchase";
-    db.query(sql,(err, data) => {
+app.get('/getPurchase/:driverID', (req, res) => {
+    const driverID = req.params.driverID;
+    const sql = "SELECT * FROM Purchase WHERE driverID = ?";
+    db.query(sql,[driverID],(err, data) => {
         if (err) {
             console.log("Backend.js: Error getting information from Purchase table in RDS.");
             return res.status(500).json({ error: "Error getting purchases from the database." });
@@ -1220,7 +1234,28 @@ app.post('/updatePurchase', (req, res) => {
     });
 }); 
 
+// Remove Purchase
+app.post('/removePurchase', (req, res) => {
+
+    // Receive an array of purchaseIDs
+    const { purchaseIDs } = req.body; 
+
+    // Dynamically generate placeholders for each purchaseID
+    const placeholders = purchaseIDs.map(() => '?').join(',');
+
+    const sql = `DELETE FROM Purchase WHERE purchaseID IN (${placeholders})`;
+    const values = purchaseIDs;
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Error removing purchase:', err);
+            res.status(500).send('Error removing purchase');
+        } else {
+            res.status(200).json("Purchase removed successfully");
+        }
+    });
+});
+
 // Listen on port number listed
-app.listen(8080, ()=> {
+app.listen(3000, ()=> {
     console.log("listening")
 })

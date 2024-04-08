@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import SponsorAppBar from './SponsorAppBar';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import Typography from '@mui/material/Typography';
 import BaseURL from '../BaseURL';
 import { useFetchUserAttributes } from '../CognitoAPI';
 
@@ -61,7 +62,7 @@ export default function SponsorCatalog({inheritedSub}) {
     setExpanded(!expanded);
   }
 
-  const [showAdd, setShowAdd] = useState(false)
+  const [showAdd, setShowAdd] = useState(true)
   const handleAdd = () => {
     setShowAdd(!showAdd)
   }
@@ -400,27 +401,51 @@ export default function SponsorCatalog({inheritedSub}) {
                     <div style={{paddingRight: 20}}>
                         <form id='catalogRules' onSubmit={handleSubmit}>
                             <h2>Allowed Content</h2>
-                            <input type='checkbox' id="music" name="music" value="music" onChange={handleMusicChange} checked={musicChecked}></input>
-                            <label htmlFor="music">Music</label>
+                            <input style={{accentColor: "#90caf9", color:"white", width:"20px", height:"20px"}}
+                            type='checkbox' id="music" name="music" value="music" onChange={handleMusicChange} checked={musicChecked}></input>
+                            <label htmlFor="music">
+                                <Typography variant='h6' sx={{display:"inline"}}>Music</Typography>
+                            </label>
                             <br></br>
-                            <input type='checkbox' id="movie" name="movie" value="movie" onChange={handleMovieChange} checked={movieChecked}></input>
-                            <label htmlFor="movie">Movies</label>
+                            <input style={{accentColor: "#90caf9", color:"white", width:"20px", height:"20px"}} 
+                            type='checkbox' id="movie" name="movie" value="movie" onChange={handleMovieChange} checked={movieChecked}></input>
+                            <label htmlFor="movie">
+                                <Typography variant='h6' sx={{display:"inline"}}>Movies</Typography>
+                            </label>
                             <br></br>
-                            <input type='checkbox' id="tvShow" name="tvShow" value="tvShow" onChange={handleTvChange} checked={tvChecked}></input>
-                            <label htmlFor="tvShow">TV Shows</label>
+                            <input style={{accentColor: "#90caf9", color:"white", width:"20px", height:"20px"}}
+                            type='checkbox' id="tvShow" name="tvShow" value="tvShow" onChange={handleTvChange} checked={tvChecked}></input>
+                            <label htmlFor="tvShow">
+                                <Typography variant='h6' sx={{display:"inline"}}>TV Shows</Typography>
+                            </label>
                             <br></br>
-                            <input type='checkbox' id="audiobook" name="audiobook" value="audiobook" onChange={handleAudioChange} checked={audiobookChecked}></input>
-                            <label htmlFor="audiobook">Audio Books</label>
+                            <input style={{accentColor: "#90caf9", color:"white", width:"20px", height:"20px"}}
+                            type='checkbox' id="audiobook" name="audiobook" value="audiobook" onChange={handleAudioChange} checked={audiobookChecked}></input>
+                            <label htmlFor="audiobook">
+                                <Typography variant='h6' sx={{display:"inline"}}>Audio Books</Typography>
+                            </label>
                             <br></br>
-                            <input type='checkbox' id="ebook" name="ebook" value="ebook" onChange={handleEbookChange} checked={ebookChecked}></input>
-                            <label htmlFor="ebook">E-Books</label>
+                            <input style={{accentColor: "#90caf9", color:"white", width:"20px", height:"20px"}}
+                            type='checkbox' id="ebook" name="ebook" value="ebook" onChange={handleEbookChange} checked={ebookChecked}></input>
+                            <label htmlFor="ebook">
+                                <Typography variant='h6' sx={{display:"inline"}}>E-Books</Typography>
+                            </label>
                             <br></br>
-                            <input type='submit' value="Submit"></input>
+                            <input style={{padding: "10px 30px", backgroundColor: "#90caf9", border: "0px", borderRadius: "5px", cursor:"pointer"}}
+                            id='submitButton'
+                            onMouseOver={() => {
+                                document.getElementById("submitButton").style.backgroundColor="#c5e3fb"
+                            }}
+                            onMouseOut={() => {
+                                document.getElementById("submitButton").style.backgroundColor="#90caf9"
+                            }}
+                            type='submit' value="Submit"></input>
                         </form>
                     </div>
                     <p id='errorMsg' style={{color: "red", display:"none"}}>At least one item must be selected!</p>
                 </div>
             }
+            {/* old card styling -- commenting out just to have in case
             <p>iTunes api proof of concept</p>
             <p style={{fontStyle: 'italic'}}>Items provided by iTunes</p>
             {data !== [] &&
@@ -452,7 +477,7 @@ export default function SponsorCatalog({inheritedSub}) {
                 }
                 </div>
             </Card>
-            
+            */
             }
         </div>
    </div>
