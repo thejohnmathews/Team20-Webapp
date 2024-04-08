@@ -6,7 +6,7 @@ import { useFetchUserAttributes, handleUpdateUserAttributes } from '../CognitoAP
 import { Grid, Typography, Box, TextField, Stack, Divider } from '@mui/material';
 import BaseURL from "../BaseURL";
 
-export default function DriverPoints(){
+export default function DriverPoints({ inheritedSub }){
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -43,7 +43,7 @@ export default function DriverPoints(){
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({sub: userAttributes.sub})
+        body: JSON.stringify({sub: inheritedSub?.value2 ? inheritedSub.value2 : userAttributes.sub})
         })
         .then(response => {
         if (response.ok) { 
@@ -66,7 +66,7 @@ export default function DriverPoints(){
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ sub:userAttributes.sub })
+          body: JSON.stringify({ sub: inheritedSub?.value2 ? inheritedSub.value2 : userAttributes.sub })
         })
         .then(response => {
           if (response.ok) { 

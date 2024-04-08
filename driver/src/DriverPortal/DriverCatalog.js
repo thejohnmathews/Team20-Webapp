@@ -18,7 +18,7 @@ import BaseURL from '../BaseURL';
 import { useFetchUserAttributes } from '../CognitoAPI';
 import SearchIcon from '@mui/icons-material/Search';
 
-export default function DriverCatalog(){
+export default function DriverCatalog({inheritedSub}){
 
     const MOVIES = "movies"
     const MUSIC = "music"
@@ -34,7 +34,7 @@ export default function DriverCatalog(){
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({sub: userAttributes.sub})
+          body: JSON.stringify({sub: inheritedSub?.value2 ? inheritedSub.value2 : userAttributes.sub})
         })
         .then(response => {
           if (response.ok) { 

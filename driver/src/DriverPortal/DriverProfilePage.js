@@ -1,12 +1,12 @@
 import DriverAppBar from './DriverAppBar';
 import ProfilePage from '../ProfilePage';
 
-export default function DriverProfilePage() {
+export default function DriverProfilePage({inheritedSub}) {
 
   return (
     <div>
-      <DriverAppBar />
-      <ProfilePage userType='driver'/>
+      <DriverAppBar inheritedSub={inheritedSub}/>
+      <ProfilePage inheritedSub={inheritedSub} userType='driver'/>
     </div>
   );
 }

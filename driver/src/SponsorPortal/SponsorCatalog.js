@@ -10,7 +10,7 @@ import BaseURL from '../BaseURL';
 import { useFetchUserAttributes } from '../CognitoAPI';
 
 
-export default function SponsorCatalog() {
+export default function SponsorCatalog({inheritedSub}) {
   const navigate = useNavigate();
   function back(){
     navigate(-1);
@@ -28,7 +28,7 @@ export default function SponsorCatalog() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({sub: userAttributes.sub})
+      body: JSON.stringify({sub: inheritedSub?.value ? inheritedSub.value : userAttributes.sub})
     })
     .then(response => {
       if (response.ok) { 
@@ -386,7 +386,7 @@ export default function SponsorCatalog() {
 
   return (
     <div>
-        <SponsorAppBar/>
+        <SponsorAppBar inheritedSub={inheritedSub}/>
         <div style={{ marginLeft: '25px' }}>
             <h1 className="catalog-header">Catalog Rules</h1>
             <div style={{display: 'flex'}}>

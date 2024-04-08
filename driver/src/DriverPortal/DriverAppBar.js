@@ -11,8 +11,10 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import BaseURL from '../BaseURL';
 import { useAuthenticator } from '@aws-amplify/ui-react';
+import { inheritedUser } from '../App';
+import UndoIcon from '@mui/icons-material/Undo';
 
-export default function DriverAppBar() {
+export default function DriverAppBar({inheritedSub}) {
   const [open, setOpen] = React.useState(false);
   const [pointTotal, setPointTotal] = useState("");
   const userID = 5;
@@ -58,6 +60,10 @@ export default function DriverAppBar() {
   const handleDrivingPoints = () => {
     navigate('/driverPoints')
   }
+  const handleBackToSponsor = () => {
+    inheritedUser.value2 = '';
+    navigate('/sponsorProfile');
+  }
   
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
@@ -86,6 +92,16 @@ export default function DriverAppBar() {
             <ListItemText primary={"Driving Points"} />
           </ListItemButton>
         </ListItem>
+        {inheritedSub?.value2 && 
+        <ListItem key={"Back To Sponsor"} disablePadding>
+          <ListItemButton onClick={handleBackToSponsor}>
+            <ListItemIcon>
+              <UndoIcon/>
+            </ListItemIcon>
+            <ListItemText primary={"Back To Sponsor"} />
+          </ListItemButton>
+        </ListItem>
+        }
         <ListItem key={"About"} disablePadding>
           <ListItemButton onClick={handleAbout}>
             <ListItemIcon>

@@ -1,12 +1,12 @@
 import ProfilePage from '../ProfilePage';
 import SponsorAppBar from './SponsorAppBar';
 
-export default function DriverProfilePage() {
-
+export default function DriverProfilePage({inheritedSub}) {
+  console.log(inheritedSub)
   return (
     <div>
-      <SponsorAppBar />
-      <ProfilePage userType='sponsor'/>
+      <SponsorAppBar inheritedSub={inheritedSub}/>
+      <ProfilePage userType='sponsor' inheritedSub={inheritedSub}/>
     </div>
   );
 }

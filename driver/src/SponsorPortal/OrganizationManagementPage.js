@@ -5,7 +5,7 @@ import { useFetchUserAttributes } from '../CognitoAPI';
 import BaseURL from '../BaseURL';
 import SponsorReasonsTable from '../UserPoolTables/SponsorReasons'
 
-export default function SponsorManagementPage() {
+export default function SponsorManagementPage({inheritedSub}) {
   const userAttributes = useFetchUserAttributes();
   const [sponsorOrgID, setSponsorOrgID] = useState(null)
   const [name, setName] = useState('')
@@ -40,7 +40,7 @@ export default function SponsorManagementPage() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({sub: userAttributes.sub})
+      body: JSON.stringify({sub: inheritedSub?.value ? inheritedSub.value : userAttributes.sub})
     })
     .then(response => {
       if (response.ok) { 
@@ -101,7 +101,7 @@ export default function SponsorManagementPage() {
 
   return (
     <div>
-    <SponsorAppBar/>
+    <SponsorAppBar inheritedSub={inheritedSub}/>
 
     {loading && 
     <Grid container alignItems="center" justifyContent="center" sx={{ mt: 10 }} >

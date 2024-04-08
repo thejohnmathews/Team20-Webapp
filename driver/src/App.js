@@ -36,6 +36,9 @@ import config from './amplifyconfiguration.json';
 import SponsorReports from './SponsorPortal/SponsorReports';
 Amplify.configure(config);
 
+export const inheritedUser = { value: '',
+                               value2: '' };
+
 export default function App() {
   const [cartItems, setCartItems] = useState([]);
   return (
@@ -102,30 +105,28 @@ export default function App() {
           <Routes>
             <Route exact path="/" element={<LoginRedirect />} />
             <Route exact path="/adminAbout" element={<AdminAbout />} />
-            <Route exact path="/sponsorAbout" element={<SponsorAbout />} />
-            <Route exact path="/driverAbout" element={<DriverAbout />} />
-            <Route exact path="/forgotPassword" element={<ForgotPasswordPage/>} />
-            <Route exact path="/forgotUsername" element={<ForgotUsernamePage/>} />
+            <Route exact path="/sponsorAbout" element={<SponsorAbout inheritedSub={inheritedUser}/>} />
+            <Route exact path="/driverAbout" element={<DriverAbout inheritedSub={inheritedUser}/>} />
             <Route exact path="/driverApplication" element={<DriverApplicationPage/>} />
             <Route exact path="/driverApplicationStatus" element={<DriverApplicationStatusPage/>} />
-            <Route exact path="/driverProfile" element={<DriverProfilePage/>} />
+            <Route exact path="/driverProfile" element={<DriverProfilePage inheritedSub={inheritedUser}/>} />
             <Route exact path="/adminProfile" element={<AdminProfilePage/>} />
-            <Route exact path="/sponsorProfile" element={<SponsorProfilePage/>} />
-            <Route exact path="/sponsorAccountManagement" element={<SponsorAccountManagement/>} />
+            <Route exact path="/sponsorProfile" element={<SponsorProfilePage inheritedSub={inheritedUser}/>} />
+            <Route exact path="/sponsorAccountManagement" element={<SponsorAccountManagement inheritedSub={inheritedUser}/>} />
             <Route exact path="/adminAccountManagement" element={<AdminAccountManagement />} />
-            <Route exact path="/sponsorOrganizationManagement" element={<SponsorOrgManagementPage />} /> 
-            <Route exact path="/sponsorCatalog" element={<SponsorCatalog />}/>
+            <Route exact path="/sponsorOrganizationManagement" element={<SponsorOrgManagementPage inheritedSub={inheritedUser}/>} /> 
+            <Route exact path="/sponsorCatalog" element={<SponsorCatalog inheritedSub={inheritedUser}/>}/>
             <Route exact path="/adminOrgManagement" element={<AdminOrgManagement/>}/>
-            <Route exact path="/sponsorPoints" element={<SponsorPoints/>}/>
+            <Route exact path="/sponsorPoints" element={<SponsorPoints inheritedSub={inheritedUser}/>}/>
             <Route exact path="/newUser" element={<NewUserRedirect/>}/>
-            <Route exact path="/driverCatalog" element={<DriverCatalog/>}/>
-            <Route exact path="/driverCart" element={<DriverCart/>}/>
-            <Route exact path="/driverPoints" element={<DriverPoints/>}/>
+            <Route exact path="/driverCatalog" element={<DriverCatalog inheritedSub={inheritedUser}/>}/>
+            <Route exact path="/driverCart" element={<DriverCart inheritedSub={inheritedUser}/>}/>
+            <Route exact path="/driverPoints" element={<DriverPoints inheritedSub={inheritedUser}/>}/>
             <Route exact path="/pastPurchases" element={<PastPurchases/>}/>
             <Route exact path="/adminDriverApplicaitons" element={<DriverApplicationTable permissions={'Admin'}/>}/>
-            <Route exact path="/sponsorDriverApplicaitons" element={<DriverApplicationTable permissions={'Sponsor'}/>}/>
+            <Route exact path="/sponsorDriverApplicaitons" element={<DriverApplicationTable permissions={'Sponsor'} inheritedSub={inheritedUser}/>}/>
             <Route exact path="/AdminPointChanges" element={<AdminPointChanges permissions={'Admin'}/>}/>
-            <Route exact path="/sponsorReports" element={<SponsorReports/>}/>
+            <Route exact path="/sponsorReports" element={<SponsorReports inheritedSub={inheritedUser}/>}/>
           </Routes>
       </Router>
       )}

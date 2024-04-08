@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import BaseURL from '../BaseURL';
 import { useFetchUserAttributes } from '../CognitoAPI';
 
-export default function SponsorPoints(){
+export default function SponsorPoints({inheritedSub}){
     const [goodReasons, setGoodReasons] = useState([])
     const [sponsorOrgID, setSponsorOrgID] = useState(null)
     const [badReasons, setBadReasons] = useState([])
@@ -37,7 +37,7 @@ export default function SponsorPoints(){
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({sub: userAttributes.sub})
+          body: JSON.stringify({sub: inheritedSub?.value ? inheritedSub.value : userAttributes.sub})
         })
         .then(response => {
           if (response.ok) { 
@@ -155,7 +155,7 @@ export default function SponsorPoints(){
 
     return(
 		<div>
-			<SponsorAppBar/>
+			<SponsorAppBar inheritedSub={inheritedSub}/>
             <h1>Point Management</h1>
             {checked && <p>Add Points</p>}
             {!checked && <p>Remove Points</p>}

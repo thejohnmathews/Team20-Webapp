@@ -9,7 +9,7 @@ import { csv } from '../ConvertCSV';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
-export default function SponsorReports() {
+export default function SponsorReports({inheritedSub}) {
     function TabPanel(props) {
         const { children, value, index, ...other } = props;
       
@@ -123,7 +123,7 @@ export default function SponsorReports() {
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({sub: userAttributes.sub})
+          body: JSON.stringify({sub: inheritedSub?.value ? inheritedSub.value : userAttributes.sub})
         })
         .then(response => {
           if (response.ok) { 
@@ -214,7 +214,7 @@ export default function SponsorReports() {
 
         return (
           <div>
-              <SponsorAppBar/>
+              <SponsorAppBar inheritedSub={inheritedSub}/>
               <Container>
                   <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                       <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
