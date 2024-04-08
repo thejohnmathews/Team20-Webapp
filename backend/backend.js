@@ -1183,9 +1183,10 @@ app.get('/driverInfo/:userID', (req, res) => {
 
 // Get Purchase
 // NEED TO UPDATE THIS SO IT ONLY GETS DATA FROM CURRENT USER ID!!
-app.get('/getPurchase', (req, res) => {
-    const sql = "SELECT * FROM Purchase";
-    db.query(sql,(err, data) => {
+app.get('/getPurchase/:driverID', (req, res) => {
+    const driverID = req.params.driverID;
+    const sql = "SELECT * FROM Purchase WHERE driverID = ?";
+    db.query(sql,[driverID],(err, data) => {
         if (err) {
             console.log("Backend.js: Error getting information from Purchase table in RDS.");
             return res.status(500).json({ error: "Error getting purchases from the database." });
@@ -1233,7 +1234,28 @@ app.post('/updatePurchase', (req, res) => {
     });
 }); 
 
+// Remove Purchase
+app.post('/removePurchase', (req, res) => {
+
+    // Receive an array of purchaseIDs
+    const { purchaseIDs } = req.body; 
+
+    // Dynamically generate placeholders for each purchaseID
+    const placeholders = purchaseIDs.map(() => '?').join(',');
+
+    const sql = `DELETE FROM Purchase WHERE purchaseID IN (${placeholders})`;
+    const values = purchaseIDs;
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Error removing purchase:', err);
+            res.status(500).send('Error removing purchase');
+        } else {
+            res.status(200).json("Purchase removed successfully");
+        }
+    });
+});
+
 // Listen on port number listed
-app.listen(8080, ()=> {
+app.listen(3000, ()=> {
     console.log("listening")
 })
