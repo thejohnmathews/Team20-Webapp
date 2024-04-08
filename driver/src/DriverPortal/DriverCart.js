@@ -20,6 +20,41 @@ export default function DriverCart(){
     const [purchaseCost, setPurchaseCost] = useState('');
     const [purchaseOrderNum, setPurchaseOrderNum] = useState('');
 
+    // get purchase information from RDS
+    const getOrderMax = () => {
+        fetch(BaseURL + '/getMaxOrderNum', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'purchase/json'
+            },
+        })
+        .then(response => {
+            if (response.ok) { 
+                console.log('Lists retrieved successfully'); 
+                return response.json();
+            } 
+            else { 
+                console.error('Failed to retrieve'); 
+            }
+        })
+        .then(data => {
+            setPurchaseOrderNum(data[0].maxPurchaseOrderNum);
+            console.log("data for max " + data[0].maxPurchaseOrderNum);
+            if (data[0].maxPurchaseOrderNum == null) {
+
+                setPurchaseOrderNum(0);
+                console.log("maxPurchseOrdernNum is null, setting to 0");
+            }
+        })
+        .catch(error => {
+            console.error('Error retrieving data:', error);
+        });
+    };
+
+    useEffect(() => {
+        getOrderMax();
+    }, []);
+
 
     // Get current user from UserInfo RDS table
     if(userAttributes !== null){
@@ -72,14 +107,14 @@ export default function DriverCart(){
 
     // handlePurchase(): simulate purchase and set orderSubmitted to true
     const handlePurchase = () => {
+        
+        // get maxPurchaseOrderNum in Purchase table
+        console.log("order max = " + getOrderMax());
 
         // Iterate over each item in cartItems and update purchase for each item
         cartItems.forEach((item, index) => {
             updatePurchase(item, index);
         });
-        
-        //maybe?
-        //setPurchaseOrderNum(purchaseOrderNum + 1);
 
         // set OrderSubmitted
         setOrderSubmitted(true);
@@ -87,38 +122,9 @@ export default function DriverCart(){
         // update points here
     };
 
-    // // get purchase information from RDS
-    // const getOrderMax = () => {
-    //     fetch(BaseURL + '/getMaxOrderNum', {
-    //         method: 'GET',
-    //         headers: {
-    //             'Content-Type': 'purchase/json'
-    //         },
-    //     })
-    //     .then(response => {
-    //         if (response.ok) { 
-    //             console.log('Lists retrieved successfully'); 
-    //             return response.json();
-    //         } 
-    //         else { 
-    //             console.error('Failed to retrieve'); 
-    //         }
-    //     })
-    //     .then(data => {
-    //         console.log('Received data:', data);
-    //         setPurchaseOrderNum(data.maxPurchaseOrderNum);
-    //         if (data.maxPurchaseOrderNum == null) setPurchaseOrderNum(1);
-    //     })
-    //     .catch(error => {
-    //         console.error('Error retrieving data:', error);
-    //     });
-    // };
 
+    //useEffect(): request to RDS if there are any changes
 
-    // useEffect(): request to RDS if there are any changes
-    // useEffect(() => {
-    //     getOrderMax();
-    // }, []);
 
 
     // Insert new data into Purchase RDS table

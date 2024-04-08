@@ -8,7 +8,9 @@ export default function PastPurchases() {
 
     // logic for cancel order button
     const handleCancelOrder = (orderId) => {
-        console.log(`Cancelled order ${orderId}`);
+        
+        // remove all items associated from Purchase table
+        
     };
 
     // get purchase information from RDS
@@ -56,26 +58,28 @@ export default function PastPurchases() {
     return (
         <div>
             <DriverAppBar />
-            <h1 style={{ textAlign: 'center' }}>Past Purchases</h1>
+            <Typography variant="h3" align="center" gutterBottom>
+                Past Purchases
+            </Typography>
             {Object.keys(pastPurchases).length === 0 ? (
                 <Typography variant="h6" align="center">
                     There have been no purchases on this account.
                 </Typography>
             ) : (
-                <Grid container spacing={3} justifyContent="center">
+                <div>
                     {Object.entries(pastPurchases).map(([orderNum, purchases]) => (
-                        <Grid item key={orderNum} xs={12} md={6} lg={4}>
-                            <Card style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                        <div key={orderNum}>
+                            <Card style={{ marginBottom: '20px' }}>
                                 <CardContent>
                                     <Typography variant="h6" gutterBottom>
                                         Order {orderNum}
                                     </Typography>
-                                    <Typography color="textSecondary">
+                                    <Typography color="textSecondary" gutterBottom>
                                         Order Date: {purchases[0].purchaseDate}
                                     </Typography>
                                     <Divider />
                                     {purchases.map((purchase, index) => (
-                                        <div key={purchase.purchaseID}>
+                                        <div key={purchase.purchaseID} style={{ marginBottom: '10px' }}>
                                             <Typography variant="subtitle1">
                                                 {purchase.purchaseName} - ${purchase.purchaseCost}
                                             </Typography>
@@ -84,11 +88,14 @@ export default function PastPurchases() {
                                             </Typography>
                                         </div>
                                     ))}
+                                    <Button onClick={() => handleCancelOrder(orderNum)} variant="contained" color="secondary" style={{ marginTop: '10px' }}>
+                                        Cancel Order
+                                    </Button>
                                 </CardContent>
                             </Card>
-                        </Grid>
+                        </div>
                     ))}
-                </Grid>
+                </div>
             )}
         </div>
     );
