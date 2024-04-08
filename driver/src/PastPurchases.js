@@ -2,25 +2,42 @@ import React, { useEffect, useState } from 'react';
 import DriverAppBar from './DriverPortal/DriverAppBar';
 import { Card, CardContent, Typography, Grid, Button, Divider } from '@mui/material';
 import BaseURL from './BaseURL';
+import { useFetchUserAttributes } from './CognitoAPI';
 
 export default function PastPurchases() {
     const [pastPurchases, setPastPurchases] = useState([]);
+    const userAttributes = useFetchUserAttributes();
+    const [driverID, setID] = useState('');
 
-    // logic for cancel order button
-    const handleCancelOrder = (orderId) => {
-        
-        // remove all items associated from Purchase table
-        
-    };
+    // Get current user from UserInfo RDS table
+    if(userAttributes !== null){
+        fetch(BaseURL+'/userAttributes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({sub: userAttributes.sub})
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json(); 
+        })
+        .then(data => {
+            console.log("userID is :" + data.userData.userID);
+            setID(data.userData.userID);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+    }
 
     // get purchase information from RDS
     const getPurchases = () => {
-        fetch(BaseURL + '/getPurchase', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'purchase/json'
-            },
-        })
+        console.log("PastPurchse.js driverID: " + driverID);
+        fetch(BaseURL + '/getPurchase/' + driverID)
         .then(response => {
             if (response.ok) { 
                 console.log('Lists retrieved successfully'); 
@@ -49,11 +66,22 @@ export default function PastPurchases() {
         });
     };
 
-
-    // useEffect(): request to RDS if there are any changes
     useEffect(() => {
+        // Call getPurchases when the component mounts
         getPurchases();
-    }, []);
+    }, [driverID]); 
+
+    // logic for cancel order button
+    const handleCancelOrder = (orderId) => {
+        
+        // remove all items associated from Purchase table
+        fetch(BaseURL + '/removePurchase', (req, res) => {
+
+            
+        });
+    };
+
+
 
     return (
         <div>

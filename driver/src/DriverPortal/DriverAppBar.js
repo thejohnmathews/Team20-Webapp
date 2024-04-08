@@ -25,9 +25,9 @@ export default function DriverAppBar() {
         .then(data => {
             // Store the fetched driver data in state
             setDrivers(data);  
-            console.log(data);
+            //console.log(data);
             data.forEach((driver, index) => {
-              console.log(`Driver ${index + 1} points:`, driver.driverPoints);
+              // console.log(`Driver ${index + 1} points:`, driver.driverPoints);
             });
 
         })

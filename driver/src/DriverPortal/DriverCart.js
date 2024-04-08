@@ -107,9 +107,6 @@ export default function DriverCart(){
 
     // handlePurchase(): simulate purchase and set orderSubmitted to true
     const handlePurchase = () => {
-        
-        // get maxPurchaseOrderNum in Purchase table
-        console.log("order max = " + getOrderMax());
 
         // Iterate over each item in cartItems and update purchase for each item
         cartItems.forEach((item, index) => {
@@ -122,8 +119,6 @@ export default function DriverCart(){
         // update points here
     };
 
-
-    //useEffect(): request to RDS if there are any changes
 
 
 
