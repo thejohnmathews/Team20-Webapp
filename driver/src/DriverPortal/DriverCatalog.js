@@ -20,6 +20,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import {Card} from '@mui/material';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
 
 
 export default function DriverCatalog(){
@@ -61,6 +64,7 @@ export default function DriverCatalog(){
         }
     }, [userAttributes]); 
     const [sponsorOrgID, setSponsorOrgID] = React.useState(null);
+    const [sponsorName, setSponsorName] = useState("")
     const [sponsorList, setSponsorList] = useState([])
     const [databaseInfo, setDatabaseInfo] = useState([])
     const [loading, setLoading] = useState([])
@@ -69,6 +73,11 @@ export default function DriverCatalog(){
         if(sponsorOrgID != null){
             console.log(sponsorOrgID)
             console.log(sponsorList)
+            for (let i = 0; i < sponsorList.length; i++) {
+                if (sponsorList[i].sponsorOrgID === sponsorOrgID) {
+                    setSponsorName(sponsorList[i].sponsorOrgName)
+                }
+            }
             getCatalogRules();
         }
         else {
@@ -80,7 +89,6 @@ export default function DriverCatalog(){
         sponsorOrgID != null ? setLoading(false) : setLoading(true);
         
     }, [sponsorOrgID]);
-
     
 	const navigate = useNavigate();
     const [dataFetched, setDataFetched] = useState(false);
@@ -213,7 +221,7 @@ export default function DriverCatalog(){
                 //console.log(data)
                 let newData = data.results
                 //console.log(data.results)
-                newData = newData.filter((element) => element.collectionPrice != 0)
+                newData = newData.filter((element) => element.collectionPrice > 0)
                 setMovieList(newData)
                 //console.log(data.results)
             })
@@ -228,7 +236,7 @@ export default function DriverCatalog(){
             .then(data => {
                 //console.log(data)
                 let newData = data.results
-                console.log(newData)
+                //console.log(newData)
                 newData = newData.filter((element) => element.collectionPrice > 0)
                 setMusicList(newData)
                 setOriginalAlbums(data.results)
@@ -245,7 +253,7 @@ export default function DriverCatalog(){
                 //console.log(data)
                 let newData = data.results
                 //console.log(data.results)
-                newData = newData.filter((element) => element.collectionPrice != 0)
+                newData = newData.filter((element) => element.collectionPrice > 0)
                 setTvList(newData)
             })
 			// Handle any errors that occur during the fetch
@@ -260,7 +268,7 @@ export default function DriverCatalog(){
                 //console.log(data)
                 let newData = data.results
                 //console.log(data.results)
-                newData = newData.filter((element) => element.collectionPrice != 0)
+                newData = newData.filter((element) => element.collectionPrice > 0)
                 setAudioList(newData)
             })
 			// Handle any errors that occur during the fetch
@@ -276,7 +284,7 @@ export default function DriverCatalog(){
                 //setEbookList(data.results)
                 let newData = data.results
                 //console.log(data.results)
-                newData = newData.filter((element) => element.price != 0)
+                newData = newData.filter((element) => element.price > 0)
                 //console.log("new data:")
                 setEbookList(newData)
             })
@@ -294,11 +302,30 @@ export default function DriverCatalog(){
         //5. show the data to the user
     }
 
+    const handleSelectSponsor = (e) => {
+        setSponsorName(e.target.value)
+        for (let i = 0; i < sponsorList.length; i++) {
+            if (sponsorList[i].sponsorOrgName == e.target.value) {
+                setSponsorOrgID(sponsorList[i].sponsorOrgID)
+            }
+        }
+    }
+
 	// Dependency Array
 	return (
         <div>
-            <DriverAppBar />        
+            <DriverAppBar />
             <Catalog />
+            <InputLabel id="selectLabel" style={{marginLeft:"20px"}}>Current Sponsor</InputLabel>
+            <Select
+                label="Current Sponsor"
+                value={sponsorName}
+                onChange={handleSelectSponsor}
+                style={{width: "180px", marginLeft:"20px"}}>
+                {sponsorList?.map(id => (
+                    <MenuItem value={id.sponsorOrgName}>{id.sponsorOrgName}</MenuItem>
+                ))}
+            </Select>
             <Box sx={{ marginLeft: '10px', display: 'flex', alignItems: 'flex-end', paddingBottom:"20px"}}>
                 <SearchIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
                 <TextField 
