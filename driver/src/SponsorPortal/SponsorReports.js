@@ -3,11 +3,13 @@ import React, { useEffect, useState } from 'react';
 import BaseURL from '../BaseURL'
 import { useFetchUserAttributes } from '../CognitoAPI';
 import "../App.css";
-import { Box, Tabs, Tab, Typography, Container } from '@mui/material';
-import {Paper, TableRow, TableHead, TableContainer, TableCell, TableBody, Table, Button} from '@mui/material';
+import { Box, Tabs, Tab, Typography, Dialog, DialogTitle, DialogContent, DialogActions} from '@mui/material';
+import { TextField, TableRow, TableHead, TableContainer, TableCell, TableBody, Table, Button, Container, Paper} from '@mui/material';
 import { csv } from '../ConvertCSV';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import IconButton from '@mui/material/IconButton';
+import ClearIcon from '@mui/icons-material/Clear';
 
 export default function SponsorReports() {
     function TabPanel(props) {
@@ -40,6 +42,12 @@ export default function SponsorReports() {
     const [driverApp, setDriverApp] = React.useState([]);
     const [driverAppDesc, setDriverAppDesc] = React.useState([]);
     const [dateOrder, setDateOrder] = React.useState(true)
+    const [openFilterDialog, setOpenFilterDialog] = useState(false);
+    const [activeFilter, setActiveFilter] = useState('date'); // 'date' or 'points'
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [startAmount, setStartAmount] = useState('');
+    const [endAmount, setEndAmount] = useState('');
     
     const userAttributes = useFetchUserAttributes();
     
@@ -210,8 +218,45 @@ export default function SponsorReports() {
         setChanges(sortedList);
         setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     };
-      
 
+    const handleFilterDialogOpen = () => {
+      setOpenFilterDialog(true);
+  };
+
+  const handleFilterDialogClose = () => {
+      setOpenFilterDialog(false);
+  };
+
+  const applyDateRangeFilter = () => {
+      // Filter the changes by the date range
+      const filteredList = changes.filter(change => {
+          const changeDate = new Date(change['Date (M/D/Y)']);
+          return changeDate >= new Date(startDate) && changeDate <= new Date(endDate);
+      });
+      setChanges(filteredList); // Update the state with filtered data
+  };
+
+  const applyPointAmountFilter = () => {
+      // Filter the changes by the point amount range
+      const filteredList = changes.filter(change => {
+          const pointsAddedReduced = parseInt(change['Points Added/Reduced']);
+          return pointsAddedReduced >= parseInt(startAmount) && pointsAddedReduced <= parseInt(endAmount);
+      });
+      setChanges(filteredList); // Update the state with filtered data
+  };
+
+  const clearDateFilter = () => {
+      setStartDate('');
+      setEndDate('');
+      updateRows(); // Reset the data back to its original state
+  };
+
+  const clearPointAmountFilter = () => {
+      setStartAmount('');
+      setEndAmount('');
+      updateRows(); // Reset the data back to its original state
+  };
+      
         return (
           <div>
               <SponsorAppBar/>
@@ -410,10 +455,12 @@ export default function SponsorReports() {
                             <h1 style={{marginTop: "0px", marginBottom: "20px"}}> Driver Point Change Tracking</h1>
                               <Button onClick={sortRowsByDate}>Sort by Date ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
                               <Button onClick={sortRowsByChangePointAmt}>Sort by Point Change Amount ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
-                              <Button style={{marginBottom: "30px"}}onClick={sortRowsByDriverName}>Sort by Driver Name ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
+                              <Button style={{marginBottom: "10px"}}onClick={sortRowsByDriverName}>Sort by Driver Name ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
                               <div style={{ position: 'absolute', marginTop: '10px', right: '40px' }}>
                                   <a href='#' onClick={() => csv(passwordChange)}>Download as CSV</a>
                               </div>
+                              <Button onClick={handleFilterDialogOpen}>Filter</Button>
+
                             <TableContainer component={Paper}>
                                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                                     <TableHead>
@@ -444,6 +491,102 @@ export default function SponsorReports() {
                     </Container>
                   
                   </TabPanel>
+                  <Dialog open={openFilterDialog} onClose={handleFilterDialogClose}>
+                    <DialogTitle>{activeFilter === 'date' ? 'Filter by Date Range' : 'Filter by Point Amount'}</DialogTitle>
+                    <DialogContent>
+                        <div>
+                            {activeFilter === 'date' ? (
+                                <>
+                                    <TextField
+                                        id="start-date"
+                                        label="Start Date"
+                                        type="date"
+                                        value={startDate}
+                                        onChange={(e) => setStartDate(e.target.value)}
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        InputProps={{ // Add InputProps for the clear button
+                                            endAdornment: (
+                                                <IconButton
+                                                    aria-label="clear start date"
+                                                    onClick={() => {clearDateFilter(); updateRows();}} // Clear the value when clicked
+                                                    size="small"
+                                                >
+                                                    <ClearIcon />
+                                                </IconButton>
+                                            ),
+                                        }}
+                                        style={{ marginTop: '20px' }}
+                                    />
+                                    <TextField
+                                        id="end-date"
+                                        label="End Date"
+                                        type="date"
+                                        value={endDate}
+                                        onChange={(e) => setEndDate(e.target.value)}
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        InputProps={{ // Add InputProps for the clear button
+                                            endAdornment: (
+                                                <IconButton
+                                                    aria-label="clear end date"
+                                                    onClick={() => {clearDateFilter(); updateRows();}}  // Clear the value when clicked
+                                                    size="small"
+                                                >
+                                                    <ClearIcon />
+                                                </IconButton>
+                                            ),
+                                        }}
+                                        style={{ marginTop: '20px' }}
+                                    />
+                                </>
+                            ) : (
+                                <>
+                                    <TextField
+                                        id="start-amount"
+                                        label="Start Amount"
+                                        type="number"
+                                        value={startAmount}
+                                        onChange={(e) => setStartAmount(e.target.value)}
+                                        InputProps={{
+                                            inputProps: { min: 0 },
+                                        }}
+                                        style={{ marginTop: '20px' }}
+                                    />
+                                    <TextField
+                                        id="end-amount"
+                                        label="End Amount"
+                                        type="number"
+                                        value={endAmount}
+                                        onChange={(e) => setEndAmount(e.target.value)}
+                                        InputProps={{
+                                            inputProps: { min: 0 },
+                                        }}
+                                        style={{ marginTop: '20px' }}
+                                    />
+                                </>
+                            )}
+                        </div>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleFilterDialogClose}>Cancel</Button>
+                        <Button onClick={() => setActiveFilter('date')}>Filter by Date</Button>
+                        <Button onClick={() => setActiveFilter('points')}>Filter by Points</Button>
+                        {activeFilter === 'date' ? (
+                            <>
+                                <Button onClick={applyDateRangeFilter}>Apply</Button>
+                                <Button onClick={clearDateFilter}>Clear</Button>
+                            </>
+                        ) : (
+                            <>
+                                <Button onClick={applyPointAmountFilter}>Apply</Button>
+                                <Button onClick={clearPointAmountFilter}>Clear</Button>
+                            </>
+                        )}
+                    </DialogActions>
+                  </Dialog>
               </Container>
           </div>
           );

@@ -998,39 +998,41 @@ app.get('/sponsorOrg', (req, res) => {
 })
 
 app.get('/pointChanges', (req, res) => {
-    const sql = `
 
-    SELECT 
-        pc.changeDate AS 'Date (M/D/Y)',
-        CONCAT(ui.firstName, ' ', ui.lastName) AS 'Driver Name',
-        so.sponsorOrgName AS 'Sponsor Name',
-        r.reasonString AS 'Point Change Reason',
-        pc.changePointAmt AS 'Points Added/Reduced',
-        pc.changeCurrPointTotal AS 'Total Points',
-        pc.changeType AS 'Change Type'
-    FROM 
-        PointChange pc
-    INNER JOIN 
-        DriverUser du ON pc.driverID = du.userID
-    INNER JOIN 
-        UserInfo ui ON du.userID = ui.userID
-    INNER JOIN 
-        DriverOrganizations doz ON pc.driverID = doz.driverID
-    INNER JOIN 
-        SponsorOrganization so ON doz.sponsorOrgID = so.sponsorOrgID
-    INNER JOIN 
-        Reason r ON pc.changeReasonID = r.reasonID;
+    let sql = `
+        SELECT 
+            pc.changeDate AS 'Date (M/D/Y)',
+            CONCAT(ui.firstName, ' ', ui.lastName) AS 'Driver Name',
+            so.sponsorOrgName AS 'Sponsor Name',
+            r.reasonString AS 'Point Change Reason',
+            pc.changePointAmt AS 'Points Added/Reduced',
+            pc.changeCurrPointTotal AS 'Total Points',
+            pc.changeType AS 'Change Type'
+        FROM 
+            PointChange pc
+        INNER JOIN 
+            DriverUser du ON pc.driverID = du.userID
+        INNER JOIN 
+            UserInfo ui ON du.userID = ui.userID
+        INNER JOIN 
+            DriverOrganizations doz ON pc.driverID = doz.driverID
+        INNER JOIN 
+            SponsorOrganization so ON doz.sponsorOrgID = so.sponsorOrgID
+        INNER JOIN 
+            Reason r ON pc.changeReasonID = r.reasonID
     `;
     
-    db.query(sql, (err, data) => {
+    const queryParams = [];
+
+    db.query(sql, queryParams, (err, data) => {
         if(err) {
             return res.json(err);
         }
         else {
             return res.json(data);
         }
-    })
-})
+    });
+});
 
 
 //returns active drivers in DB 
@@ -1256,6 +1258,6 @@ app.post('/removePurchase', (req, res) => {
 });
 
 // Listen on port number listed
-app.listen(3000, ()=> {
+app.listen(8080, ()=> {
     console.log("listening")
 })
