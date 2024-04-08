@@ -114,6 +114,7 @@ export default function DriverCatalog(){
     const [tvList, setTvList] = useState([])
     const [audioList, setAudioList] = useState([])
     const [ebookList, setEbookList] = useState([])
+    const [pointConversion, setPointConversion] = useState(0)
 
     const addToCart = album => {
         const updatedCartItems = [...cartItems, album];
@@ -212,6 +213,10 @@ export default function DriverCatalog(){
         setCatalogItems([])
         setMusicList([])
         setSortedAlbums([])
+        setMovieList([])
+        setTvList([])
+        setAudioList([])
+        setEbookList([])
         //1. check what rules are available
         //call fetch from within these checks
         if (sponsorRules.includes(MOVIES)) {
@@ -311,7 +316,28 @@ export default function DriverCatalog(){
         }
     }
 
-	// Dependency Array
+    useEffect(() => {
+        if (sponsorOrgID != null) {
+            const url = new URL(BaseURL + "/getSponsorRatio");
+            url.searchParams.append('sponsorOrgID', sponsorOrgID);
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) { 
+                return response.json();
+                } 
+                else { console.error('Failed to post'); }
+            })
+            .then(data => {
+                setPointConversion(data[0].sponsorDollarPointRatio)
+            })
+        }
+    }, [sponsorOrgID])
+
 	return (
         <div>
             <DriverAppBar />
@@ -347,7 +373,7 @@ export default function DriverCatalog(){
                         <p style={{fontSize: "large", textAlign:"center"}}>{album.artistName}</p>
                         <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>{album.primaryGenreName}</p>
                         <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>Album</p>
-                        <p style={{fontSize: "large", textAlign:"center"}}>Price: {album.collectionPrice} Points</p>
+                        <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(album.collectionPrice / pointConversion)} Points</p>
                     </CardContent>
                     <CardActions>
                         <div style={{display: "flex", justifyContent:"center"}}>
@@ -365,7 +391,7 @@ export default function DriverCatalog(){
                          <p style={{fontSize: "large", textAlign:"center"}}>{movie.artistName}</p>
                          <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>{movie.primaryGenreName}</p>
                          <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>Movie</p>
-                         <p style={{fontSize: "large", textAlign:"center"}}>Price: {movie.collectionPrice} Points</p>
+                         <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(movie.collectionPrice/ pointConversion)} Points</p>
                      </CardContent>
                      <CardActions>
                          <div style={{display: "flex", justifyContent:"center"}}>
@@ -384,7 +410,7 @@ export default function DriverCatalog(){
                          <p style={{fontSize: "large", textAlign:"center"}}>{tvShow.contentAdvisoryRating}</p>
                          <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>{tvShow.primaryGenreName}</p>
                          <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>TV-Show</p>
-                         <p style={{fontSize: "large", textAlign:"center"}}>Price: {tvShow.collectionPrice} Points</p>
+                         <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(tvShow.collectionPrice / pointConversion)} Points</p>
                      </CardContent>
                      <CardActions>
                          <div style={{display: "flex", justifyContent:"center"}}>
@@ -403,7 +429,7 @@ export default function DriverCatalog(){
                          <p style={{fontSize: "large", textAlign:"center"}}>{audio.artistName}</p>
                          <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>{audio.primaryGenreName}</p>
                          <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>Audio Book</p>
-                         <p style={{fontSize: "large", textAlign:"center"}}>Price: {audio.collectionPrice} Points</p>
+                         <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(audio.collectionPrice / pointConversion)} Points</p>
                      </CardContent>
                      <CardActions>
                          <div style={{display: "flex", justifyContent:"center"}}>
@@ -422,7 +448,7 @@ export default function DriverCatalog(){
                          <img style={{margin:"auto", marginTop:"-10px", width:"100px", display:"block"}} src={ebook.artworkUrl100} alt="Movie Artwork" />
                          <p style={{fontSize: "large", textAlign:"center"}}>{ebook.artistName}</p>
                          <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>E-Book</p>
-                         <p style={{fontSize: "large", textAlign:"center"}}>Price: {ebook.price} Points</p>
+                         <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(ebook.price / pointConversion)} Points</p>
                      </CardContent>
                      <CardActions>
                          <div style={{display: "flex", justifyContent:"center"}}>
