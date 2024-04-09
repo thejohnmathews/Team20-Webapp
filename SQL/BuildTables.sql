@@ -84,7 +84,9 @@ CREATE TABLE Purchase(
     purchaseCost			NUMERIC(5,2),
     purchaseOrderNum		INTEGER,
     driverID				INTEGER,
-    FOREIGN KEY (driverID) REFERENCES DriverUser(userID)
+    sponsorID				INTEGER,
+    FOREIGN KEY (driverID) REFERENCES DriverUser(userID),
+    FOREIGN KEY (sponsorID) REFERENCES SponsorOrganization(sponsorOrgID)
 );
 
 -- Create About table

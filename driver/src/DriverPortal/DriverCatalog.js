@@ -365,7 +365,7 @@ export default function DriverCatalog({inheritedSub}){
             <div style={{ marginLeft: '25px', display:"flex", flexWrap:"wrap", justifyContent:"center", gap:"30px"}}>
                 {/* Loops through returned data and displays it */}
                 {musicList.length > 0 && (sortedAlbums.length > 0 ? sortedAlbums : musicList).map(album => (
-                
+                album.sponsorOrgID = sponsorOrgID,
                 <Card key={album.collectionId} sx={{width: '300px'}}>
                     <CardContent>
                         <h2 style={{textAlign:"center"}}>{album.collectionName}</h2>
@@ -384,6 +384,7 @@ export default function DriverCatalog({inheritedSub}){
                 </Card>
                 ))}
                 {movieList.length > 0 && movieList.map(movie => (
+                    movie.sponsorOrgID = sponsorOrgID,
                      <Card key={movie.collectionId} sx={{width: '300px'}}>
                      <CardContent>
                          <h2 style={{textAlign:"center"}}>{movie.trackName}</h2>
@@ -403,6 +404,7 @@ export default function DriverCatalog({inheritedSub}){
                 ))
                 }
                 {tvList.length > 0 && tvList.map(tvShow => (
+                    tvShow.sponsorOrgID = sponsorOrgID,
                      <Card key={tvShow.collectionId} sx={{width: '300px'}}>
                      <CardContent>
                          <h2 style={{textAlign:"center"}}>{tvShow.collectionName}</h2>
@@ -422,6 +424,7 @@ export default function DriverCatalog({inheritedSub}){
                 ))
                 }
                 {audioList.length > 0 && audioList.map(audio => (
+                    audio.sponsorOrgID = sponsorOrgID,
                      <Card key={audio.collectionId} sx={{width: '300px'}}>
                      <CardContent>
                          <h2 style={{textAlign:"center"}}>{audio.collectionName}</h2>
@@ -441,6 +444,7 @@ export default function DriverCatalog({inheritedSub}){
                 ))
                 }
                 {ebookList.length > 0 && ebookList.map(ebook => (
+                    ebook.sponsorOrgID = sponsorOrgID,
                     <div>
                      <Card key={ebook.collectionId} sx={{width: '300px'}}>
                      <CardContent>

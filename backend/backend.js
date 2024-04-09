@@ -1259,8 +1259,8 @@ app.get('/getMaxOrderNum', (req, res) => {
 // Update Purchase
 app.post('/updatePurchase', (req, res) => {
 
-    const {driverID, purchaseName, purchaseCost, purchaseOrderNum} = req.body;
-    const sql = 'INSERT INTO Purchase (driverID, purchaseName, purchaseDate, purchaseCost, purchaseOrderNum) VALUES (?, ?, CURDATE(), ?, ?);';
+    const {driverID, sponsorID, purchaseName, purchaseCost, purchaseOrderNum} = req.body;
+    const sql = 'INSERT INTO Purchase (driverID, sponsorID, purchaseName, purchaseDate, purchaseCost, purchaseOrderNum) VALUES (?, ?, ?, CURDATE(), ?, ?);';
     
     console.log(req.body)
     if (!driverID || !purchaseName || !purchaseCost) {
@@ -1269,7 +1269,7 @@ app.post('/updatePurchase', (req, res) => {
     
     // integer conversion
     const ordernumint = parseInt(purchaseOrderNum);
-    const values = [driverID, purchaseName, purchaseCost, ordernumint];
+    const values = [driverID, sponsorID, purchaseName, purchaseCost, ordernumint];
 
     db.query(sql, values, (err, result) => {
         if (err) {
