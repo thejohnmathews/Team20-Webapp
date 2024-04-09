@@ -1,5 +1,4 @@
 import { Heading } from "@aws-amplify/ui-react";
-import AboutPage from "../AboutPage";
 import AdminAppBar from "./AdminAppBar";
 import React, { useEffect, useState } from 'react'; 
 import { Box, Tabs, Tab, Typography, Container } from '@mui/material';

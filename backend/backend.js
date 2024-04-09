@@ -1242,6 +1242,20 @@ app.get('/getPurchase/:driverID', (req, res) => {
         }
     });
 });
+app.get('/allPurchases', (req, res) => {
+    const sql = "SELECT p.purchaseName, p.purchaseStatus, p.purchaseDate, \
+    p.purchaseCost, p.purchaseOrderNum, u.userUsername, p.sponsorID, s.sponsorOrgName FROM Purchase p\
+    JOIN UserInfo u ON p.driverID = u.userID\
+    JOIN SponsorOrganization s ON p.sponsorID = s.sponsorOrgID;"
+    db.query(sql, (err, data) => {
+        if(err) {
+            return res.json(err);
+        }
+        else {
+            return res.json(data);
+        }
+    })
+})
 
 // Get Max OrderNum -> helper RDS call for Driver Cart
 app.get('/getMaxOrderNum', (req, res) => {

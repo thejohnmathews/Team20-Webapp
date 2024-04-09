@@ -35,6 +35,7 @@ import { useAuthenticator } from '@aws-amplify/ui-react';
 import config from './amplifyconfiguration.json';
 import SponsorReports from './SponsorPortal/SponsorReports';
 import AdminReports from './AdminPortal/AdminReports';
+import AdminSales from './AdminPortal/AdminSales';
 Amplify.configure(config);
 
 export const inheritedUser = { value: '',
@@ -129,6 +130,7 @@ export default function App() {
             <Route exact path="/AdminPointChanges" element={<AdminPointChanges permissions={'Admin'}/>}/>
             <Route exact path="/adminReports" element={<AdminReports/>}/>
             <Route exact path="/sponsorReports" element={<SponsorReports inheritedSub={inheritedUser}/>}/>
+            <Route exact path="/adminSales" element={<AdminSales/>}/>
           </Routes>
       </Router>
       )}

@@ -13,6 +13,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import SwitchAccessShortcutIcon from '@mui/icons-material/SwitchAccessShortcut';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import ViewAsSponsor from './ViewAsSponsor';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 
 export default function AdminAppBar() {
   const [open, setOpen] = React.useState(false);
@@ -58,6 +59,10 @@ export default function AdminAppBar() {
 
   const handleReports = () => {
     navigate('/adminReports')
+  }
+
+  const handleSales = () => {
+    navigate('/adminSales')
   }
 
   const handleSignOut = () => {
@@ -106,6 +111,14 @@ export default function AdminAppBar() {
               <AssessmentIcon/>
             </ListItemIcon>
             <ListItemText primary={"Reports"} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem key={"Sales"} disablePadding>
+          <ListItemButton onClick={handleSales}>
+            <ListItemIcon>
+              <MonetizationOnIcon/>
+            </ListItemIcon>
+            <ListItemText primary={"Sales"} />
           </ListItemButton>
         </ListItem>
         <ListItem key={"Sponsor View"} disablePadding>
