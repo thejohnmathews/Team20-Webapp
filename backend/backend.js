@@ -65,6 +65,51 @@ app.get('/passwordChange', (req, res) => {
     })
 })
 
+app.get('/allLogins', (req, res) => {
+    const sql = "SELECT * FROM LoginAttempt ORDER BY loginAttemptDate ASC;"
+    db.query(sql, (err, data) => {
+        if(err) {
+            return res.json(err);
+        }
+        else {
+            return res.json(data);
+        }
+    })
+})
+app.get('/allPasswordChanges', (req, res) => {
+    const sql = "SELECT u.userUsername, pc.userID, pc.changeDate FROM PasswordChange pc JOIN UserInfo u ON pc.userID = u.userID;"
+    db.query(sql, (err, data) => {
+        if(err) {
+            return res.json(err);
+        }
+        else {
+            return res.json(data);
+        }
+    })
+})
+app.get('/allDriverApps', (req, res) => {
+    const sql = "SELECT * FROM DriverApplication;"
+    db.query(sql, (err, data) => {
+        if(err) {
+            return res.json(err);
+        }
+        else {
+            return res.json(data);
+        }
+    })
+})
+app.get('/allPointChanges', (req, res) => {
+    const sql = "SELECT * FROM PointChange;"
+    db.query(sql, (err, data) => {
+        if(err) {
+            return res.json(err);
+        }
+        else {
+            return res.json(data);
+        }
+    })
+})
+
 app.post('/addCatalogRule', (req, res) => {
     const {sponsorOrgID, catalogRuleName} = req.body;
     const sql = "INSERT INTO CatalogRules(sponsorOrgID, catalogRuleName) VALUES (?, ?)"
