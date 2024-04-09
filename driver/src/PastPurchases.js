@@ -4,7 +4,7 @@ import { Card, CardContent, Typography, Grid, Button, Divider } from '@mui/mater
 import BaseURL from './BaseURL';
 import { useFetchUserAttributes } from './CognitoAPI';
 
-export default function PastPurchases() {
+export default function PastPurchases({inheritedSub}) {
     const [pastPurchases, setPastPurchases] = useState([]);
     const userAttributes = useFetchUserAttributes();
     const [driverID, setID] = useState('');
@@ -17,7 +17,7 @@ export default function PastPurchases() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({sub: userAttributes.sub})
+            body: JSON.stringify({sub: inheritedSub?.value2 ? inheritedSub.value2 : userAttributes.sub})
         })
         .then(response => {
             if (!response.ok) {
@@ -119,7 +119,7 @@ export default function PastPurchases() {
 
     return (
         <div>
-            <DriverAppBar />
+            <DriverAppBar inheritedSub={inheritedSub}/>
             <Typography variant="h3" align="center" gutterBottom>
                 Past Purchases
             </Typography>

@@ -340,7 +340,7 @@ export default function DriverCatalog({inheritedSub}){
 
 	return (
         <div>
-            <DriverAppBar />
+            <DriverAppBar inheritedSub={inheritedSub}/>
             <Catalog />
             <InputLabel id="selectLabel" style={{marginLeft:"20px"}}>Current Sponsor</InputLabel>
             <Select

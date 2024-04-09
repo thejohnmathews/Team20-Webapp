@@ -124,7 +124,7 @@ export default function App() {
             <Route exact path="/driverCatalog" element={<DriverCatalog inheritedSub={inheritedUser}/>}/>
             <Route exact path="/driverCart" element={<DriverCart inheritedSub={inheritedUser}/>}/>
             <Route exact path="/driverPoints" element={<DriverPoints inheritedSub={inheritedUser}/>}/>
-            <Route exact path="/pastPurchases" element={<PastPurchases/>}/>
+            <Route exact path="/pastPurchases" element={<PastPurchases inheritedSub={inheritedUser}/>}/>
             <Route exact path="/adminDriverApplicaitons" element={<DriverApplicationTable permissions={'Admin'}/>}/>
             <Route exact path="/sponsorDriverApplicaitons" element={<DriverApplicationTable permissions={'Sponsor'} inheritedSub={inheritedUser}/>}/>
             <Route exact path="/AdminPointChanges" element={<AdminPointChanges permissions={'Admin'}/>}/>

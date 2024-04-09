@@ -212,7 +212,7 @@ export default function DriverPoints({ inheritedSub }){
 
     return (
         <div>
-            <DriverAppBar />
+            <DriverAppBar inheritedSub={inheritedSub}/>
             <PointPage />
             <br />
             <Container>
