@@ -37,28 +37,30 @@ const UpdatePassword = ({ open, handleClose }) => {
 
   const UpdatePassword = async () => {
     try {
-      await handleUpdatePassword(oldPassword, newPassword);
+      
+      if (await handleUpdatePassword(oldPassword, newPassword) !== false){
 
-      // if successful, log password change event
-      fetch(BaseURL + '/updatePasswordChange',{
+        // if successful, log password change event
+        fetch(BaseURL + '/updatePasswordChange',{
           method: 'POST',
           headers: {
               'Content-Type': 'application/json'
           },
           body: JSON.stringify({ userID: userID })
-      })
-      .then(response => {
-          if (response.ok) { 
-              
-            console.log('Received data:', response);
-          } 
-          else { 
-              console.error('Failed to update table'); 
-          }
-      })
-      .catch(error => {
-          console.error('Failed to update table', error);
-      });
+        })
+        .then(response => {
+            if (response.ok) { 
+                
+              console.log('Received data:', response);
+            } 
+            else { 
+                console.error('Failed to update table'); 
+            }
+        })
+        .catch(error => {
+            console.error('Failed to update table', error);
+        });
+      }
 
       handleClose();
     } catch (error) {
