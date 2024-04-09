@@ -1273,6 +1273,21 @@ app.post('/updatePasswordChange', (req, res) => {
     });
 }); 
 
+// Get Password Change 
+// CHANGE LATER TO RESTRICT BY sponsorID!
+app.get('/getPasswordChange', (req, res) => {
+    
+    const sql = "SELECT * FROM PasswordChange;";
+    db.query(sql,(err, data) => {
+        if (err) {
+            console.log("Error getting data from Password Change");
+            return res.status(500).json({ error: "Error getting data from Password Change" });
+        } else {
+            return res.json(data);
+        }
+    });
+});
+
 // Listen on port number listed
 app.listen(8080, ()=> {
     console.log("listening")
