@@ -92,6 +92,50 @@ export default function AdminReports(){
         .catch(err => console.log(err));
     }
 
+    const [sortDirection, setSortDirection] = useState('asc'); // 'asc' or 'desc'
+    const sortLoginByDate = () => {
+
+      const sortedList = [...loginAttempts].sort((a, b) => {
+          const dateA = new Date(a.loginAttemptDate);
+          const dateB = new Date(b.loginAttemptDate);
+          return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+      });
+      setLoginAttempts(sortedList);
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    };
+    
+    const sortAppByDate = () => {
+
+      const sortedList = [...driverApp].sort((a, b) => {
+          const dateA = new Date(a.dateOfApplication);
+          const dateB = new Date(b.dateOfApplication);
+          return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+      });
+      setDriverApp(sortedList);
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    };
+
+    const sortPassByDate = () => {
+
+      const sortedList = [...passwordChange].sort((a, b) => {
+          const dateA = new Date(a.changeDate);
+          const dateB = new Date(b.changeDate);
+          return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+      });
+      setPasswordChange(sortedList);
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    };
+
+    const sortPointsByDate = () => {
+
+      const sortedList = [...pointChange].sort((a, b) => {
+          const dateA = new Date(a['Date (M/D/Y)']);
+          const dateB = new Date(b['Date (M/D/Y)']);
+          return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+      });
+      setPointChange(sortedList);
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    };
 	return(
 		<div>
 			<AdminAppBar/>
@@ -107,6 +151,7 @@ export default function AdminReports(){
                   <TabPanel value={value} index={0}>
                       {!loading && loginAttempts.length > 0 &&  
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <Button onClick={sortLoginByDate}>Sort by Date ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
                       <TableContainer component={Paper}>
                         <Table sx={{ minWidth: 650 }} aria-label="simple table">
                           <TableHead>
@@ -146,6 +191,7 @@ export default function AdminReports(){
                   <TabPanel value={value} index={1}>
                   {!loading && driverApp.length > 0 && 
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <Button onClick={sortAppByDate}>Sort by Date ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
                       <TableContainer component={Paper}>
                         <Table sx={{ minWidth: 650 }} aria-label="simple table">
                           <TableHead>
@@ -185,6 +231,7 @@ export default function AdminReports(){
                   <TabPanel value={value} index={2}>
                   {!loading && passwordChange.length > 0 && 
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <Button onClick={sortPassByDate}>Sort by Date ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
                       <TableContainer component={Paper}>
                         <Table sx={{ minWidth: 650 }} aria-label="simple table">
                           <TableHead>
@@ -225,6 +272,7 @@ export default function AdminReports(){
                     <br></br>
                     <Container>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                        <Button onClick={sortPointsByDate}>Sort by Date ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
                             {/*}
                             <h1 style={{marginTop: "0px", marginBottom: "20px"}}> Driver Point Change Tracking</h1>
                               <Button onClick={sortRowsByDate}>Sort by Date ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
