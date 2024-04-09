@@ -84,5 +84,6 @@ export async function handleUpdatePassword(oldPassword, newPassword) {
     await updatePassword({ oldPassword, newPassword });
   } catch (err) {
     console.log(err);
+    return false;
   }
 }

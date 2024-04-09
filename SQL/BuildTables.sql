@@ -84,7 +84,9 @@ CREATE TABLE Purchase(
     purchaseCost			NUMERIC(5,2),
     purchaseOrderNum		INTEGER,
     driverID				INTEGER,
-    FOREIGN KEY (driverID) REFERENCES DriverUser(userID)
+    sponsorID				INTEGER,
+    FOREIGN KEY (driverID) REFERENCES DriverUser(userID),
+    FOREIGN KEY (sponsorID) REFERENCES SponsorOrganization(sponsorOrgID)
 );
 
 -- Create About table
@@ -123,10 +125,8 @@ CREATE TABLE PointChange(
 CREATE TABLE PasswordChange(
     passwordChangeID INT AUTO_INCREMENT PRIMARY KEY,
     userID INT,
-    FOREIGN KEY (userID) REFERENCES UserInfo(userID),
     changeDate DATE,
-    oldPassword VARCHAR(200),
-    newPassword VARCHAR(200)
+    FOREIGN KEY (userID) REFERENCES UserInfo(userID)
 );
 
 -- Create Login Attempt table

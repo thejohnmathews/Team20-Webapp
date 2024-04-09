@@ -1,15 +1,67 @@
 import React, { useState } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import { handleUpdatePassword } from './CognitoAPI';
+import BaseURL from './BaseURL';
+import { useFetchUserAttributes } from './CognitoAPI';
 
 const UpdatePassword = ({ open, handleClose }) => {
+
+  const userAttributes = useFetchUserAttributes();
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [userID, setUserID] = useState('');
   const [error, setError] = useState(null);
+
+    // Get current user from UserInfo RDS table
+  if(userAttributes !== null){
+      fetch(BaseURL+'/userAttributes', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({sub: userAttributes.sub})
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Network response was not ok');
+          }
+          return response.json(); 
+      })
+      .then(data => {
+          setUserID(data.userData.userID);
+      })
+      .catch(error => {
+          console.error('Error:', error);
+      });
+  }
 
   const UpdatePassword = async () => {
     try {
-      await handleUpdatePassword(oldPassword, newPassword);
+      
+      if (await handleUpdatePassword(oldPassword, newPassword) !== false){
+
+        // if successful, log password change event
+        fetch(BaseURL + '/updatePasswordChange',{
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ userID: userID })
+        })
+        .then(response => {
+            if (response.ok) { 
+                
+              console.log('Received data:', response);
+            } 
+            else { 
+                console.error('Failed to update table'); 
+            }
+        })
+        .catch(error => {
+            console.error('Failed to update table', error);
+        });
+      }
+
       handleClose();
     } catch (error) {
       setError(error.message || 'Error updating password. Please try again.');

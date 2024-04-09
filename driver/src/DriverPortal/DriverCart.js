@@ -19,6 +19,7 @@ export default function DriverCart({inheritedSub}){
     const [purchaseName, setPurchaseName] = useState('');
     const [purchaseCost, setPurchaseCost] = useState('');
     const [purchaseOrderNum, setPurchaseOrderNum] = useState('');
+    const [sponsor, setSponsor] = useState('')
 
     // get purchase information from RDS
     const getOrderMax = () => {
@@ -124,6 +125,7 @@ export default function DriverCart({inheritedSub}){
 
     // Insert new data into Purchase RDS table
     const updatePurchase = (item, index) => {
+        console.log(item.sponsorID)
         fetch(BaseURL + '/updatePurchase', {
             method: 'POST',
             headers: {
@@ -132,6 +134,7 @@ export default function DriverCart({inheritedSub}){
             //body: JSON.stringify({driverID: ID, purchaseName: purchaseName, purchaseCost: purchaseCost, purchaseOrderNum: purchaseOrderNum})
             body: JSON.stringify({
                 driverID: ID,
+                sponsorID: item.sponsorOrgID,
                 purchaseName: item.collectionName, 
                 purchaseCost: item.collectionPrice, 
                 purchaseOrderNum: purchaseOrderNum + 1

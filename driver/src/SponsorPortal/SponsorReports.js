@@ -52,6 +52,8 @@ export default function SponsorReports({inheritedSub}) {
     const [endDate, setEndDate] = useState('');
     const [startAmount, setStartAmount] = useState('');
     const [endAmount, setEndAmount] = useState('');
+    const [passwordChanges, setPasswordChanges] = useState([]);
+    
     const userAttributes = useFetchUserAttributes();
 
     
@@ -103,7 +105,7 @@ export default function SponsorReports({inheritedSub}) {
 
     //get password change table
     const getPasswordChange = () => {
-        const url = new URL(BaseURL + "/passwordChange");
+        const url = new URL(BaseURL + "/getPasswordChange");
         url.searchParams.append('sponsorOrgID', sponsorOrgID);
 
         fetch(url)
@@ -153,6 +155,7 @@ export default function SponsorReports({inheritedSub}) {
           console.error('Error retrieving successfully:', error);
         });
     }
+
 
 //BELOW ARE USED FOR POINT TRACKING REPORTING
     const [changes, setChanges] = useState([]);

@@ -65,6 +65,51 @@ app.get('/passwordChange', (req, res) => {
     })
 })
 
+app.get('/allLogins', (req, res) => {
+    const sql = "SELECT * FROM LoginAttempt ORDER BY loginAttemptDate ASC;"
+    db.query(sql, (err, data) => {
+        if(err) {
+            return res.json(err);
+        }
+        else {
+            return res.json(data);
+        }
+    })
+})
+app.get('/allPasswordChanges', (req, res) => {
+    const sql = "SELECT u.userUsername, pc.userID, pc.changeDate FROM PasswordChange pc JOIN UserInfo u ON pc.userID = u.userID;"
+    db.query(sql, (err, data) => {
+        if(err) {
+            return res.json(err);
+        }
+        else {
+            return res.json(data);
+        }
+    })
+})
+app.get('/allDriverApps', (req, res) => {
+    const sql = "SELECT * FROM DriverApplication;"
+    db.query(sql, (err, data) => {
+        if(err) {
+            return res.json(err);
+        }
+        else {
+            return res.json(data);
+        }
+    })
+})
+app.get('/allPointChanges', (req, res) => {
+    const sql = "SELECT * FROM PointChange;"
+    db.query(sql, (err, data) => {
+        if(err) {
+            return res.json(err);
+        }
+        else {
+            return res.json(data);
+        }
+    })
+})
+
 app.post('/addCatalogRule', (req, res) => {
     const {sponsorOrgID, catalogRuleName} = req.body;
     const sql = "INSERT INTO CatalogRules(sponsorOrgID, catalogRuleName) VALUES (?, ?)"
@@ -1198,6 +1243,20 @@ app.get('/getPurchase/:driverID', (req, res) => {
         }
     });
 });
+app.get('/allPurchases', (req, res) => {
+    const sql = "SELECT p.purchaseName, p.purchaseStatus, p.purchaseDate, \
+    p.purchaseCost, p.purchaseOrderNum, u.userUsername, p.sponsorID, s.sponsorOrgName FROM Purchase p\
+    JOIN UserInfo u ON p.driverID = u.userID\
+    JOIN SponsorOrganization s ON p.sponsorID = s.sponsorOrgID;"
+    db.query(sql, (err, data) => {
+        if(err) {
+            return res.json(err);
+        }
+        else {
+            return res.json(data);
+        }
+    })
+})
 
 // Get Max OrderNum -> helper RDS call for Driver Cart
 app.get('/getMaxOrderNum', (req, res) => {
@@ -1215,8 +1274,8 @@ app.get('/getMaxOrderNum', (req, res) => {
 // Update Purchase
 app.post('/updatePurchase', (req, res) => {
 
-    const {driverID, purchaseName, purchaseCost, purchaseOrderNum} = req.body;
-    const sql = 'INSERT INTO Purchase (driverID, purchaseName, purchaseDate, purchaseCost, purchaseOrderNum) VALUES (?, ?, CURDATE(), ?, ?);';
+    const {driverID, sponsorID, purchaseName, purchaseCost, purchaseOrderNum} = req.body;
+    const sql = 'INSERT INTO Purchase (driverID, sponsorID, purchaseName, purchaseDate, purchaseCost, purchaseOrderNum) VALUES (?, ?, ?, CURDATE(), ?, ?);';
     
     console.log(req.body)
     if (!driverID || !purchaseName || !purchaseCost) {
@@ -1225,7 +1284,7 @@ app.post('/updatePurchase', (req, res) => {
     
     // integer conversion
     const ordernumint = parseInt(purchaseOrderNum);
-    const values = [driverID, purchaseName, purchaseCost, ordernumint];
+    const values = [driverID, sponsorID, purchaseName, purchaseCost, ordernumint];
 
     db.query(sql, values, (err, result) => {
         if (err) {
@@ -1254,6 +1313,37 @@ app.post('/removePurchase', (req, res) => {
             res.status(500).send('Error removing purchase');
         } else {
             res.status(200).json("Purchase removed successfully");
+        }
+    });
+});
+
+// Update Password Change
+app.post('/updatePasswordChange', (req, res) => {
+
+    const {userID} = req.body;
+    const sql = 'INSERT INTO PasswordChange (userID, changeDate) VALUES (?, CURRENT_TIMESTAMP());';
+    
+    db.query(sql, userID, (err, result) => {
+        if (err) {
+            console.error('Error inserting into PasswordChange', err);
+            res.status(500).json({ error: 'Error inserting into PasswordChange' });
+        } else {
+            res.status(200).json("PasswordChange updated successfully");
+        }
+    });
+}); 
+
+// Get Password Change 
+// CHANGE LATER TO RESTRICT BY sponsorID!
+app.get('/getPasswordChange', (req, res) => {
+    
+    const sql = "SELECT * FROM PasswordChange;";
+    db.query(sql,(err, data) => {
+        if (err) {
+            console.log("Error getting data from Password Change");
+            return res.status(500).json({ error: "Error getting data from Password Change" });
+        } else {
+            return res.json(data);
         }
     });
 });

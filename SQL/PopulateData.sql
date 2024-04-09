@@ -89,7 +89,7 @@ INSERT INTO CatalogRules VALUES
 (2, "music"),
 (3, "music");
 
-INSERT INTO Purchase(purchaseName, purchaseStatus, purchaseDate, purchaseCost, purchaseOrderNum, driverID) VALUES
-("The Chain - LP", "In-Route", "2024-04-1", 250, 1, 2);
+INSERT INTO Purchase(purchaseName, purchaseStatus, purchaseDate, purchaseCost, purchaseOrderNum, driverID, sponsorID) VALUES
+("The Chain - LP", "In-Route", "2024-04-1", 250, 1, 2, 1);
 -- ("How to be a Human Being - Glass Animals", "Delivered", "2024-04-1", 250, 1, 2),
 -- ("The Kill", "Processing", "2024-04-1", 250, 2, 2);
