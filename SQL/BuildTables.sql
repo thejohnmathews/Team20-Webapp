@@ -123,10 +123,8 @@ CREATE TABLE PointChange(
 CREATE TABLE PasswordChange(
     passwordChangeID INT AUTO_INCREMENT PRIMARY KEY,
     userID INT,
-    FOREIGN KEY (userID) REFERENCES UserInfo(userID),
     changeDate DATE,
-    oldPassword VARCHAR(200),
-    newPassword VARCHAR(200)
+    FOREIGN KEY (userID) REFERENCES UserInfo(userID)
 );
 
 -- Create Login Attempt table

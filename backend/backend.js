@@ -1257,6 +1257,22 @@ app.post('/removePurchase', (req, res) => {
     });
 });
 
+// Update Password Change
+app.post('/updatePasswordChange', (req, res) => {
+
+    const {userID} = req.body;
+    const sql = 'INSERT INTO PasswordChange (userID, changeDate) VALUES (?, CURRENT_TIMESTAMP());';
+    
+    db.query(sql, userID, (err, result) => {
+        if (err) {
+            console.error('Error inserting into PasswordChange', err);
+            res.status(500).json({ error: 'Error inserting into PasswordChange' });
+        } else {
+            res.status(200).json("PasswordChange updated successfully");
+        }
+    });
+}); 
+
 // Listen on port number listed
 app.listen(8080, ()=> {
     console.log("listening")
