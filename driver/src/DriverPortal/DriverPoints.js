@@ -254,7 +254,7 @@ export default function DriverPoints({ inheritedSub }){
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    <div style={{ marginTop: '20px', width: '100%' }}>
+                    <div style={{ marginTop: '20px', marginBottom: '50px', width: '100%' }}>
                         <canvas ref={canvasRef}></canvas>
                     </div>
                 </div>

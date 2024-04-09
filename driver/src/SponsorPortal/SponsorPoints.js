@@ -156,71 +156,73 @@ export default function SponsorPoints({inheritedSub}){
     return(
 		<div>
 			<SponsorAppBar inheritedSub={inheritedSub}/>
-            <h1>Point Management</h1>
-            {checked && <p>Add Points</p>}
-            {!checked && <p>Remove Points</p>}
-            <Switch 
-                defaultChecked 
-                color="default" 
-                checked={checked} 
-                onChange={handleChecked}/>
-            <InputLabel id="drivers">Driver</InputLabel>
-            <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                label="Driver"
-                sx={{minWidth: 200}}
-                value={selectedDriver}
-                onChange={handleDriverChange}
-            >
-                {drivers.length > 0 ? (
-                    drivers.map(driver => (
-                        <MenuItem key={driver.userID} value={driver.userID}>
-                            {`${driver.userID} - ${driver.firstName} ${driver.lastName}`}
+            <div style={{marginLeft:"10px"}}>
+                <h1>Point Management</h1>
+                {checked && <p>Add Points</p>}
+                {!checked && <p>Remove Points</p>}
+                <Switch 
+                    defaultChecked 
+                    color="default" 
+                    checked={checked} 
+                    onChange={handleChecked}/>
+                <InputLabel id="drivers">Driver</InputLabel>
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Driver"
+                    sx={{minWidth: 200}}
+                    value={selectedDriver}
+                    onChange={handleDriverChange}
+                >
+                    {drivers.length > 0 ? (
+                        drivers.map(driver => (
+                            <MenuItem key={driver.userID} value={driver.userID}>
+                                {`${driver.userID} - ${driver.firstName} ${driver.lastName}`}
+                            </MenuItem>
+                        ))
+                    ) : (
+                        <MenuItem disabled>
+                            Error: No drivers available
                         </MenuItem>
-                    ))
-                ) : (
-                    <MenuItem disabled>
-                        Error: No drivers available
-                    </MenuItem>
-                )}
-            </Select>
-            {checked && goodReasons.length > 0 &&<div><InputLabel id="good-reasons">Good Reasons</InputLabel>
-            <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                label="Good Reasons"
-                sx={{minWidth: 200}}
-                value={selectedReason}
-                onChange={handleReasonChange}
-            >
-                {goodReasons.map((reasonItem, index) => (
-                    <MenuItem key={reasonItem.reasonID} value={reasonItem.reasonID}>
-                        {selectedReason === reasonItem.reasonID ? reasonItem.reasonString : `${reasonItem.reasonString} (Other)`}
-                    </MenuItem>
-                ))}
-                <MenuItem value={"Other"}>Other</MenuItem>
-            </Select></div>}
-            {!checked && badReasons.length > 0 &&<div><InputLabel id="bad-reasons">Bad Reasons</InputLabel>
-            <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                label="Good Reasons"
-                sx={{minWidth: 200}}
-                value={selectedReason}
-                onChange={handleReasonChange}
-            >
-                {badReasons.map((reasonItem, index) => (
-                    <MenuItem key={reasonItem.reasonID} value={reasonItem.reasonID}>
-                        {reasonItem.reasonString}
-                    </MenuItem>
-                ))}
-                <MenuItem value={"Other"}>Other</MenuItem>
-            </Select></div>}
-            <br></br>
-            <TextField id="outlined-basic" label="Point value" variant="outlined" type="number" value={pointValue} onChange={handlePointValueChange}/>
-            <br></br>
-            <Button onClick={handleSubmit}>Submit</Button>
+                    )}
+                </Select>
+                {checked && goodReasons.length > 0 &&<div><InputLabel id="good-reasons">Good Reasons</InputLabel>
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Good Reasons"
+                    sx={{minWidth: 200}}
+                    value={selectedReason}
+                    onChange={handleReasonChange}
+                >
+                    {goodReasons.map((reasonItem, index) => (
+                        <MenuItem key={reasonItem.reasonID} value={reasonItem.reasonID}>
+                            {selectedReason === reasonItem.reasonID ? reasonItem.reasonString : `${reasonItem.reasonString} (Other)`}
+                        </MenuItem>
+                    ))}
+                    <MenuItem value={"Other"}>Other</MenuItem>
+                </Select></div>}
+                {!checked && badReasons.length > 0 &&<div><InputLabel id="bad-reasons">Bad Reasons</InputLabel>
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Good Reasons"
+                    sx={{minWidth: 200}}
+                    value={selectedReason}
+                    onChange={handleReasonChange}
+                >
+                    {badReasons.map((reasonItem, index) => (
+                        <MenuItem key={reasonItem.reasonID} value={reasonItem.reasonID}>
+                            {reasonItem.reasonString}
+                        </MenuItem>
+                    ))}
+                    <MenuItem value={"Other"}>Other</MenuItem>
+                </Select></div>}
+                <br></br>
+                <TextField id="outlined-basic" label="Point value" variant="outlined" type="number" value={pointValue} onChange={handlePointValueChange}/>
+                <br></br>
+                <Button onClick={handleSubmit}>Submit</Button>
+            </div>
 		</div>
 	)
 }

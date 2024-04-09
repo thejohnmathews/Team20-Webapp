@@ -1004,6 +1004,7 @@ app.get('/pointChanges', (req, res) => {
             pc.changeDate AS 'Date (M/D/Y)',
             CONCAT(ui.firstName, ' ', ui.lastName) AS 'Driver Name',
             so.sponsorOrgName AS 'Sponsor Name',
+            pc.sponsorID AS 'Sponsor ID',
             r.reasonString AS 'Point Change Reason',
             pc.changePointAmt AS 'Points Added/Reduced',
             pc.changeCurrPointTotal AS 'Total Points',

@@ -76,8 +76,11 @@ INSERT INTO Reason(reasonString, reasonType, sponsorOrgID) VALUES
 ("Off-roading.", "bad", 2);
 
 INSERT INTO PointChange(driverID, sponsorID, changeDate, changePointAmt, changeReasonID, changeType, changeCurrPointTotal) VALUES
-(3, (SELECT sponsorOrgID FROM DriverOrganizations WHERE driverID = 3), '2024-03-25', 0, 1, 'good',(SELECT driverPoints + 0 FROM DriverUser WHERE userID = 3)
-);
+(3, (SELECT sponsorOrgID FROM DriverOrganizations WHERE driverID = 3), '2024-03-25', 0, 1, 'good',(SELECT driverPoints + 0 FROM DriverUser WHERE userID = 3)),
+(3, (SELECT sponsorOrgID FROM DriverOrganizations WHERE driverID = 3), '2023-03-8', -25, 7, 'bad',(SELECT driverPoints - 25 FROM DriverUser WHERE userID = 3)),
+(3, (SELECT sponsorOrgID FROM DriverOrganizations WHERE driverID = 3), '2024-02-8', 15, 2, 'good',(SELECT driverPoints + 15 FROM DriverUser WHERE userID = 3)),
+(3, (SELECT sponsorOrgID FROM DriverOrganizations WHERE driverID = 3), '2024-04-8', -30, 17, 'bad',(SELECT driverPoints - 30 FROM DriverUser WHERE userID = 3)),
+(3, (SELECT sponsorOrgID FROM DriverOrganizations WHERE driverID = 3), '2024-02-8', 50, 1, 'good',(SELECT driverPoints + 50 FROM DriverUser WHERE userID = 3));
 
 INSERT INTO CatalogRules VALUES
 (1, "music"),

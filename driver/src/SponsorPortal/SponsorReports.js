@@ -1,15 +1,18 @@
 import SponsorAppBar from './SponsorAppBar';
-import React, { useEffect, useState } from 'react'; 
+import React, { useEffect, useState, useRef } from 'react'; 
 import BaseURL from '../BaseURL'
 import { useFetchUserAttributes } from '../CognitoAPI';
 import "../App.css";
-import { Box, Tabs, Tab, Typography, Dialog, DialogTitle, DialogContent, DialogActions} from '@mui/material';
+import { Box, Tabs, Tab, Typography, Dialog, DialogTitle, DialogContent, DialogActions, FormControl, InputLabel, Select, MenuItem} from '@mui/material';
 import { TextField, TableRow, TableHead, TableContainer, TableCell, TableBody, Table, Button, Container, Paper} from '@mui/material';
 import { csv } from '../ConvertCSV';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import IconButton from '@mui/material/IconButton';
 import ClearIcon from '@mui/icons-material/Clear';
+import Chart from 'chart.js/auto';
+
+
 
 export default function SponsorReports({inheritedSub}) {
     function TabPanel(props) {
@@ -34,6 +37,7 @@ export default function SponsorReports({inheritedSub}) {
     
     const [value, setValue] = React.useState(0);  
     const [sponsorOrgID, setSponsorOrgID] = React.useState(null);
+    const [sponsorOrgName, setSponsorName] = React.useState(null);
     const [loading, setLoading] = React.useState(true);
     const [loginAttempts, setLoginAttempts] = React.useState([]);
     const [loginAttemptsDesc, setLoginAttemptsDesc] = React.useState([]);
@@ -48,8 +52,8 @@ export default function SponsorReports({inheritedSub}) {
     const [endDate, setEndDate] = useState('');
     const [startAmount, setStartAmount] = useState('');
     const [endAmount, setEndAmount] = useState('');
-    
     const userAttributes = useFetchUserAttributes();
+
     
     useEffect(() => {
         if (userAttributes && sponsorOrgID === null) {
@@ -141,7 +145,9 @@ export default function SponsorReports({inheritedSub}) {
         })
         .then(data => {
           console.log(data[0].sponsorOrgID);
-          setSponsorOrgID(data[0].sponsorOrgID);			
+          setSponsorOrgID(data[0].sponsorOrgID);	
+          console.log(data[0].sponsorOrgName);
+          setSponsorName(sponsorOrgName)		
         })
         .catch(error => {
           console.error('Error retrieving successfully:', error);
@@ -165,7 +171,7 @@ export default function SponsorReports({inheritedSub}) {
         })
         .then(response => {
             if (response.ok) { 
-                console.log('lists retrieved successfully'); 
+                //console.log('lists retrieved successfully'); 
                 return response.json();
             } 
             else { 
@@ -173,9 +179,14 @@ export default function SponsorReports({inheritedSub}) {
             }
         })
         .then(data => {
-            console.log(data);
-            setChanges(data);
-            console.log(Array.isArray(data));
+          /*
+          console.log(data)
+          console.log("sponsor" + sponsorOrgID)
+          const filteredChanges = data.filter(change => {
+            console.log("change: " + change['Sponsor ID']); // Log the Sponsor ID value
+            return change['Sponsor ID'] === sponsorOrgID;
+          });*/
+          setChanges(data);
         })
         .catch(error => {
             console.error('Error retrieving data:', error);
@@ -256,6 +267,99 @@ export default function SponsorReports({inheritedSub}) {
       setEndAmount('');
       updateRows(); // Reset the data back to its original state
   };
+
+  const [drivers, setDrivers] = useState("")
+  const [selectedDriver, setSelectedDriver] = useState("");
+  useEffect(() => {
+      fetch(BaseURL + "/activeDrivers")
+      .then(res => res.json())
+      .then(data => {
+          // Store the fetched driver data in state
+          setDrivers(data);
+      })
+      .catch(err => console.error('Error fetching driver data:', err));
+  }, []);
+
+  const handleDriverChange = (event) => {
+    const selectedValue = event.target.value;
+    setSelectedDriver(selectedValue);
+    //console.log("selectedDriver: " + selectedDriver);
+    applyDriverFilter(selectedValue); 
+  }
+
+  // Define a new state to hold the filtered changes
+  const [filteredChanges, setFilteredChanges] = useState([]);
+  // Function to apply the driver filter
+  const applyDriverFilter = (selectedDriverValue) => {
+    // If no driver is selected, set filteredChanges to the original changes
+    if (!selectedDriverValue) {
+        console.log("no driver selected");
+        setFilteredChanges(changes);
+        return;
+    }
+    // Filter the changes based on the selected driver name
+    const filteredList = changes.filter(change => {
+      const driverName = change['Driver Name'];
+      return driverName === selectedDriverValue;
+    });
+    console.log(filteredList);
+
+    // Update the filtered changes with the filtered list
+    setChanges(filteredList);
+  };
+  const clearNameFilter = () => {
+    setSelectedDriver(null)
+    updateRows();
+  };
+
+  //CHARTS
+  const canvasRef = useRef(null);
+  const chartRef = useRef(null);
+  const getRandomColor = () => {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  };
+  useEffect(() => {
+    if (canvasRef.current) {
+        // Get the canvas context
+        const ctx = canvasRef.current.getContext('2d');
+        // Group changes by driver name
+        const groupedChanges = {};
+        changes.forEach(change => {
+            const driverName = change['Driver Name'];
+            if (!groupedChanges[driverName]) {
+                groupedChanges[driverName] = [];
+            }
+            groupedChanges[driverName].push(change);
+        });
+        // Create datasets for each driver
+        const datasets = [];
+        Object.entries(groupedChanges).forEach(([driverName, driverChanges]) => {
+            datasets.push({
+                label: driverName,
+                data: driverChanges.map(change => parseInt(change['Total Points'])),
+                borderColor: getRandomColor(), // Define a function to generate random colors
+                tension: 0.1
+            });
+        });
+        // Create the chart
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: changes.map(change => new Date(change['Date (M/D/Y)']).toLocaleDateString()),
+                datasets: datasets
+            }
+        });
+        // Return a cleanup function to destroy the chart when the component unmounts
+        return () => {
+            chart.destroy();
+        };
+    }
+  }, [changes]);
       
         return (
           <div>
@@ -267,6 +371,7 @@ export default function SponsorReports({inheritedSub}) {
                           <Tab label="Driver Applications" />
                           <Tab label="Password Changes" />
                           <Tab label="Driver Point Changes"/>
+                          <Tab label="Visuals"/>
                       </Tabs>
                   </Box>
                   <TabPanel value={value} index={0}>
@@ -460,6 +565,42 @@ export default function SponsorReports({inheritedSub}) {
                                   <a href='#' onClick={() => csv(passwordChange)}>Download as CSV</a>
                               </div>
                               <Button onClick={handleFilterDialogOpen}>Filter</Button>
+                              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                              <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                label="Driver"
+                                sx={{minWidth: 200}}
+                                value={selectedDriver}
+                                onChange={(event) => {
+                                  const selectedValue = event.target.value;
+                                  setSelectedDriver(selectedValue);
+                                  if (selectedValue === '') {
+                                      clearNameFilter();
+                                  } else {
+                                      applyDriverFilter(selectedValue);
+                                  }
+                                }}
+                              >
+                                <MenuItem value="">All Drivers</MenuItem>
+                                {drivers.length > 0 ? (
+                                    drivers.map(driver => (
+                                        <MenuItem key={driver.userID} value={driver.firstName +" "+ driver.lastName}>
+                                            {`${driver.userID} - ${driver.firstName} ${driver.lastName}`}
+                                        </MenuItem>
+                                    ))
+                                ) : (
+                                    <MenuItem disabled>
+                                        Error: No drivers available
+                                    </MenuItem>
+                                )}
+                            </Select>
+                            {filteredChanges.map((change, index) => (
+                              <TableRow key={index}>
+                                {/* Render table row content */}
+                              </TableRow>
+                            ))}
+                              </div>
 
                             <TableContainer component={Paper}>
                                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -487,8 +628,10 @@ export default function SponsorReports({inheritedSub}) {
                                     </TableBody>
                                 </Table>
                             </TableContainer>
+                            <canvas ref={canvasRef} />                    
+
                         </div>
-                    </Container>
+                        </Container>
                   
                   </TabPanel>
                   <Dialog open={openFilterDialog} onClose={handleFilterDialogClose}>
@@ -590,4 +733,5 @@ export default function SponsorReports({inheritedSub}) {
               </Container>
           </div>
           );
-}
+
+} 

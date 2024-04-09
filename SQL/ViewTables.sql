@@ -22,18 +22,23 @@ SELECT * FROM LoginAttempt;
 SELECT * FROM Purchase;
 SELECT * FROM SponsorOrganization;
 SELECT 
-        PointChange.*, 
-        UserInfo.firstName, 
-        UserInfo.lastName, 
-        SponsorOrganization.sponsorOrgName,
-        Reason.reasonString
-    FROM 
-        PointChange 
-    JOIN 
-        UserInfo ON PointChange.driverID = UserInfo.userID 
-    JOIN 
-        DriverUser ON UserInfo.userID = DriverUser.userID 
-    JOIN 
-        DriverOrganizations ON DriverUser.userID = DriverOrganizations.driverID
-    JOIN 
-        Reason ON PointChange.changeReasonID = Reason.reasonID;
+			ui.userID AS 'Driver ID',
+            pc.changeDate AS 'Date (M/D/Y)',
+            CONCAT(ui.firstName, ' ', ui.lastName) AS 'Driver Name',
+            so.sponsorOrgName AS 'Sponsor Name',
+            r.reasonString AS 'Point Change Reason',
+            pc.changePointAmt AS 'Points Added/Reduced',
+            pc.changeCurrPointTotal AS 'Total Points',
+            pc.changeType AS 'Change Type'
+        FROM 
+            PointChange pc
+        INNER JOIN 
+            DriverUser du ON pc.driverID = du.userID
+        INNER JOIN 
+            UserInfo ui ON du.userID = ui.userID
+        INNER JOIN 
+            DriverOrganizations doz ON pc.driverID = doz.driverID
+        INNER JOIN 
+            SponsorOrganization so ON doz.sponsorOrgID = so.sponsorOrgID
+        INNER JOIN 
+            Reason r ON pc.changeReasonID = r.reasonID
