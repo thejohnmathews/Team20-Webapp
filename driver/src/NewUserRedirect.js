@@ -44,13 +44,20 @@ export default function NewUserRedirect() {
 	}
 
 	const insertNewUser = () => {
+		const phoneValue = userAttributes['custom:Phone'];
+		if (phoneValue === null) {
+			console.log("Phone value is null");
+		} else {
+			console.log(phoneValue);
+		}
 		fetch(BaseURL + '/addUser', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			//Add address and phone number 
-			body: JSON.stringify({sub:userAttributes.sub, email:userAttributes.email, firstName:userAttributes.given_name, lastName:userAttributes.family_name, userUsername:userAttributes.preferred_username})
+			//Just add phone number here because it goes to userInfo 
+			body: JSON.stringify({sub:userAttributes.sub, email:userAttributes.email, firstName:userAttributes.given_name, lastName:userAttributes.family_name, userUsername:userAttributes.preferred_username, userPhoneNumber:phoneValue})
 		})
 		.then(response => {
 			if (response.ok) { return response.json(); 

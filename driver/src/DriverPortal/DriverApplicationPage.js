@@ -45,6 +45,12 @@ export default function DriverApplicationPage() {
 
 	function submit(){
 		console.log(sponsorIDs)
+		const addressValue = userAttributes.address;
+		if (addressValue === null) {
+			console.log("address value is null");
+		} else {
+			console.log("correct address:" + addressValue);
+		}
 		if(sponsorIDs.length > 0){
 
 			fetch(BaseURL + '/newDriverFromApplication', {
@@ -52,7 +58,8 @@ export default function DriverApplicationPage() {
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({sub:userAttributes.sub})
+				//Add Address here because it goes to driverInfo 
+				body: JSON.stringify({sub:userAttributes.sub, driverAddress:addressValue})
 			})
 			.then(response => {
 				if (response.ok) { 

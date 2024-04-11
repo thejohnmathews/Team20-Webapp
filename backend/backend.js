@@ -462,7 +462,9 @@ app.post('/newDriver', (req, res) => {
 });
 
 app.post('/newDriverFromApplication', (req, res) => {
-    const sub = req.body.sub;
+    const {sub, driverAddress} = req.body;
+    const values = [sub, driverAddress]
+    console.log("address" + driverAddress);
     const sql1 = 'SELECT userID FROM UserInfo WHERE sub = ?'
 
     db.query(sql1, sub, (err, row) => {
@@ -473,13 +475,15 @@ app.post('/newDriverFromApplication', (req, res) => {
         else{
             const sql2 = 'UPDATE UserInfo SET userType = ? WHERE userID = ?';
             userID = row[0].userID
+            console.log("userID: " + userID);
+            console.log("address:" + driverAddress);
             db.query(sql2, ['Driver', userID], (err, result) => {
                 if (err) {
                     console.error('Error adding user type', err);
                     res.status(500).send('Error adding user type');
                 } else {
-                    const sql3 = 'INSERT INTO DriverUser (userID) VALUES (?)'
-                    db.query(sql3, [userID], (err, result) => {
+                    const sql3 = 'INSERT INTO DriverUser (userID, driverAddress) VALUES (?, ?)';
+                    db.query(sql3, [userID, driverAddress], (err, result) => {
                         if (err) {
                             console.error('Error adding to driver table', err);
                             res.status(500).send('Error adding to driver table');
@@ -663,10 +667,11 @@ app.post('/driverAssociatedSponsor', (req, res) => {
 });
 
 app.post('/addUser', (req, res) => {
-    const { sub, email, firstName, lastName, userUsername } = req.body;
-    const sql1 = 'INSERT INTO UserInfo (sub, email, firstName, lastName, userUsername) VALUES (?, ?, ?, ?, ?)';
+    const { sub, email, firstName, lastName, userUsername, userPhoneNumber} = req.body;
+    console.log("body" + req.body);
+    const sql1 = 'INSERT INTO UserInfo (sub, email, firstName, lastName, userUsername, userPhoneNumber) VALUES (?, ?, ?, ?, ?, ?)';
 
-    const values = [sub, email, firstName, lastName, userUsername];
+    const values = [sub, email, firstName, lastName, userUsername, userPhoneNumber];
 
     db.query(sql1, values, (err, result) => {
         if (err) {
