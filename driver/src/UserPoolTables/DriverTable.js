@@ -127,7 +127,7 @@ export default function DriverTable({permission, sponsorID}) {
                   ) : (
                     <>
                       <Button variant="contained" color="primary" onClick={() => handleClickOpen(row.sub)}>View/Edit Profile</Button>
-                      <Button variant="contained" style={{ backgroundColor: '#d32f2f', marginLeft: '8px' }} onClick={() => removeUser(row.userID)}>Delete Account</Button>
+                      <Button variant="contained" style={{ backgroundColor: '#d32f2f', marginLeft: '8px' }} onClick={() => removeUserFromSponsor(row.userID)}>Delete Account</Button>
                     </>
                   )}
                 </TableCell>
