@@ -1023,6 +1023,87 @@ app.post('/updateApplicationStatus', (req, res) => {
     })
 });
 
+app.get('/removeAdmin', (req, res) => {
+    const userID = req.query.userID;
+    
+    const adminUserSql = "DELETE FROM AdminUser WHERE userID = ?";
+    db.query(adminUserSql, userID, (err, adminUserResult) => {
+        if (err) {
+            return res.json(err);
+        } else {
+            const userInfoSql = "DELETE FROM UserInfo WHERE userID = ?";
+            db.query(userInfoSql, userID, (err, userInfoResult) => {
+                if (err) {
+                    return res.json(err);
+                } else {
+                    return res.json({ message: 'User removed from AdminUser and UserInfo tables successfully' });
+                }
+            });
+        }
+    });
+});
+
+app.get('/removeSponsor', (req, res) => {
+    const userID = req.query.userID;
+    
+    const sponsorUserSql = "DELETE FROM SponsorUser WHERE userID = ?";
+    db.query(sponsorUserSql, userID, (err, adminUserResult) => {
+        if (err) {
+            return res.json(err);
+        } else {
+            const userInfoSql = "DELETE FROM UserInfo WHERE userID = ?";
+            db.query(userInfoSql, userID, (err, userInfoResult) => {
+                if (err) {
+                    return res.json(err);
+                } else {
+                    return res.json({ message: 'User removed from SponsorUser and UserInfo tables successfully' });
+                }
+            });
+        }
+    });
+});
+
+app.get('/removeDriver', (req, res) => {
+    const userID = req.query.userID;
+
+    const driverOrgSql = "DELETE FROM DriverOrganizations WHERE driverID = ?";
+    db.query(driverOrgSql, userID, (err, driverOrgResult) => {
+        if (err) {
+            return res.json(err);
+        } else {
+            const driverUserSql = "DELETE FROM DriverUser WHERE userID = ?";
+            db.query(driverUserSql, userID, (err, driverUserResult) => {
+                if (err) {
+                    return res.json(err);
+                } else {
+                    const userInfoSql = "DELETE FROM UserInfo WHERE userID = ?";
+                    db.query(userInfoSql, userID, (err, userInfoResult) => {
+                        if (err) {
+                            return res.json(err);
+                        } else {
+                            return res.json({ message: 'User removed from DriverOrganizations, DriverUser, and UserInfo tables successfully' });
+                        }
+                    });
+                }
+            });
+        }
+    });
+});
+
+app.get('/removeDriverFromSponsor', (req, res) => {
+    const userID = req.query.userID;
+    const sponsorOrgID = req.query.sponsorOrgID;
+
+    const driverOrgSql = "DELETE FROM DriverOrganizations WHERE driverID = ? AND sponsorOrgID = ?";
+    db.query(driverOrgSql, [userID, sponsorOrgID], (err, driverOrgResult) => {
+        if (err) {
+            return res.json(err);
+        } else {
+            return res.json({ message: 'User removed from DriverOrganizations successfully' });
+        }
+    });
+});
+
 app.get('/badReasons', (req, res) => {
     const sql = "SELECT * FROM Reason WHERE reasonType = 'bad' AND sponsorOrgID = ?"
     db.query(sql, req.query.sponsorOrgID, (err, data) => {

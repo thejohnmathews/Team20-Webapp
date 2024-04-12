@@ -41,6 +41,27 @@ export default function DriverTable({permission, sponsorID}) {
 		});
 	};
 
+  const removeUser = (userID) => {
+    const url = new URL(BaseURL + "/removeDriver");
+    url.searchParams.append('userID', userID);
+
+    fetch(url)
+    .then(res => res.json())
+    .then(data => updateRows())
+    .catch(err => console.log(err));
+}
+
+  const removeUserFromSponsor = (userID) => {
+    const url = new URL(BaseURL + "/removeDriverFromSponsor");
+    url.searchParams.append('userID', userID);
+    url.searchParams.append('sponsorOrgID', sponsorID);
+
+    fetch(url)
+    .then(res => res.json())
+    .then(data => updateRows())
+    .catch(err => console.log(err));
+  }
+
 	const handleClickOpen = (sub) => {
 		setUserSub(sub);
 		setOpen(true);
@@ -73,7 +94,6 @@ export default function DriverTable({permission, sponsorID}) {
               {permission === 'admin' && <TableCell align="right">Sponsor</TableCell>}
               <TableCell align="right">Email</TableCell>
               <TableCell align="right">Actions</TableCell>
-              <TableCell align="right">Cart</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -94,11 +114,23 @@ export default function DriverTable({permission, sponsorID}) {
                 )}
                 <TableCell align="right">{row.email}</TableCell>
                 <TableCell align="right">
-                  <Button variant="contained" color="primary" onClick={() => handleClickOpen(row.sub)}>View/Edit Profile</Button>
+                  {permission === 'admin' ? (
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <div style={{ marginBottom: '8px', width: '100%' }}>
+                        <Button variant="contained" color="primary" fullWidth onClick={() => handleClickOpen(row.sub)}>View/Edit Profile</Button>
+                      </div>
+                      <div style={{ width: '100%' }}>
+                        <Button variant="contained" style={{ backgroundColor: '#d32f2f' }} fullWidth onClick={() => removeUser(row.userID)}>Delete Account</Button>
+                      </div>
+                    </div>
+                  
+                  ) : (
+                    <>
+                      <Button variant="contained" color="primary" onClick={() => handleClickOpen(row.sub)}>View/Edit Profile</Button>
+                      <Button variant="contained" style={{ backgroundColor: '#d32f2f', marginLeft: '8px' }} onClick={() => removeUser(row.userID)}>Delete Account</Button>
+                    </>
+                  )}
                 </TableCell>
-                <TableCell align="right">
-					        <Button variant="contained" color="primary">View/Edit Cart</Button>
-				        </TableCell>
               </TableRow> 
             ))}
           </TableBody>

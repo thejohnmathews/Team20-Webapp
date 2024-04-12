@@ -18,6 +18,16 @@ export default function AdminTable({refresh, setRefresh}) {
 		updateRows()
 	}, []);
 
+	const removeUser = (userID) => {
+        const url = new URL(BaseURL + "/removeAdmin");
+        url.searchParams.append('userID', userID);
+
+        fetch(url)
+        .then(res => res.json())
+        .then(data => updateRows())
+        .catch(err => console.log(err));
+    }
+
 const updateRows = () => {
 		fetch(BaseURL + '/adminList', {
 			method: 'GET',
@@ -70,10 +80,10 @@ const updateRows = () => {
         <TableHead>
           <TableRow>
             <TableCell>User ID</TableCell>
-            <TableCell align="right">Sub</TableCell>
-			<TableCell align="right">Name</TableCell>
-            <TableCell align="right">Email</TableCell>
-			<TableCell align="right">Actions</TableCell>
+            <TableCell align="center">Sub</TableCell>
+			<TableCell align="center">Name</TableCell>
+            <TableCell align="center">Email</TableCell>
+			<TableCell align="center">Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -82,12 +92,13 @@ const updateRows = () => {
               key={adminRow.userID}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-        <TableCell component="th" scope="row"> {adminRow.userID} </TableCell>
+        		<TableCell component="th" scope="row"> {adminRow.userID} </TableCell>
 				<TableCell align="right">{adminRow.sub === null ? "Cognito Account not created" : adminRow.sub}</TableCell>
 				<TableCell align="right">{adminRow.firstName === null ? " " : adminRow.firstName + " " + adminRow.lastName}</TableCell>
 				<TableCell align="right">{adminRow.email}</TableCell>
 				<TableCell align="right">
-						<Button variant="contained" color="primary" onClick={() => handleClickOpen(adminRow.sub)}>View/Edit Profile</Button>
+					<Button variant="contained" color="primary" onClick={() => handleClickOpen(adminRow.sub)}>View/Edit Profile</Button>
+					<Button variant="contained" style={{ backgroundColor: '#d32f2f', marginLeft: '8px' }} onClick={() => removeUser(adminRow.userID)}>Delete Account</Button>
 				</TableCell>
             </TableRow>
           ))}

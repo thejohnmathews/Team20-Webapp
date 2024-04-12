@@ -116,9 +116,8 @@ CREATE TABLE PointChange(
     changeReasonID INT,
     changeType VARCHAR(5),
     changeCurrPointTotal INT,
-    FOREIGN KEY (driverID) REFERENCES DriverUser(userID),
     FOREIGN KEY (changeReasonID) REFERENCES Reason(reasonID),
-    FOREIGN KEY (sponsorID) REFERENCES DriverOrganizations(sponsorOrgID)
+    FOREIGN KEY (sponsorID) REFERENCES SponsorOrganization(sponsorOrgID)
 );
 
 -- Create Password Change table
