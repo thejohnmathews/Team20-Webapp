@@ -1,9 +1,7 @@
 // React App imports
 import './App.css';
 import React, { useState } from 'react';
-import ForgotPasswordPage from './ForgotPasswordPage.js'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import ForgotUsernamePage from './ForgotUsernamePage.js';
 import DriverApplicationPage from './DriverPortal/DriverApplicationPage.js';
 import DriverApplicationStatusPage from './DriverPortal/DriverApplicationStatusPage.js';
 import DriverProfilePage from './DriverPortal/DriverProfilePage.js'

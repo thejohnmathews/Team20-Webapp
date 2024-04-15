@@ -20,13 +20,13 @@ export function useFetchUserAttributes(){
   const [userAttributes, setUserAttributes] = useState(null);
   useEffect(() => {
     async function handleFetchUserAttributes() {
-      //try {
+      try {
         const userAttributes = await fetchUserAttributes();
         setUserAttributes(userAttributes);
         console.log(userAttributes);
-      //} catch (error) {
-        //console.log("Error fetching Cognito User Attributes");
-      //}
+      } catch (error) {
+        console.log("Error fetching Cognito User Attributes");
+      }
     }
   
     handleFetchUserAttributes();

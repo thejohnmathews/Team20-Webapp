@@ -66,7 +66,8 @@ export default function AdminAppBar() {
   }
 
   const handleSignOut = () => {
-    window.location.href = "/";
+    
+    navigate('/')
     signOut();
   }
 

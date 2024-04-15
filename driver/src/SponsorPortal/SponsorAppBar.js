@@ -75,7 +75,8 @@ export default function SponsorAppBar({inheritedSub}) {
     navigate('/sponsorDriverApplicaitons');
   };
   const handleSignOut = () => {
-    window.location.href = "/";
+    
+    navigate('/')
     signOut();
   }
 

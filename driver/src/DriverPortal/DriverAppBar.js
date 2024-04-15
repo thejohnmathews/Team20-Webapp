@@ -16,8 +16,6 @@ import UndoIcon from '@mui/icons-material/Undo';
 
 export default function DriverAppBar({inheritedSub}) {
   const [open, setOpen] = React.useState(false);
-  const [pointTotal, setPointTotal] = useState("");
-  const userID = 5;
   const { user, signOut } = useAuthenticator((context) => [context.user]);
 
   const [drivers, setDrivers, data] = useState([])
@@ -61,9 +59,11 @@ export default function DriverAppBar({inheritedSub}) {
     navigate('/driverPoints')
   }
   const handleSignOut = () => {
-    window.location.href = "/";
+    
+    navigate('/')
     signOut();
   }
+
   const handleBackToSponsor = () => {
     inheritedUser.value2 = '';
     navigate('/sponsorProfile');
