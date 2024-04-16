@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import "./App.css";
-import { useFetchUserAttributes, handleUpdateUserAttributes } from './CognitoAPI';
+import { useFetchUserAttributes } from './CognitoAPI';
 import UpdatePassword from './UpdatePassword';
 import { Grid, Typography, Box, Button, TextField, Paper, Stack, Divider } from '@mui/material';
 import BaseURL from './BaseURL';

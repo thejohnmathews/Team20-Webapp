@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {AppBar, Box, Toolbar, Typography, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider, Drawer} from '@mui/material';
+import {AppBar, Box, Toolbar, Typography, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider, Drawer, Grid} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import InfoIcon from '@mui/icons-material/Info';
@@ -14,18 +14,10 @@ import BaseURL from '../BaseURL';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import { inheritedUser } from '../App';
 import UndoIcon from '@mui/icons-material/Undo';
-import { useFetchUserAttributes } from '../CognitoAPI';
-import ProfilePage from '../ProfilePage';
+import logo from '../bezosBunch.png';
+import { useFetchUserAttributes, handleUpdateUserAttributes } from '../CognitoAPI';
 
 export default function DriverAppBar({inheritedSub}) {
-  const [open2, setOpen2] = useState(false);
-  const [editMode, setEditMode] = useState(false);
-  const [username, setUsername] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [address, setAddress] = useState('');
   const [sponsorOrgName, setSponsorOrgName] = useState('');
   const [open, setOpen] = React.useState(false);
   const { user, signOut } = useAuthenticator((context) => [context.user]);
@@ -38,38 +30,9 @@ export default function DriverAppBar({inheritedSub}) {
 
   const getUserInfo = () => {
     console.log("getting user info");
-    getAssociatedSponsor(); getDriverInfo();
-  }
-  const setUserAttributes = (user) => {
-    if (userType === 'driver'){ setAddress(user.driverAddress); }
-    setPhoneNumber(user.userPhoneNumber);
-    setEmail(user.email);
-    setLastName(user.lastName);
-    setFirstName(user.firstName);
-    setUsername(user.userUsername);
+    getAssociatedSponsor();
   }
 
-  const getDriverInfo = () => {
-    fetch(BaseURL + '/driverInfoFromSub', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ sub: inheritedSub?.value2 ? inheritedSub.value2 : userAttributes.sub })
-    })
-    .then(response => {
-      if (response.ok) { 
-        return response.json();
-      } 
-      else { console.error('Failed to get user'); }
-    })
-    .then(data => {
-      setUserAttributes(data[0]);
-    })
-    .catch(error => {
-      console.error('Failed to get user:', error);
-    });
-  }
 
   const [drivers, setDrivers, data] = useState([])
     useEffect(() => {
@@ -237,16 +200,17 @@ export default function DriverAppBar({inheritedSub}) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Driver Portal
-          </Typography>
-          {/*<Typography variant="h6">My Sponsors:<>&nbsp;</></Typography>
-            {sponsorOrgName.map((sponsor, index) => (
-                <React.Fragment key={sponsor.sponsorOrgID}>
-                    <Typography variant="h6">{sponsor.sponsorOrgName}{index < sponsorOrgName.length - 1 && <>,&nbsp;</>}</Typography>
-                </React.Fragment>
-            ))}
-            */}
+          <Grid container alignItems="center" spacing={1}>
+          <Grid item sx={{ height: '64px', display: 'flex', alignItems: 'center' }}>
+                <img src={logo} alt="logo" style={{ height: '100%' }} />
+              </Grid>
+              <Grid item>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                  Driver Portal
+                </Typography>
+              </Grid>
+          </Grid>
+          
           <Typography variant="h6" style={{marginRight: '20px'}}>
             {sponsorOrgName.length > 0 && drivers.length > 0 && drivers[1] && drivers[1].driverPoints !== null ? 
             `Sponsors: ${sponsorOrgName.map(sponsor => sponsor.sponsorOrgName).join(', ')}` 

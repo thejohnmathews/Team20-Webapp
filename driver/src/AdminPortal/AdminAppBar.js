@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {AppBar, Box, Toolbar, Typography, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider, Drawer, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button} from '@mui/material';
+import {AppBar, Box, Toolbar, Typography, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider, Drawer, Dialog, DialogActions, DialogContent, Grid, DialogTitle, Button} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import InfoIcon from '@mui/icons-material/Info';
@@ -14,6 +14,7 @@ import SwitchAccessShortcutIcon from '@mui/icons-material/SwitchAccessShortcut';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import ViewAsSponsor from './ViewAsSponsor';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import logo from '../bezosBunch.png';
 
 export default function AdminAppBar() {
   const [open, setOpen] = React.useState(false);
@@ -153,56 +154,64 @@ export default function AdminAppBar() {
 
   return (
     <div>
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar>
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static">
+          <Toolbar>
             <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            aria-controls="menu"
-            aria-haspopup="true"
-            onClick={toggleDrawer(true)}
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Admin Portal
-          </Typography>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleProfile}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-        </Toolbar>
-      </AppBar>
-      <Drawer open={open} onClose={toggleDrawer(false)}>
-        {DrawerList}
-      </Drawer>
-    </Box>
-    <Dialog
-				open={openSelect}
-				onClose={handleSponsorViewClose}
-				aria-labelledby="alert-dialog-title"
-				aria-describedby="alert-dialog-description"
-			>
-				<DialogTitle id="alert-dialog-title">{"View As A Sponsor"}</DialogTitle>
-				<DialogContent>
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              aria-controls="menu"
+              aria-haspopup="true"
+              onClick={toggleDrawer(true)}
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Grid container alignItems="center" spacing={1}>
+              <Grid item sx={{ height: '64px', display: 'flex', alignItems: 'center' }}>
+                <img src={logo} alt="logo" style={{ height: '100%' }} />
+              </Grid>
+              <Grid item>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                Admin Portal
+                </Typography>
+              </Grid>
+          </Grid>      
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleProfile}
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+        <Drawer open={open} onClose={toggleDrawer(false)}>
+          {DrawerList}
+        </Drawer>
+      </Box>
+      <Dialog
+        open={openSelect}
+        onClose={handleSponsorViewClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"View As A Sponsor"}</DialogTitle>
+        <DialogContent>
           <ViewAsSponsor/>
-				</DialogContent>
-				<DialogActions>
-				<Button onClick={handleSponsorViewClose} autoFocus>
-					Close
-				</Button>
-				</DialogActions>
-			</Dialog>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleSponsorViewClose} autoFocus>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
+  
 }
