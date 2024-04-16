@@ -170,15 +170,15 @@ export default function AdminAppBar() {
               <MenuIcon />
             </IconButton>
             <Grid container alignItems="center" spacing={1}>
+              <Grid item sx={{ height: '64px', display: 'flex', alignItems: 'center' }}>
+                <img src={logo} alt="logo" style={{ height: '100%' }} />
+              </Grid>
               <Grid item>
-                <Typography variant="h6" component="div">
-                  Admin Portal
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                Admin Portal
                 </Typography>
               </Grid>
-              <Grid item>
-                <img src={logo} alt="logo" style={{ height: '70px' }} />
-              </Grid>
-            </Grid>
+          </Grid>      
             <IconButton
               size="large"
               aria-label="account of current user"

@@ -222,18 +222,17 @@ export default function SponsorAppBar({inheritedSub}) {
             <MenuIcon />
           </IconButton>
           <Grid container alignItems="center" spacing={1}>
+              <Grid item sx={{ height: '64px', display: 'flex', alignItems: 'center' }}>
+                <img src={logo} alt="logo" style={{ height: '100%' }} />
+              </Grid>
               <Grid item>
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                  Sponsor Portal
+                Sponsor Portal
                 </Typography>
               </Grid>
-              <Grid item>
-                <img src={logo} alt="logo" style={{ height: '70px' }} />
-              </Grid>
-              <Grid item>
-                <Typography variant="h6">My Sponsor: {sponsorOrgName}</Typography>
-              </Grid>
           </Grid>
+
+            <Typography variant="h6">{sponsorOrgName}</Typography>
               <IconButton
                 size="large"
                 aria-label="account of current user"

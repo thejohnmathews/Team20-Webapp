@@ -201,20 +201,13 @@ export default function DriverAppBar({inheritedSub}) {
             <MenuIcon />
           </IconButton>
           <Grid container alignItems="center" spacing={1}>
+          <Grid item sx={{ height: '64px', display: 'flex', alignItems: 'center' }}>
+                <img src={logo} alt="logo" style={{ height: '100%' }} />
+              </Grid>
               <Grid item>
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                   Driver Portal
                 </Typography>
-          {/*<Typography variant="h6">My Sponsors:<>&nbsp;</></Typography>
-            {sponsorOrgName.map((sponsor, index) => (
-                <React.Fragment key={sponsor.sponsorOrgID}>
-                    <Typography variant="h6">{sponsor.sponsorOrgName}{index < sponsorOrgName.length - 1 && <>,&nbsp;</>}</Typography>
-                </React.Fragment>
-            ))}
-            */}
-              </Grid>
-              <Grid item>
-                <img src={logo} alt="logo" style={{ height: '70px' }} />
               </Grid>
           </Grid>
           
