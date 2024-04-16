@@ -124,23 +124,24 @@ export default function DriverPoints({ inheritedSub }){
         day: '2-digit'
     });
 
-    const [sortDirection, setSortDirection] = useState('asc'); // 'asc' or 'desc'
+    const [sortDirectionDate, setSortDirectionDate] = useState('asc'); // 'asc' or 'desc'
+    const [sortDirectionPoint, setSortDirectionPoint] = useState('asc'); // 'asc' or 'desc'
     const sortRowsByDate = () => {
         const sortedList = [...changes].sort((a, b) => {
             const dateA = new Date(a['Date (M/D/Y)']);
             const dateB = new Date(b['Date (M/D/Y)']);
-            return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+            return sortDirectionDate === 'asc' ? dateA - dateB : dateB - dateA;
         });
         setChanges(sortedList);
-        setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+        setSortDirectionDate(sortDirectionDate === 'asc' ? 'desc' : 'asc');
     };
   
     const sortRowsByChangePointAmt = () => {
         const sortedList = [...changes].sort((a, b) => {
-            return sortDirection === 'asc' ? a['Points Added/Reduced'] - b['Points Added/Reduced'] : b['Points Added/Reduced'] - a['Points Added/Reduced'];
+            return sortDirectionPoint === 'asc' ? a['Points Added/Reduced'] - b['Points Added/Reduced'] : b['Points Added/Reduced'] - a['Points Added/Reduced'];
         });
         setChanges(sortedList);
-        setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+        setSortDirectionPoint(sortDirectionPoint === 'asc' ? 'desc' : 'asc');
     };
 
     const handleFilterDialogOpen = () => {
@@ -217,10 +218,27 @@ export default function DriverPoints({ inheritedSub }){
             <br />
             <Container>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <h1>Point Change Log</h1>
-                    <Button onClick={sortRowsByDate}>Sort by Date ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
-                    <Button onClick={sortRowsByChangePointAmt}>Sort by Point Change Amount ({sortDirection === 'asc' ? '▲' : '▼'})</Button>                    
-                    <Button onClick={handleFilterDialogOpen}>Filter</Button>
+                {/* <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}> */}
+                    <Paper elevation={8} sx={{ padding: '40px', width: '95%', backgroundColor: '#f5f5f5', position: 'relative' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <Typography variant="h4" fontWeight="bold">
+                                Point Change Log
+                            </Typography>
+                            <Grid container spacing={2} justifyContent={'center'}>
+                        <Grid item>
+                            <Button onClick={sortRowsByDate}>
+                                Sort by Date ({sortDirectionDate === 'asc' ? '▲' : '▼'})
+                            </Button>
+                        </Grid>
+                        <Grid item>
+                            <Button onClick={sortRowsByChangePointAmt}>
+                                Sort by Point Change Amount ({sortDirectionPoint === 'asc' ? '▲' : '▼'})
+                            </Button>
+                        </Grid>
+                        <Grid item>
+                            <Button onClick={handleFilterDialogOpen}>Filter</Button>
+                        </Grid>
+                    </Grid>
                     <TableContainer component={Paper}>
                         <Table sx={{ minWidth: 650 }} aria-label="simple table">
                             <TableHead>
@@ -254,6 +272,9 @@ export default function DriverPoints({ inheritedSub }){
                             </TableBody>
                         </Table>
                     </TableContainer>
+                        </div>
+                    </Paper>
+                {/* </Box> */}
                     <div style={{ marginTop: '20px', marginBottom: '50px', width: '100%' }}>
                         <canvas ref={canvasRef}></canvas>
                     </div>

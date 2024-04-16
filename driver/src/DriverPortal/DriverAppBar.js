@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {AppBar, Box, Toolbar, Typography, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider, Drawer} from '@mui/material';
+import {AppBar, Box, Toolbar, Typography, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider, Drawer, Grid} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import InfoIcon from '@mui/icons-material/Info';
@@ -14,6 +14,7 @@ import BaseURL from '../BaseURL';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import { inheritedUser } from '../App';
 import UndoIcon from '@mui/icons-material/Undo';
+import logo from '../bezosBunch.png';
 
 export default function DriverAppBar({inheritedSub}) {
   const [open, setOpen] = React.useState(false);
@@ -155,9 +156,17 @@ export default function DriverAppBar({inheritedSub}) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Driver Portal
-          </Typography>
+          <Grid container alignItems="center" spacing={1}>
+              <Grid item>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                  Driver Portal
+                </Typography>
+              </Grid>
+              <Grid item>
+                <img src={logo} alt="logo" style={{ height: '70px' }} />
+              </Grid>
+          </Grid>
+          
           <Typography variant="h6" style={{marginRight: '20px'}}>
             {drivers.length > 0 && drivers[1] && drivers[1].driverPoints !== null ? `Current Point Total: ${drivers[1].driverPoints}` : "No points available"}
           </Typography>           

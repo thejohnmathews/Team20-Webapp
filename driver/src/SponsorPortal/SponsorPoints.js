@@ -1,14 +1,19 @@
 import SponsorAppBar from "./SponsorAppBar";
-import { Switch, InputLabel, Select, MenuItem, TextField, Button } from "@mui/material";
+import { Snackbar, Switch, InputLabel, Select, MenuItem, TextField, Button, Paper, Box, Typography, Divider, FormControl, Grid, FormGroup, FormControlLabel  } from "@mui/material";
 import { useState, useEffect } from "react";
 import BaseURL from '../BaseURL';
 import { useFetchUserAttributes } from '../CognitoAPI';
 
 export default function SponsorPoints({inheritedSub}){
     const [goodReasons, setGoodReasons] = useState([])
+    const [open, setOpen] = useState(false)
     const [sponsorOrgID, setSponsorOrgID] = useState(null)
     const [badReasons, setBadReasons] = useState([])
     const userAttributes = useFetchUserAttributes();
+
+    const handleClose = () => {
+        setOpen(false);
+    }
 
     const [checked, setChecked] = useState(true);
     const handleChecked = () => {
@@ -120,6 +125,9 @@ export default function SponsorPoints({inheritedSub}){
             .then(response => response.json())
             .then(data => {
                 console.log('Success: ', data);
+                setOpen(true);
+                setSelectedReason('');
+                setPointValue('');
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -145,6 +153,9 @@ export default function SponsorPoints({inheritedSub}){
             .then(response => response.json())
             .then(data => {
                 console.log('Success: ', data);
+                setOpen(true);
+                setSelectedReason('');
+                setPointValue('');
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -155,74 +166,107 @@ export default function SponsorPoints({inheritedSub}){
 
     return(
 		<div>
-			<SponsorAppBar inheritedSub={inheritedSub}/>
-            <div style={{marginLeft:"10px"}}>
-                <h1>Point Management</h1>
-                {checked && <p>Add Points</p>}
-                {!checked && <p>Remove Points</p>}
-                <Switch 
-                    defaultChecked 
-                    color="default" 
-                    checked={checked} 
-                    onChange={handleChecked}/>
-                <InputLabel id="drivers">Driver</InputLabel>
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    label="Driver"
-                    sx={{minWidth: 200}}
-                    value={selectedDriver}
-                    onChange={handleDriverChange}
-                >
-                    {drivers.length > 0 ? (
-                        drivers.map(driver => (
-                            <MenuItem key={driver.userID} value={driver.userID}>
-                                {`${driver.userID} - ${driver.firstName} ${driver.lastName}`}
-                            </MenuItem>
-                        ))
-                    ) : (
-                        <MenuItem disabled>
-                            Error: No drivers available
-                        </MenuItem>
-                    )}
-                </Select>
-                {checked && goodReasons.length > 0 &&<div><InputLabel id="good-reasons">Good Reasons</InputLabel>
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    label="Good Reasons"
-                    sx={{minWidth: 200}}
-                    value={selectedReason}
-                    onChange={handleReasonChange}
-                >
-                    {goodReasons.map((reasonItem, index) => (
-                        <MenuItem key={reasonItem.reasonID} value={reasonItem.reasonID}>
-                            {selectedReason === reasonItem.reasonID ? reasonItem.reasonString : `${reasonItem.reasonString} (Other)`}
-                        </MenuItem>
-                    ))}
-                    <MenuItem value={"Other"}>Other</MenuItem>
-                </Select></div>}
-                {!checked && badReasons.length > 0 &&<div><InputLabel id="bad-reasons">Bad Reasons</InputLabel>
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    label="Good Reasons"
-                    sx={{minWidth: 200}}
-                    value={selectedReason}
-                    onChange={handleReasonChange}
-                >
-                    {badReasons.map((reasonItem, index) => (
-                        <MenuItem key={reasonItem.reasonID} value={reasonItem.reasonID}>
-                            {reasonItem.reasonString}
-                        </MenuItem>
-                    ))}
-                    <MenuItem value={"Other"}>Other</MenuItem>
-                </Select></div>}
-                <br></br>
-                <TextField id="outlined-basic" label="Point value" variant="outlined" type="number" value={pointValue} onChange={handlePointValueChange}/>
-                <br></br>
-                <Button onClick={handleSubmit}>Submit</Button>
-            </div>
+            <SponsorAppBar inheritedSub={inheritedSub}/>
+
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
+                <Paper elevation={8} sx={{ padding: '40px', width: '75%', backgroundColor: '#f5f5f5', position: 'relative' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <Typography variant="h4" fontWeight="bold">
+                            Point Management
+                        </Typography>
+                    </div>
+                    <br/>
+                    <Divider/>
+                    <br/>
+                    <Grid container spacing={2}>
+                        <Grid item>
+                            <FormGroup>
+                                <FormControlLabel label={checked ? "Add Points" : "Remove Points"} control ={ 
+                                    <Switch 
+                                        defaultChecked 
+                                        color="default" 
+                                        checked={checked} 
+                                        onChange={handleChecked}/>} 
+                                />
+                            </FormGroup>
+
+                        </Grid>
+                        <Grid item>
+                            <FormControl >
+                                <InputLabel id="drivers">Driver</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    label="Driver"
+                                    sx={{minWidth: 200}}
+                                    value={selectedDriver}
+                                    onChange={handleDriverChange}
+                                >
+                                    {drivers.length > 0 ? (
+                                        drivers.map(driver => (
+                                            <MenuItem key={driver.userID} value={driver.userID}>
+                                                {`${driver.userID} - ${driver.firstName} ${driver.lastName}`}
+                                            </MenuItem>
+                                        ))
+                                    ) : (
+                                        <MenuItem disabled>
+                                            Error: No drivers available
+                                        </MenuItem>
+                                    )}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item>
+                            <FormControl>
+                                {checked && goodReasons.length > 0 &&<div><InputLabel id="good-reasons">Good Reasons</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    label="Good Reasons"
+                                    sx={{minWidth: 200}}
+                                    value={selectedReason}
+                                    onChange={handleReasonChange}
+                                >
+                                    {goodReasons.map((reasonItem, index) => (
+                                        <MenuItem key={reasonItem.reasonID} value={reasonItem.reasonID}>
+                                            {selectedReason === reasonItem.reasonID ? reasonItem.reasonString : `${reasonItem.reasonString} (Other)`}
+                                        </MenuItem>
+                                    ))}
+                                    <MenuItem value={"Other"}>Other</MenuItem>
+                                </Select></div>}
+                                {!checked && badReasons.length > 0 &&<div><InputLabel id="bad-reasons">Bad Reasons</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    label="Good Reasons"
+                                    sx={{minWidth: 200}}
+                                    value={selectedReason}
+                                    onChange={handleReasonChange}
+                                >
+                                    {badReasons.map((reasonItem, index) => (
+                                        <MenuItem key={reasonItem.reasonID} value={reasonItem.reasonID}>
+                                            {reasonItem.reasonString}
+                                        </MenuItem>
+                                    ))}
+                                    <MenuItem value={"Other"}>Other</MenuItem>
+                                </Select></div>}
+                            </FormControl>
+                        </Grid>
+                        <Grid item>
+                            <TextField id="outlined-basic" label="Point value" variant="outlined" type="number" value={pointValue} onChange={handlePointValueChange}/>
+                        </Grid>
+                        <Grid item alignContent={'flex-end'}>
+                            <Button variant={'contained'} onClick={handleSubmit} sx={{ height: '100%' }}>Submit</Button>
+                        </Grid>
+                    </Grid>
+                </Paper>
+            </Box>
+            <Snackbar
+                    open={open}
+                    autoHideDuration={6000}
+                    onClose={handleClose}
+                    message="Points Logged Successfully"
+                    />
 		</div>
 	)
 }

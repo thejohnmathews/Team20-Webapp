@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {AppBar, Box, Toolbar, Typography, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider, Drawer, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button} from '@mui/material';
+import {AppBar, Box, Toolbar, Typography, IconButton, List, ListItem, ListItemButton, Grid, ListItemIcon, ListItemText, Divider, Drawer, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import InfoIcon from '@mui/icons-material/Info';
@@ -19,6 +19,7 @@ import SwitchAccessShortcutIcon from '@mui/icons-material/SwitchAccessShortcut';
 import inheritedUser from '../App.js'
 import UndoIcon from '@mui/icons-material/Undo';
 import ViewAsDriver from './ViewAsDriver.js';
+import logo from '../bezosBunch.png';
 
 export default function SponsorAppBar({inheritedSub}) {
   const { user, signOut } = useAuthenticator((context) => [context.user]);
@@ -220,10 +221,19 @@ export default function SponsorAppBar({inheritedSub}) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Sponsor Portal
-          </Typography>
-          <Typography variant="h6">My Sponsor: {sponsorOrgName}</Typography>
+          <Grid container alignItems="center" spacing={1}>
+              <Grid item>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                  Sponsor Portal
+                </Typography>
+              </Grid>
+              <Grid item>
+                <img src={logo} alt="logo" style={{ height: '70px' }} />
+              </Grid>
+              <Grid item>
+                <Typography variant="h6">My Sponsor: {sponsorOrgName}</Typography>
+              </Grid>
+          </Grid>
               <IconButton
                 size="large"
                 aria-label="account of current user"

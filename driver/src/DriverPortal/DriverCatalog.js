@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import { Box } from '@mui/material';
+import { Box, Paper, Typography, Divider, Grid, FormControl } from '@mui/material';
 import { Modal } from '@mui/material';
-import Catalog from "../Catalog";
 import DriverAppBar from "./DriverAppBar";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FilterIcon from '@mui/icons-material/Tune';
@@ -12,8 +11,6 @@ import DateIcon from '@mui/icons-material/CalendarMonth';
 import { useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import {Button} from '@mui/material';
-import { Link } from 'react-router-dom'
-import DriverCart from './DriverCart';
 import BaseURL from '../BaseURL';
 import { useFetchUserAttributes } from '../CognitoAPI';
 import SearchIcon from '@mui/icons-material/Search';
@@ -341,191 +338,226 @@ export default function DriverCatalog({inheritedSub}){
 	return (
         <div>
             <DriverAppBar inheritedSub={inheritedSub}/>
-            <Catalog />
-            <InputLabel id="selectLabel" style={{marginLeft:"20px"}}>Current Sponsor</InputLabel>
-            <Select
-                label="Current Sponsor"
-                value={sponsorName}
-                onChange={handleSelectSponsor}
-                style={{width: "180px", marginLeft:"20px"}}>
-                {sponsorList?.map(id => (
-                    <MenuItem value={id.sponsorOrgName}>{id.sponsorOrgName}</MenuItem>
-                ))}
-            </Select>
-            <Box sx={{ marginLeft: '10px', display: 'flex', alignItems: 'flex-end', paddingBottom:"20px"}}>
-                <SearchIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
-                <TextField 
-                    id="searchbar" 
-                    label="Search the catalog..." 
-                    variant="standard" 
-                    sx={{width: "300px"}}/>
-                <Button variant='contained' onClick={handleCatalog}>Search</Button>
-            </Box>
-            {!loading && 
-            <div style={{ marginLeft: '25px', display:"flex", flexWrap:"wrap", justifyContent:"center", gap:"30px"}}>
-                {/* Loops through returned data and displays it */}
-                {musicList.length > 0 && (sortedAlbums.length > 0 ? sortedAlbums : musicList).map(album => (
-                album.sponsorOrgID = sponsorOrgID,
-                <Card key={album.collectionId} sx={{width: '300px'}}>
-                    <CardContent>
-                        <h2 style={{textAlign:"center"}}>{album.collectionName}</h2>
-                        <img style={{margin:"auto", marginTop:"-10px", width:"100px", display:"block"}} src={album.artworkUrl100} alt="Album Artwork" />
-                        <p style={{fontSize: "large", textAlign:"center"}}>{album.artistName}</p>
-                        <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>{album.primaryGenreName}</p>
-                        <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>Album</p>
-                        <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(album.collectionPrice / pointConversion)} Points</p>
-                    </CardContent>
-                    <CardActions>
-                        <div style={{display: "flex", justifyContent:"center"}}>
-                            <Button style={{ cursor: 'pointer', marginRight: '25px'}} variant="contained" color="primary" onClick={() => addToCart(album)}>Add to Cart</Button>
-                            <a href={album.collectionViewUrl} target="_blank">View on iTunes</a>
-                        </div>
-                    </CardActions>
-                </Card>
-                ))}
-                {movieList.length > 0 && movieList.map(movie => (
-                    movie.sponsorOrgID = sponsorOrgID,
-                     <Card key={movie.collectionId} sx={{width: '300px'}}>
-                     <CardContent>
-                         <h2 style={{textAlign:"center"}}>{movie.trackName}</h2>
-                         <img style={{margin:"auto", marginTop:"-10px", width:"100px", display:"block"}} src={movie.artworkUrl100} alt="Movie Artwork" />
-                         <p style={{fontSize: "large", textAlign:"center"}}>{movie.artistName}</p>
-                         <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>{movie.primaryGenreName}</p>
-                         <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>Movie</p>
-                         <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(movie.collectionPrice/ pointConversion)} Points</p>
-                     </CardContent>
-                     <CardActions>
-                         <div style={{display: "flex", justifyContent:"center"}}>
-                             <Button style={{ cursor: 'pointer', marginRight: '25px'}} variant="contained" color="primary" onClick={() => addToCart(movie)}>Add to Cart</Button>
-                             <a href={movie.collectionViewUrl} target="_blank">View on iTunes</a>
-                         </div>
-                     </CardActions>
-                 </Card>
-                ))
-                }
-                {tvList.length > 0 && tvList.map(tvShow => (
-                    tvShow.sponsorOrgID = sponsorOrgID,
-                     <Card key={tvShow.collectionId} sx={{width: '300px'}}>
-                     <CardContent>
-                         <h2 style={{textAlign:"center"}}>{tvShow.collectionName}</h2>
-                         <img style={{margin:"auto", marginTop:"-10px", width:"100px", display:"block"}} src={tvShow.artworkUrl100} alt="Movie Artwork" />
-                         <p style={{fontSize: "large", textAlign:"center"}}>{tvShow.contentAdvisoryRating}</p>
-                         <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>{tvShow.primaryGenreName}</p>
-                         <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>TV-Show</p>
-                         <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(tvShow.collectionPrice / pointConversion)} Points</p>
-                     </CardContent>
-                     <CardActions>
-                         <div style={{display: "flex", justifyContent:"center"}}>
-                             <Button style={{ cursor: 'pointer', marginRight: '25px'}} variant="contained" color="primary" onClick={() => addToCart(tvShow)}>Add to Cart</Button>
-                             <a href={tvShow.collectionViewUrl} target="_blank">View on iTunes</a>
-                         </div>
-                     </CardActions>
-                 </Card>
-                ))
-                }
-                {audioList.length > 0 && audioList.map(audio => (
-                    audio.sponsorOrgID = sponsorOrgID,
-                     <Card key={audio.collectionId} sx={{width: '300px'}}>
-                     <CardContent>
-                         <h2 style={{textAlign:"center"}}>{audio.collectionName}</h2>
-                         <img style={{margin:"auto", marginTop:"-10px", width:"100px", display:"block"}} src={audio.artworkUrl100} alt="Movie Artwork" />
-                         <p style={{fontSize: "large", textAlign:"center"}}>{audio.artistName}</p>
-                         <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>{audio.primaryGenreName}</p>
-                         <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>Audio Book</p>
-                         <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(audio.collectionPrice / pointConversion)} Points</p>
-                     </CardContent>
-                     <CardActions>
-                         <div style={{display: "flex", justifyContent:"center"}}>
-                             <Button style={{ cursor: 'pointer', marginRight: '25px'}} variant="contained" color="primary" onClick={() => addToCart(audio)}>Add to Cart</Button>
-                             <a href={audio.collectionViewUrl} target="_blank">View on iTunes</a>
-                         </div>
-                     </CardActions>
-                 </Card>
-                ))
-                }
-                {ebookList.length > 0 && ebookList.map(ebook => (
-                    ebook.sponsorOrgID = sponsorOrgID,
-                    <div>
-                     <Card key={ebook.collectionId} sx={{width: '300px'}}>
-                     <CardContent>
-                         <h2 style={{textAlign:"center"}}>{ebook.trackName}</h2>
-                         <img style={{margin:"auto", marginTop:"-10px", width:"100px", display:"block"}} src={ebook.artworkUrl100} alt="Movie Artwork" />
-                         <p style={{fontSize: "large", textAlign:"center"}}>{ebook.artistName}</p>
-                         <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>E-Book</p>
-                         <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(ebook.price / pointConversion)} Points</p>
-                     </CardContent>
-                     <CardActions>
-                         <div style={{display: "flex", justifyContent:"center"}}>
-                             <Button style={{ cursor: 'pointer', marginRight: '25px'}} variant="contained" color="primary" onClick={() => addToCart(ebook)}>Add to Cart</Button>
-                             <a href={ebook.trackViewUrl} target="_blank">View on iTunes</a>
-                         </div>
-                     </CardActions>
-                 </Card>
-                 </div>
-                ))
-                }
-            </div>
-            }
-            
-            <div style={{ position: 'absolute', top: 100, right: 25, padding: '10px' }}>
-                <button style={{ border: 'none', background: 'none', cursor: 'pointer' }}>
-                <SortIcon style={{ fontSize: '2rem' }} onClick={handleSort} />
-                </button>
-                <button style={{ border: 'none', background: 'none', cursor: 'pointer' }}>
-                <FilterIcon style={{ fontSize: '2rem' }} onClick={handleFilter} />
-                </button>
-                <button style={{ border: 'none', background: 'none', cursor: 'pointer' }}>
-                <ShoppingCartIcon style={{ fontSize: '2rem' }} onClick={handleCart} />
-                </button>
-            </div>
-            {/* Sort Operations */}
-            <Modal
-                open={isSortOpen}
-                onClose={handleCloseSort}
-                aria-labelledby="sort-options"
-                aria-describedby="select-sort-option"
-            >
-                <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'background.paper', boxShadow: 24, p: 4, width: 350 }}>
-                <h2 id="sort-options">Select Sort Option</h2>
-                {sortOptions.map((option, index) => (
-                    <div key={option.id} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                    <button style={{ border: 'none', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }} onClick={() => handleSortOptionSelect(option)}>
-                        <option.icon style={{ fontSize: '2rem', marginRight: '20px' }} />
-                        <span>{option.label}</span>
-                        {option.selected && <span style={{ marginLeft: '10px' }}> (Selected)</span>}
-                    </button>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
+                <Paper elevation={8} sx={{ padding: '40px', width: '75%', backgroundColor: '#f5f5f5', position: 'relative' }}>
+                    <Typography variant="h4" fontWeight="bold">
+                        Item Catalog
+                    </Typography>
+                    <br/>
+                    <Grid container spacing={2} alignItems="flex-end">
+                    <Grid item>
+                        <FormControl fullWidth>
+                            <InputLabel id="current-sponsor">Select Sponsor</InputLabel>
+                            <Select
+                                label="current-sponsor"
+                                value={sponsorName}
+                                onChange={handleSelectSponsor}
+                                style={{ width: "180px" }}
+                                renderValue={(selected) => selected}
+                            >   
+                                {sponsorList?.map(id => (
+                                    <MenuItem value={id.sponsorOrgName} key={id.sponsorOrgName}>
+                                        {id.sponsorOrgName}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                        <Grid item>
+                            <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+                                <SearchIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
+                                <TextField 
+                                    id="searchbar" 
+                                    label="Search the catalog..." 
+                                    variant="standard" 
+                                    sx={{ width: "300px" }}
+                                />
+                            </Box>
+                        </Grid>
+                        <Grid item>
+                            <Button variant='contained' onClick={handleCatalog}>Search</Button>
+                        </Grid>
+                            <Grid item justifyContent="flex-end">
+                                <Button style={{ border: 'none', background: 'none', cursor: 'pointer' }} onClick={handleSort}>
+                                    <SortIcon style={{ fontSize: '2rem' }} />
+                                </Button>
+                            </Grid>
+                            <Grid item justifyContent="flex-end">
+                                <Button style={{ border: 'none', background: 'none', cursor: 'pointer' }} onClick={handleFilter}>
+                                    <FilterIcon style={{ fontSize: '2rem' }} />
+                                </Button>
+                            </Grid>
+                            <Grid item justifyContent="flex-end">
+                                <Button style={{ border: 'none', background: 'none', cursor: 'pointer' }} onClick={handleCart}>
+                                    <ShoppingCartIcon style={{ fontSize: '2rem' }} />
+                                </Button>
+                            </Grid>
+                    </Grid>
+                    <br/>
+                    <Divider />
+                    <br />
+
+                    <div style={{ position: 'absolute', top: 100, right: 25, padding: '10px' }}>
+                        
                     </div>
-                ))}
-                <Button variant="contained" style={{ cursor: 'pointer', marginTop: '30px' }} onClick={handleUndoSort}>Undo Sort</Button>
-                </Box>
-            </Modal>
-            {/* Filter Operations */}
-            <Modal
-                open={isFilterOpen}
-                onClose={handleCloseFilter}
-                aria-labelledby="filter-options"
-                aria-describedby="select-filter-option"
-            >
-                <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'background.paper', boxShadow: 24, p: 4, width: 300 }}>
-                <h2 id="filter-options">Price Filter</h2>
-                <TextField
-                    label="Minimum Price"
-                    variant="outlined"
-                    value={priceFilter.min}
-                    onChange={(e) => setPriceFilter({ ...priceFilter, min: e.target.value })}
-                    style={{ marginBottom: '10px' }}
-                />
-                <TextField
-                    label="Maximum Price"
-                    variant="outlined"
-                    value={priceFilter.max}
-                    onChange={(e) => setPriceFilter({ ...priceFilter, max: e.target.value })}
-                    style={{ marginBottom: '10px' }}
-                />
-                <Button variant="contained" style={{ cursor: 'pointer', marginTop: '15px' }} color="primary" onClick={handleApplyFilter}>Apply Filter</Button>
-                <Button variant="contained" style={{ cursor: 'pointer', marginTop: '15px' }} color="primary" onClick={handleUndoSort}>Undo Filter</Button>
-                </Box>
-            </Modal>
+                    
+                    {!loading && 
+                    <div style={{ marginLeft: '25px', display:"flex", flexWrap:"wrap", justifyContent:"center", gap:"30px"}}>
+                        {/* Loops through returned data and displays it */}
+                        {musicList.length > 0 && (sortedAlbums.length > 0 ? sortedAlbums : musicList).map(album => (
+                        album.sponsorOrgID = sponsorOrgID,
+                        <Card key={album.collectionId} sx={{width: '300px'}}>
+                            <CardContent>
+                                <h2 style={{textAlign:"center"}}>{album.collectionName}</h2>
+                                <img style={{margin:"auto", marginTop:"-10px", width:"100px", display:"block"}} src={album.artworkUrl100} alt="Album Artwork" />
+                                <p style={{fontSize: "large", textAlign:"center"}}>{album.artistName}</p>
+                                <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>{album.primaryGenreName}</p>
+                                <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>Album</p>
+                                <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(album.collectionPrice / pointConversion)} Points</p>
+                            </CardContent>
+                            <CardActions>
+                                <div style={{display: "flex", justifyContent:"center"}}>
+                                    <Button style={{ cursor: 'pointer', marginRight: '25px'}} variant="contained" color="primary" onClick={() => addToCart(album)}>Add to Cart</Button>
+                                    <a href={album.collectionViewUrl} target="_blank">View on iTunes</a>
+                                </div>
+                            </CardActions>
+                        </Card>
+                        ))}
+                        {movieList.length > 0 && movieList.map(movie => (
+                            movie.sponsorOrgID = sponsorOrgID,
+                            <Card key={movie.collectionId} sx={{width: '300px'}}>
+                            <CardContent>
+                                <h2 style={{textAlign:"center"}}>{movie.trackName}</h2>
+                                <img style={{margin:"auto", marginTop:"-10px", width:"100px", display:"block"}} src={movie.artworkUrl100} alt="Movie Artwork" />
+                                <p style={{fontSize: "large", textAlign:"center"}}>{movie.artistName}</p>
+                                <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>{movie.primaryGenreName}</p>
+                                <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>Movie</p>
+                                <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(movie.collectionPrice/ pointConversion)} Points</p>
+                            </CardContent>
+                            <CardActions>
+                                <div style={{display: "flex", justifyContent:"center"}}>
+                                    <Button style={{ cursor: 'pointer', marginRight: '25px'}} variant="contained" color="primary" onClick={() => addToCart(movie)}>Add to Cart</Button>
+                                    <a href={movie.collectionViewUrl} target="_blank">View on iTunes</a>
+                                </div>
+                            </CardActions>
+                        </Card>
+                        ))
+                        }
+                        {tvList.length > 0 && tvList.map(tvShow => (
+                            tvShow.sponsorOrgID = sponsorOrgID,
+                            <Card key={tvShow.collectionId} sx={{width: '300px'}}>
+                            <CardContent>
+                                <h2 style={{textAlign:"center"}}>{tvShow.collectionName}</h2>
+                                <img style={{margin:"auto", marginTop:"-10px", width:"100px", display:"block"}} src={tvShow.artworkUrl100} alt="Movie Artwork" />
+                                <p style={{fontSize: "large", textAlign:"center"}}>{tvShow.contentAdvisoryRating}</p>
+                                <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>{tvShow.primaryGenreName}</p>
+                                <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>TV-Show</p>
+                                <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(tvShow.collectionPrice / pointConversion)} Points</p>
+                            </CardContent>
+                            <CardActions>
+                                <div style={{display: "flex", justifyContent:"center"}}>
+                                    <Button style={{ cursor: 'pointer', marginRight: '25px'}} variant="contained" color="primary" onClick={() => addToCart(tvShow)}>Add to Cart</Button>
+                                    <a href={tvShow.collectionViewUrl} target="_blank">View on iTunes</a>
+                                </div>
+                            </CardActions>
+                        </Card>
+                        ))
+                        }
+                        {audioList.length > 0 && audioList.map(audio => (
+                            audio.sponsorOrgID = sponsorOrgID,
+                            <Card key={audio.collectionId} sx={{width: '300px'}}>
+                            <CardContent>
+                                <h2 style={{textAlign:"center"}}>{audio.collectionName}</h2>
+                                <img style={{margin:"auto", marginTop:"-10px", width:"100px", display:"block"}} src={audio.artworkUrl100} alt="Movie Artwork" />
+                                <p style={{fontSize: "large", textAlign:"center"}}>{audio.artistName}</p>
+                                <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>{audio.primaryGenreName}</p>
+                                <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>Audio Book</p>
+                                <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(audio.collectionPrice / pointConversion)} Points</p>
+                            </CardContent>
+                            <CardActions>
+                                <div style={{display: "flex", justifyContent:"center"}}>
+                                    <Button style={{ cursor: 'pointer', marginRight: '25px'}} variant="contained" color="primary" onClick={() => addToCart(audio)}>Add to Cart</Button>
+                                    <a href={audio.collectionViewUrl} target="_blank">View on iTunes</a>
+                                </div>
+                            </CardActions>
+                        </Card>
+                        ))
+                        }
+                        {ebookList.length > 0 && ebookList.map(ebook => (
+                            ebook.sponsorOrgID = sponsorOrgID,
+                            <div>
+                            <Card key={ebook.collectionId} sx={{width: '300px'}}>
+                            <CardContent>
+                                <h2 style={{textAlign:"center"}}>{ebook.trackName}</h2>
+                                <img style={{margin:"auto", marginTop:"-10px", width:"100px", display:"block"}} src={ebook.artworkUrl100} alt="Movie Artwork" />
+                                <p style={{fontSize: "large", textAlign:"center"}}>{ebook.artistName}</p>
+                                <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>E-Book</p>
+                                <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(ebook.price / pointConversion)} Points</p>
+                            </CardContent>
+                            <CardActions>
+                                <div style={{display: "flex", justifyContent:"center"}}>
+                                    <Button style={{ cursor: 'pointer', marginRight: '25px'}} variant="contained" color="primary" onClick={() => addToCart(ebook)}>Add to Cart</Button>
+                                    <a href={ebook.trackViewUrl} target="_blank">View on iTunes</a>
+                                </div>
+                            </CardActions>
+                        </Card>
+                        </div>
+                        ))
+                        }
+                    </div>
+                    }
+                    
+                    {/* Sort Operations */}
+                    <Modal
+                        open={isSortOpen}
+                        onClose={handleCloseSort}
+                        aria-labelledby="sort-options"
+                        aria-describedby="select-sort-option"
+                    >
+                        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'background.paper', boxShadow: 24, p: 4, width: 350 }}>
+                        <h2 id="sort-options">Select Sort Option</h2>
+                        {sortOptions.map((option, index) => (
+                            <div key={option.id} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                            <button style={{ border: 'none', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }} onClick={() => handleSortOptionSelect(option)}>
+                                <option.icon style={{ fontSize: '2rem', marginRight: '20px' }} />
+                                <span>{option.label}</span>
+                                {option.selected && <span style={{ marginLeft: '10px' }}> (Selected)</span>}
+                            </button>
+                            </div>
+                        ))}
+                        <Button variant="contained" style={{ cursor: 'pointer', marginTop: '30px' }} onClick={handleUndoSort}>Undo Sort</Button>
+                        </Box>
+                    </Modal>
+                    {/* Filter Operations */}
+                    <Modal
+                        open={isFilterOpen}
+                        onClose={handleCloseFilter}
+                        aria-labelledby="filter-options"
+                        aria-describedby="select-filter-option"
+                    >
+                        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'background.paper', boxShadow: 24, p: 4, width: 300 }}>
+                        <h2 id="filter-options">Price Filter</h2>
+                        <TextField
+                            label="Minimum Price"
+                            variant="outlined"
+                            value={priceFilter.min}
+                            onChange={(e) => setPriceFilter({ ...priceFilter, min: e.target.value })}
+                            style={{ marginBottom: '10px' }}
+                        />
+                        <TextField
+                            label="Maximum Price"
+                            variant="outlined"
+                            value={priceFilter.max}
+                            onChange={(e) => setPriceFilter({ ...priceFilter, max: e.target.value })}
+                            style={{ marginBottom: '10px' }}
+                        />
+                        <Button variant="contained" style={{ cursor: 'pointer', marginTop: '15px' }} color="primary" onClick={handleApplyFilter}>Apply Filter</Button>
+                        <Button variant="contained" style={{ cursor: 'pointer', marginTop: '15px' }} color="primary" onClick={handleUndoSort}>Undo Filter</Button>
+                        </Box>
+                    </Modal>
+                </Paper>
+            </Box>
+            
         </div>
       );
 }
