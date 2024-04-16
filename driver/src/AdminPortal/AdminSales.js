@@ -1,5 +1,5 @@
 import AdminAppBar from "./AdminAppBar";
-import React, { useEffect, useState } from 'react'; 
+import React, { useEffect, useState, useRef } from 'react'; 
 import {Box, Tabs, Tab, Typography, Paper, TableRow, TableHead, TableContainer, TableCell, TableBody, Table, Button} from '@mui/material';
 import { useFetchUserAttributes } from '../CognitoAPI';
 import { csv } from '../ConvertCSV';
@@ -7,6 +7,7 @@ import BaseURL from "../BaseURL";
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
+import Chart from 'chart.js/auto';
 
 
 export default function AdminSales(){
@@ -163,7 +164,59 @@ export default function AdminSales(){
         console.log(sortDirection)
         setRenderedInvoiceList(sortedList);
         setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-      };
+    };
+    //CHARTS
+    const canvasRef = useRef(null);
+    const chartRef = useRef(null);
+
+    useEffect(() => {
+        if (canvasRef.current) {
+            // Get the canvas context
+            const ctx = canvasRef.current.getContext('2d');
+            
+            // Extract purchaseCost and purchaseDate from renderedInvoiceList
+            const purchaseCosts = renderedInvoiceList.map(purchase => parseFloat(purchase.purchaseCost));
+            console.log("cost:" + purchaseCosts);
+            const purchaseDates = renderedInvoiceList.map(purchase => new Date(purchase.purchaseDate).toLocaleDateString());
+            console.log("date:" + purchaseDates);
+
+            // Create the chart
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: purchaseDates,
+                    datasets: [{
+                        label: 'Purchase Cost',
+                        data: purchaseCosts,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Purchase Cost'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Purchase Date'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Return a cleanup function to destroy the chart when the component unmounts
+            return () => {
+                chart.destroy();
+            };
+        }
+    }, [renderedInvoiceList]);
 
     
 
@@ -224,6 +277,7 @@ export default function AdminSales(){
                     </Table>
                     </TableContainer>
                     <a href='#' onClick={() => csv(renderedInvoiceList)}>Download as CSV</a>
+                    <canvas ref={canvasRef} />
                 </div>
             </TabPanel>
             <TabPanel value={value} index={1}>
@@ -280,6 +334,7 @@ export default function AdminSales(){
                     </Table>
                     </TableContainer>
                     <a href='#' onClick={() => csv(renderedList)}>Download as CSV</a>
+                    <canvas ref={canvasRef} />
                 </div>
             </TabPanel>
             <TabPanel value={value} index={2}>
@@ -336,6 +391,7 @@ export default function AdminSales(){
                     </Table>
                     </TableContainer>
                     <a href='#' onClick={() => csv(renderedDriver)}>Download as CSV</a>
+                    
                 </div>
             </TabPanel>
 		</div>

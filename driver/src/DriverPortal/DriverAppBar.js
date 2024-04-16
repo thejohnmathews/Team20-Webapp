@@ -154,7 +154,7 @@ export default function DriverAppBar({inheritedSub}) {
         console.error('Error retrieving successfully:', error);
       });
   }
-  
+
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
       <List>

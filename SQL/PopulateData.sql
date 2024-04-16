@@ -24,19 +24,20 @@ INSERT INTO UserInfo (sub, firstName, lastName, email, userUsername, userType) V
 ('64d80438-f041-70e4-b2f2-83f501d83606', 'Adam', 'Anderson', 'admin@google.com', 'Admin_Username', 'Admin'),
 ('14083448-d061-708b-78c4-200c38880108', 'emma', 'scalabrino', 'emsca2002@gmail.com', 'emkand3', 'Driver');
 
-INSERT INTO DriverUser (UserID, driverPoints) VALUES
-(2, 10),
-(3, 100),
-(4, 100);
+INSERT INTO DriverUser (UserID) VALUES
+(2),
+(3),
+(4);
 
-INSERT INTO DriverOrganizations (driverID, sponsorOrgID) VALUES
-	(3, 1),
-    (2, 1),
-    (2, 2),
-    (2, 3),
-    (4, 1),
-    (4, 2),
-    (4, 3);
+INSERT INTO DriverOrganizations (driverID, sponsorOrgID, driverOrgPoints) VALUES
+	(3, 1, 0),
+    (3, 2, 0),
+    (2, 1, 0),
+    (2, 2, 0),
+    (2, 3, 0),
+    (4, 1, 0),
+    (4, 2, 0),
+    (4, 3, 0);
 
 -- INSERT INTO DriverApplication (userID, sponsorOrgID) VALUES 
 -- (1, 1),
@@ -75,12 +76,30 @@ INSERT INTO Reason(reasonString, reasonType, sponsorOrgID) VALUES
 ("Impaired driving.", "bad", 2),
 ("Off-roading.", "bad", 2);
 
+/*
 INSERT INTO PointChange(driverID, sponsorID, changeDate, changePointAmt, changeReasonID, changeType, changeCurrPointTotal) VALUES
-(3, (SELECT sponsorOrgID FROM DriverOrganizations WHERE driverID = 3), '2024-03-25', 0, 1, 'good',(SELECT driverPoints + 0 FROM DriverUser WHERE userID = 3)),
-(3, (SELECT sponsorOrgID FROM DriverOrganizations WHERE driverID = 3), '2023-03-8', -25, 7, 'bad',(SELECT driverPoints - 25 FROM DriverUser WHERE userID = 3)),
-(3, (SELECT sponsorOrgID FROM DriverOrganizations WHERE driverID = 3), '2024-02-8', 15, 2, 'good',(SELECT driverPoints + 15 FROM DriverUser WHERE userID = 3)),
-(3, (SELECT sponsorOrgID FROM DriverOrganizations WHERE driverID = 3), '2024-04-8', -30, 17, 'bad',(SELECT driverPoints - 30 FROM DriverUser WHERE userID = 3)),
-(3, (SELECT sponsorOrgID FROM DriverOrganizations WHERE driverID = 3), NOW(), 50, 1, 'good',(SELECT driverPoints + 50 FROM DriverUser WHERE userID = 3));
+(3, 1, '2024-03-25', 0, 1, 'good', ((SELECT driverOrgPoints FROM DriverOrganizations WHERE driverID = 3 AND sponsorOrgID = 1)+0)),
+(3, 1, '2023-03-8', -25, 7, 'bad', ((SELECT driverOrgPoints FROM DriverOrganizations WHERE driverID = 3 AND sponsorOrgID = 1)+(-25))),
+(3, 1, '2024-02-8', 15, 2, 'good', ((SELECT driverOrgPoints FROM DriverOrganizations WHERE driverID = 3 AND sponsorOrgID = 1)+15)),
+(3, 2, '2024-04-8', -30, 17, 'bad', ((SELECT driverOrgPoints FROM DriverOrganizations WHERE driverID = 3 AND sponsorOrgID = 2)+(-30))),
+(3, 2, NOW(), 50, 1, 'good', ((SELECT driverOrgPoints FROM DriverOrganizations WHERE driverID = 3 AND sponsorOrgID = 2)+50));
+
+UPDATE DriverOrganizations
+SET driverOrgPoints = driverOrgPoints + 0
+WHERE driverID = 3 AND sponsorOrgID = 1;
+UPDATE DriverOrganizations
+SET driverOrgPoints = driverOrgPoints -25
+WHERE driverID = 3 AND sponsorOrgID = 1;
+UPDATE DriverOrganizations
+SET driverOrgPoints = driverOrgPoints + 15
+WHERE driverID = 3 AND sponsorOrgID = 1;
+UPDATE DriverOrganizations
+SET driverOrgPoints = driverOrgPoints -30
+WHERE driverID = 3 AND sponsorOrgID = 2;
+UPDATE DriverOrganizations
+SET driverOrgPoints = driverOrgPoints + 50
+WHERE driverID = 3 AND sponsorOrgID = 2;
+*/
 
 INSERT INTO CatalogRules VALUES
 (1, "music"),

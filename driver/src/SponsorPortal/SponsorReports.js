@@ -148,8 +148,8 @@ export default function SponsorReports({inheritedSub}) {
         .then(data => {
           console.log(data[0].sponsorOrgID);
           setSponsorOrgID(data[0].sponsorOrgID);	
-          console.log(data[0].sponsorOrgName);
-          setSponsorName(sponsorOrgName)		
+          console.log("sponsor"+ data[0].sponsorOrgName);
+          setSponsorName(data[0].sponsorOrgName);		
         })
         .catch(error => {
           console.error('Error retrieving successfully:', error);
@@ -189,7 +189,15 @@ export default function SponsorReports({inheritedSub}) {
             console.log("change: " + change['Sponsor ID']); // Log the Sponsor ID value
             return change['Sponsor ID'] === sponsorOrgID;
           });*/
-          setChanges(data);
+          
+          //const filteredChanges = data.filter(change => change['Sponsor Name'] === sponsorOrgName);
+          if(!sponsorOrgName){
+            setChanges(data);
+          }
+          else{
+            const filteredChanges = data.filter(change => change['Sponsor Name'] === sponsorOrgName);
+            setChanges(filteredChanges);
+          }
         })
         .catch(error => {
             console.error('Error retrieving data:', error);
@@ -374,7 +382,6 @@ export default function SponsorReports({inheritedSub}) {
                           <Tab label="Driver Applications" />
                           <Tab label="Password Changes" />
                           <Tab label="Driver Point Changes"/>
-                          <Tab label="Visuals"/>
                       </Tabs>
                   </Box>
                   <TabPanel value={value} index={0}>

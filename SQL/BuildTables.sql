@@ -34,7 +34,6 @@ CREATE TABLE DriverUser(
     driverStartDate			DATE,
     driverEndDate			DATE DEFAULT NULL,
     driverAddress			VARCHAR(255),
-    driverPoints 			INTEGER 					DEFAULT 0, 
     FOREIGN KEY (userID) REFERENCES UserInfo(userID)
 );
 
@@ -69,6 +68,7 @@ CREATE TABLE DriverOrganizations(
 
 	driverID				INTEGER,
     sponsorOrgID			INTEGER,
+    driverOrgPoints 		INTEGER	DEFAULT 0,
     FOREIGN KEY (driverID) REFERENCES DriverUser(userID),
     FOREIGN KEY (sponsorOrgID) REFERENCES SponsorOrganization(sponsorOrgID),
     PRIMARY KEY (driverID, sponsorOrgID)

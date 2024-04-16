@@ -111,6 +111,7 @@ export default function DriverPoints({ inheritedSub }){
             }
         })
         .then(data => {
+            console.log(data);
             setChanges(data);
         })
         .catch(error => {
