@@ -1195,7 +1195,7 @@ app.get('/activeSponsors', (req, res) => {
 
 app.post('/updatePointsGood', (req, res) => {
     // Extracting parameters from request body
-    const { userID, reasonID, driverPoints, changeType} = req.body;
+    const { userID, sponsorID, reasonID, driverPoints, changeType} = req.body;
     // Perform validation on parameters if necessary
     console.log(req.body)
     if (!userID || !reasonID || !driverPoints || !changeType) {
@@ -1219,9 +1219,10 @@ app.post('/updatePointsGood', (req, res) => {
     //const values = [driverPointsInt, userID]; 
 
     const sql2 = `
-    INSERT INTO PointChange (driverID, changeDate, changePointAmt, changeReasonID, changeType, changeCurrPointTotal) 
+    INSERT INTO PointChange (driverID, sponsorID, changeDate, changePointAmt, changeReasonID, changeType, changeCurrPointTotal) 
         VALUES (
             (SELECT userID FROM DriverUser WHERE userID = ?), 
+            ?,
             NOW(), 
             ?, 
             ?, 
@@ -1230,7 +1231,7 @@ app.post('/updatePointsGood', (req, res) => {
         );
     `;
 
-    db.query(sql2, [userID, driverPointsInt, reasonID, changeType, driverPointsInt, userID], (err, result2) => {
+    db.query(sql2, [userID, sponsorID, driverPointsInt, reasonID, changeType, driverPointsInt, userID], (err, result2) => {
         if (err) {
             console.error('Error updating user:', err);
             res.status(500).json({ error: 'Error updating user' });
@@ -1250,7 +1251,7 @@ app.post('/updatePointsGood', (req, res) => {
 
 app.post('/updatePointsBad', (req, res) => {
     // Extracting parameters from request body
-    const { userID, reasonID, driverPoints, changeType} = req.body;
+    const { userID, sponsorID, reasonID, driverPoints, changeType} = req.body;
     // Perform validation on parameters if necessary
     console.log(req.body)
     if (!userID || !reasonID || !driverPoints || !changeType) {
@@ -1274,9 +1275,10 @@ app.post('/updatePointsBad', (req, res) => {
     //const values = [driverPointsInt, userID]; 
 
     const sql2 = `
-    INSERT INTO PointChange (driverID, changeDate, changePointAmt, changeReasonID, changeType, changeCurrPointTotal) 
+    INSERT INTO PointChange (driverID, sponsorID, changeDate, changePointAmt, changeReasonID, changeType, changeCurrPointTotal) 
         VALUES (
             (SELECT userID FROM DriverUser WHERE userID = ?), 
+            ?,
             NOW(), 
             ?, 
             ?, 
@@ -1285,7 +1287,7 @@ app.post('/updatePointsBad', (req, res) => {
         );
     `;
 
-    db.query(sql2, [userID, driverPointsInt, reasonID, changeType, driverPointsInt, userID], (err, result2) => {
+    db.query(sql2, [userID, sponsorID, driverPointsInt, reasonID, changeType, driverPointsInt, userID], (err, result2) => {
         if (err) {
             console.error('Error updating user:', err);
             res.status(500).json({ error: 'Error updating user' });

@@ -106,11 +106,14 @@ export default function SponsorPoints({inheritedSub}){
     const handleSubmit = () => {
         const reasonIDInt = parseInt(selectedReason)
         var pointValueInt = parseInt(pointValue)
+        //const sponsor = getAssociatedSponsor();
+        console.log("changing sponsor: "+ sponsorOrgID);
         
         if(checked){
             const data = {
                 userID: selectedDriver,
                 reasonID: selectedReason, 
+                sponsorID: sponsorOrgID,
                 driverPoints: pointValueInt, 
                 changeType: checked ? "good" : "bad"
             };
@@ -139,6 +142,7 @@ export default function SponsorPoints({inheritedSub}){
             const data = {
                 userID: selectedDriver,
                 reasonID: selectedReason, 
+                sponsorID: sponsorOrgID,
                 driverPoints: pointValueInt, 
                 changeType: checked ? "good" : "bad"
             };

@@ -17,8 +17,58 @@ import UndoIcon from '@mui/icons-material/Undo';
 import logo from '../bezosBunch.png';
 
 export default function DriverAppBar({inheritedSub}) {
+  const [open2, setOpen2] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [username, setUsername] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [address, setAddress] = useState('');
+  const [sponsorOrgName, setSponsorOrgName] = useState('');
   const [open, setOpen] = React.useState(false);
   const { user, signOut } = useAuthenticator((context) => [context.user]);
+  const userAttributes = useFetchUserAttributes();
+  const userType = 'driver';
+
+  useEffect(() => {
+    if (userAttributes) { getUserInfo(); }
+  }, [userAttributes]);
+
+  const getUserInfo = () => {
+    console.log("getting user info");
+    getAssociatedSponsor(); getDriverInfo();
+  }
+  const setUserAttributes = (user) => {
+    if (userType === 'driver'){ setAddress(user.driverAddress); }
+    setPhoneNumber(user.userPhoneNumber);
+    setEmail(user.email);
+    setLastName(user.lastName);
+    setFirstName(user.firstName);
+    setUsername(user.userUsername);
+  }
+
+  const getDriverInfo = () => {
+    fetch(BaseURL + '/driverInfoFromSub', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ sub: inheritedSub?.value2 ? inheritedSub.value2 : userAttributes.sub })
+    })
+    .then(response => {
+      if (response.ok) { 
+        return response.json();
+      } 
+      else { console.error('Failed to get user'); }
+    })
+    .then(data => {
+      setUserAttributes(data[0]);
+    })
+    .catch(error => {
+      console.error('Failed to get user:', error);
+    });
+  }
 
   const [drivers, setDrivers, data] = useState([])
     useEffect(() => {
@@ -72,6 +122,36 @@ export default function DriverAppBar({inheritedSub}) {
   const handleBackToSponsor = () => {
     inheritedUser.value2 = '';
     navigate('/sponsorProfile');
+  }
+
+  const getAssociatedSponsor = () => {
+    var endpoint = '';
+    if(userType === 'driver'){ endpoint = '/driverAssociatedSponsor' }
+    else{ endpoint = '/associatedSponsor' }
+      fetch(BaseURL + endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({sub: inheritedSub?.value2 ? inheritedSub.value2 : (inheritedSub?.value ? inheritedSub.value : userAttributes.sub)})
+      })
+      .then(response => {
+        if (response.ok) { 
+          return response.json();
+        } 
+        else { console.error('Failed to post'); }
+      })
+      .then(data => {
+        if(userType === 'driver'){ 
+          console.log("sponsor set: " + data);
+          setSponsorOrgName(data);	
+        } else {
+          setSponsorOrgName(data[0].sponsorOrgName);	 
+        }
+      })
+      .catch(error => {
+        console.error('Error retrieving successfully:', error);
+      });
   }
   
   const DrawerList = (
@@ -168,9 +248,10 @@ export default function DriverAppBar({inheritedSub}) {
           </Grid>
           
           <Typography variant="h6" style={{marginRight: '20px'}}>
-            {drivers.length > 0 && drivers[1] && drivers[1].driverPoints !== null ? `Current Point Total: ${drivers[1].driverPoints}` : "No points available"}
+            {sponsorOrgName.length > 0 && drivers.length > 0 && drivers[1] && drivers[1].driverPoints !== null ? 
+            `Sponsors: ${sponsorOrgName.map(sponsor => sponsor.sponsorOrgName).join(', ')}` 
+            : "No points available"}
           </Typography>           
-          
               <IconButton
                 size="large"
                 aria-label="account of current user"
