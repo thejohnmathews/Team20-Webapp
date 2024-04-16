@@ -46,7 +46,7 @@ export default function App() {
 
       // Default to sign in screen
       initialState = "signIn"
-
+      
       // Customize the create user page
       components={{
 

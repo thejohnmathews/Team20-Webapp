@@ -42,7 +42,7 @@ export default function LoginRedirect() {
             });
 
 			// login auditing
-			console.log(userAttributes.sub)
+			// get status and send
 			fetch(BaseURL+'/loginAudit', {
                 method: 'POST',
                 headers: {

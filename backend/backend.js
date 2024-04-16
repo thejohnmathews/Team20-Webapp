@@ -1403,6 +1403,25 @@ app.post('/removePurchase', (req, res) => {
     });
 });
 
+// Remove Purchase
+app.post('/removeItem', (req, res) => {
+
+    // Receive an array of purchaseIDs
+    const { purchaseIDs } = req.body; 
+
+    // Dynamically generate placeholders for each purchaseID
+    const sql = `DELETE FROM Purchase WHERE purchaseID IN (?)`;
+    const values = purchaseIDs;
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Error removing purchase:', err);
+            res.status(500).send('Error removing purchase');
+        } else {
+            res.status(200).json("Purchase removed successfully");
+        }
+    });
+});
+
 // Update Password Change
 app.post('/updatePasswordChange', (req, res) => {
 
