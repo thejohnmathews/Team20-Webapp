@@ -7,6 +7,7 @@ import StoreIcon from '@mui/icons-material/Store';
 import SavingsIcon from '@mui/icons-material/Savings';
 import HistoryIcon from '@mui/icons-material/History';
 import LogoutIcon from '@mui/icons-material/Logout';
+import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import BaseURL from '../BaseURL';
@@ -110,6 +111,9 @@ export default function DriverAppBar({inheritedSub}) {
   const handleDrivingPoints = () => {
     navigate('/driverPoints')
   }
+  const handleGuidelines = () => {
+    navigate('/guidelines')
+  }
   const handleSignOut = () => {
     
     navigate('/')
@@ -188,6 +192,14 @@ export default function DriverAppBar({inheritedSub}) {
           </ListItemButton>
         </ListItem>
         }
+        <ListItem key={"Driver Guidelines"} disablePadding>
+          <ListItemButton onClick={handleGuidelines}>
+            <ListItemIcon>
+              <HelpCenterIcon/>
+            </ListItemIcon>
+            <ListItemText primary={"Driver Guidelines"} />
+          </ListItemButton>
+        </ListItem>
         <ListItem key={"About"} disablePadding>
           <ListItemButton onClick={handleAbout}>
             <ListItemIcon>

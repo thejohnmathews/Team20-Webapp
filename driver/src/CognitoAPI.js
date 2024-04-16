@@ -83,7 +83,7 @@ export async function handleUpdatePassword(oldPassword, newPassword) {
   try {
     await updatePassword({ oldPassword, newPassword });
   } catch (err) {
-    console.log(err);
+    console.log(err); 
     return false;
   }
 }

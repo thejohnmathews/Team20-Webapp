@@ -61,6 +61,11 @@ const UpdatePassword = ({ open, handleClose }) => {
             console.error('Failed to update table', error);
         });
       }
+      else{
+
+        // display update password error message to user
+        alert("Wrong Old or New password entered. Failed to update.");
+      }
 
       handleClose();
     } catch (error) {

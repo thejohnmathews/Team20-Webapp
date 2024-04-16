@@ -24,6 +24,7 @@ import NewUserRedirect from './NewUserRedirect.js'
 import PastPurchases from './PastPurchases.js';
 import DriverApplicationTable from './UserPoolTables/DriverApplicationTable.js'
 import AdminPointChanges from './AdminPortal/AdminPointChanges.js';
+import DriverGuidelines from './DriverGuidelines.js';
 
 // Amplify/UI/Cognito imports
 import '@aws-amplify/ui-react/styles.css';
@@ -46,7 +47,7 @@ export default function App() {
 
       // Default to sign in screen
       initialState = "signIn"
-
+      
       // Customize the create user page
       components={{
 
@@ -129,6 +130,7 @@ export default function App() {
             <Route exact path="/adminReports" element={<AdminReports/>}/>
             <Route exact path="/sponsorReports" element={<SponsorReports inheritedSub={inheritedUser}/>}/>
             <Route exact path="/adminSales" element={<AdminSales/>}/>
+            <Route exact path="/guidelines" element={<DriverGuidelines/>}/>
           </Routes>
       </Router>
       )}

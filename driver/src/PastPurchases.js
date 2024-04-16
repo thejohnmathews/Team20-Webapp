@@ -115,7 +115,36 @@ export default function PastPurchases({inheritedSub}) {
         });
     };
 
+    // Handle dropping an item from the order
+    const handleDropItem = (orderNum, purchaseID) => {
+        
+         // Extracting purchase IDs associated with the orderNum
+         const purchaseIDs = purchaseID;
 
+         // Sending purchase IDs to backend to delete entries from the Purchase table
+         fetch(BaseURL + '/removeItem',{
+             method: 'POST',
+             headers: {
+                 'Content-Type': 'application/json'
+             },
+             body: JSON.stringify({ purchaseIDs: purchaseIDs })
+         })
+         .then(response => {
+             if (response.ok) { 
+                 
+                 // Fetch updated data
+                 getPurchases(); 
+                 const updatedPastPurchases = { ...pastPurchases };
+                 setPastPurchases(updatedPastPurchases);
+             } 
+             else { 
+                 console.error('Failed to delete item from order'); 
+             }
+         })
+         .catch(error => {
+             console.error('Failed to delete item from order', error);
+         });
+    };
 
     return (
         <div>
@@ -151,6 +180,9 @@ export default function PastPurchases({inheritedSub}) {
                                             <Typography color="textSecondary">
                                                 Status: {purchase.purchaseStatus}
                                             </Typography>
+                                            <Button onClick={() => handleDropItem(orderNum, purchase.purchaseID)} variant="contained" color="primary" style={{ marginTop: '10px' }}>
+                                                Drop Item
+                                            </Button>
                                         </div>
                                     ))}
                                     <Button onClick={() => handleCancelOrder(orderNum)} variant="contained" color="secondary" style={{ marginTop: '10px' }}>
