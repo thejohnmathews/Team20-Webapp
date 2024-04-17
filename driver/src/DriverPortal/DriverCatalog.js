@@ -406,6 +406,7 @@ export default function DriverCatalog({inheritedSub}){
                         {/* Loops through returned data and displays it */}
                         {musicList.length > 0 && (sortedAlbums.length > 0 ? sortedAlbums : musicList).map(album => (
                         album.sponsorOrgID = sponsorOrgID,
+                        album.convertedPrice = Math.ceil(album.collectionPrice / pointConversion),
                         <Card key={album.collectionId} sx={{width: '300px'}}>
                             <CardContent>
                                 <h2 style={{textAlign:"center"}}>{album.collectionName}</h2>
@@ -413,7 +414,7 @@ export default function DriverCatalog({inheritedSub}){
                                 <p style={{fontSize: "large", textAlign:"center"}}>{album.artistName}</p>
                                 <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>{album.primaryGenreName}</p>
                                 <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>Album</p>
-                                <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(album.collectionPrice / pointConversion)} Points</p>
+                                <p style={{fontSize: "large", textAlign:"center"}}>Price: {album.convertedPrice} Points</p>
                             </CardContent>
                             <CardActions>
                                 <div style={{display: "flex", justifyContent:"center"}}>
@@ -425,6 +426,7 @@ export default function DriverCatalog({inheritedSub}){
                         ))}
                         {movieList.length > 0 && movieList.map(movie => (
                             movie.sponsorOrgID = sponsorOrgID,
+                            movie.convertedPrice = Math.ceil(movie.collectionPrice/ pointConversion),
                             <Card key={movie.collectionId} sx={{width: '300px'}}>
                             <CardContent>
                                 <h2 style={{textAlign:"center"}}>{movie.trackName}</h2>
@@ -432,7 +434,7 @@ export default function DriverCatalog({inheritedSub}){
                                 <p style={{fontSize: "large", textAlign:"center"}}>{movie.artistName}</p>
                                 <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>{movie.primaryGenreName}</p>
                                 <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>Movie</p>
-                                <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(movie.collectionPrice/ pointConversion)} Points</p>
+                                <p style={{fontSize: "large", textAlign:"center"}}>Price: {movie.convertedPrice} Points</p>
                             </CardContent>
                             <CardActions>
                                 <div style={{display: "flex", justifyContent:"center"}}>
@@ -445,6 +447,7 @@ export default function DriverCatalog({inheritedSub}){
                         }
                         {tvList.length > 0 && tvList.map(tvShow => (
                             tvShow.sponsorOrgID = sponsorOrgID,
+                            tvShow.convertedPrice = Math.ceil(tvShow.collectionPrice / pointConversion),
                             <Card key={tvShow.collectionId} sx={{width: '300px'}}>
                             <CardContent>
                                 <h2 style={{textAlign:"center"}}>{tvShow.collectionName}</h2>
@@ -452,7 +455,7 @@ export default function DriverCatalog({inheritedSub}){
                                 <p style={{fontSize: "large", textAlign:"center"}}>{tvShow.contentAdvisoryRating}</p>
                                 <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>{tvShow.primaryGenreName}</p>
                                 <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>TV-Show</p>
-                                <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(tvShow.collectionPrice / pointConversion)} Points</p>
+                                <p style={{fontSize: "large", textAlign:"center"}}>Price: {tvShow.convertedPrice} Points</p>
                             </CardContent>
                             <CardActions>
                                 <div style={{display: "flex", justifyContent:"center"}}>
@@ -465,6 +468,7 @@ export default function DriverCatalog({inheritedSub}){
                         }
                         {audioList.length > 0 && audioList.map(audio => (
                             audio.sponsorOrgID = sponsorOrgID,
+                            audio.convertedPrice = Math.ceil(audio.collectionPrice / pointConversion),
                             <Card key={audio.collectionId} sx={{width: '300px'}}>
                             <CardContent>
                                 <h2 style={{textAlign:"center"}}>{audio.collectionName}</h2>
@@ -472,7 +476,7 @@ export default function DriverCatalog({inheritedSub}){
                                 <p style={{fontSize: "large", textAlign:"center"}}>{audio.artistName}</p>
                                 <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>{audio.primaryGenreName}</p>
                                 <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>Audio Book</p>
-                                <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(audio.collectionPrice / pointConversion)} Points</p>
+                                <p style={{fontSize: "large", textAlign:"center"}}>Price: {audio.convertedPrice} Points</p>
                             </CardContent>
                             <CardActions>
                                 <div style={{display: "flex", justifyContent:"center"}}>
@@ -485,6 +489,7 @@ export default function DriverCatalog({inheritedSub}){
                         }
                         {ebookList.length > 0 && ebookList.map(ebook => (
                             ebook.sponsorOrgID = sponsorOrgID,
+                            ebook.convertedPrice = Math.ceil(ebook.price / pointConversion),
                             <div>
                             <Card key={ebook.collectionId} sx={{width: '300px'}}>
                             <CardContent>
@@ -492,7 +497,7 @@ export default function DriverCatalog({inheritedSub}){
                                 <img style={{margin:"auto", marginTop:"-10px", width:"100px", display:"block"}} src={ebook.artworkUrl100} alt="Movie Artwork" />
                                 <p style={{fontSize: "large", textAlign:"center"}}>{ebook.artistName}</p>
                                 <p style={{fontStyle: "italic", textAlign:"center", marginTop:"-20px"}}>E-Book</p>
-                                <p style={{fontSize: "large", textAlign:"center"}}>Price: {Math.ceil(ebook.price / pointConversion)} Points</p>
+                                <p style={{fontSize: "large", textAlign:"center"}}>Price: {ebook.convertedPrice} Points</p>
                             </CardContent>
                             <CardActions>
                                 <div style={{display: "flex", justifyContent:"center"}}>

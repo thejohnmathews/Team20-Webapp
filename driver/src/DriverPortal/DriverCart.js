@@ -11,7 +11,7 @@ export default function DriverCart({inheritedSub}){
     // const local variables
     const [cartItems, setCartItems] = useState([]);
     const [orderSubmitted, setOrderSubmitted] = useState(false); 
-    const totalPrice = cartItems.reduce((acc, item) => acc + item.collectionPrice, 0);
+    const totalPrice = cartItems.reduce((acc, item) => acc + item.convertedPrice, 0);
     const userAttributes = useFetchUserAttributes();
 
     // const updatePurchase 
@@ -179,7 +179,7 @@ export default function DriverCart({inheritedSub}){
                                 <div>
                                     <h3>{item.collectionName}</h3>
                                     <p>Artist: {item.artistName}</p>
-                                    <p>Price: {Math.ceil(item.collectionPrice)} Points</p>
+                                    <p>Price: {item.convertedPrice} Points</p>
     
                                     {/* If order is submitted, remove button for this order*/}
                                     {/* Later make it so everything is removed from the page*/}
