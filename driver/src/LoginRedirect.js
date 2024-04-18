@@ -40,22 +40,6 @@ export default function LoginRedirect() {
             .catch(error => {
                 console.error('Error:', error);
             });
-
-			// login auditing
-			// get status and send
-			fetch(BaseURL+'/loginAudit', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({sub: userAttributes.sub})
-            })
-			.then(response => {
-				if (!response.ok) {
-					throw new Error('Network response was not ok');
-				}
-				return response.json(); 
-			})
 		}
 	}, [userAttributes]);
 

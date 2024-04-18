@@ -133,7 +133,14 @@ CREATE TABLE LoginAttempt(
     loginAttemptID INT AUTO_INCREMENT PRIMARY KEY,
     userName VARCHAR(40),
     loginAttemptDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    loginSuccess BOOLEAN
+    success BOOLEAN DEFAULT FALSE
+);
+
+-- Create Login Success table
+CREATE TABLE LoginSuccess(
+    loginSuccessID INT AUTO_INCREMENT PRIMARY KEY,
+    userName VARCHAR(40),
+    loginAttemptDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Create Catalog Rules Table

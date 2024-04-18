@@ -417,7 +417,7 @@ export default function SponsorReports({inheritedSub}) {
                                   {row.userName}
                                 </TableCell>
                                 <TableCell align="center">{row.loginAttemptDate}</TableCell>
-                                <TableCell align="right">{row.loginSuccess}</TableCell>
+                                <TableCell align="right">{row.success}</TableCell>
                               </TableRow> 
                             ))}
                             {!dateOrder && loginAttemptsDesc.map((row) => (
@@ -429,7 +429,7 @@ export default function SponsorReports({inheritedSub}) {
                                   {row.userName}
                                 </TableCell>
                                 <TableCell align="center">{row.loginAttemptDate}</TableCell>
-                                <TableCell align="right">{row.loginSuccess}</TableCell>
+                                <TableCell align="right">{row.success}</TableCell>
                               </TableRow> 
                             ))}
                           </TableBody>
