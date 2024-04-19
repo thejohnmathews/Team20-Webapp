@@ -125,7 +125,7 @@ export default function DriverCart({inheritedSub}){
 
     // Insert new data into Purchase RDS table
     const updatePurchase = (item, index) => {
-        console.log(item.sponsorID)
+        console.log("sponsorID: " + item.sponsorOrgID)
         fetch(BaseURL + '/updatePurchase', {
             method: 'POST',
             headers: {
@@ -154,6 +154,37 @@ export default function DriverCart({inheritedSub}){
         .catch(error => {
             // Handle error
             console.error('There was a problem with the POST request:', error);
+        });
+        {/*
+        const userIDString = ID.toString();
+        const reasonIDString = "12"; // Assuming reasonID is a string constant
+        const sponsorIDString = item.sponsorOrgID.toString(); // Convert to string
+        const driverPointsString = item.collectionPrice.toString(); // Convert to string
+        const changeTypeString = "bad"; // Assuming changeType is a string constant
+        console.log("test: " + userIDString + reasonIDString + sponsorIDString + driverPointsString + changeTypeString);
+    */}
+        const data = {
+            userID: ID,
+            reasonID: 12,
+            sponsorID: item.sponsorOrgID,
+            driverPoints: JSON.stringify(item.collectionPrice),
+            changeType: "bad"
+        };
+        console.log("updateBad " + data);
+        fetch(BaseURL + "/updatePointsBad", {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Successful point update: ', data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Handle errors, if needed
         });
     };
 
