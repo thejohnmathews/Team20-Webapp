@@ -61,7 +61,8 @@ INSERT INTO Reason(reasonString, reasonType, sponsorOrgID) VALUES
 ("Getting into a wreck.", "bad", 1),
 ("Running a red light/stop sign.", "bad", 2),
 ("Impaired driving.", "bad", 2),
-("Off-roading.", "bad", 2);
+("Off-roading.", "bad", 2),
+("Purchase.", "bad", 1);
 
 INSERT INTO Reason(reasonString, reasonType, sponsorOrgID) VALUES
 ("Wearing a seatbelt.", "good", 1),

@@ -380,15 +380,15 @@ app.post('/addUserToDriverPool', (req, res) => {
     const { userID, sponsorID} = req.body;
     const sql1 = "UPDATE UserInfo SET userType = 'Driver' WHERE userID = ?";
     const sql2 = 'INSERT INTO DriverUser (userID) VALUES (?)';
-    var sql3 = 'INSERT INTO DriverOrganizations (driverID, sponsorOrgID) VALUES';
+    var sql3 = 'INSERT INTO DriverOrganizations (driverID, sponsorOrgID, driverOrgPoints) VALUES';
     var values = [];
     for(var i = 0; i < sponsorID.length; i++){
         values.push(userID)
         values.push(sponsorID[i])
         if (i === 0){
-            sql3 += ' (?, ?)';
+            sql3 += ' (?, ?, 0)';
         } else{
-            sql3 += ', (?, ?)';
+            sql3 += ', (?, ?, 0)';
         }
     }
     sql3 += ';'
@@ -435,15 +435,15 @@ app.post('/newDriver', (req, res) => {
                     console.error('Error inserting into driver:', err);
                     res.status(500).send('Error inserting into driver');
                 } else {
-                    var sql3 = 'INSERT INTO DriverOrganizations (driverID, sponsorOrgID) VALUES';
+                    var sql3 = 'INSERT INTO DriverOrganizations (driverID, sponsorOrgID, driverOrgPoints) VALUES';
                     var values2 = [];
                     for(var i = 0; i < sponsorID.length; i++){
                         values2.push(userID)
                         values2.push(sponsorID[i])
                         if (i === 0){
-                            sql3 += ' (?, ?)';
+                            sql3 += ' (?, ?, 0)';
                         } else{
-                            sql3 += ', (?, ?)';
+                            sql3 += ', (?, ?, 0)';
                         }
                     }
                     sql3 += ';'
@@ -1004,7 +1004,7 @@ app.post('/updateApplicationStatus', (req, res) => {
 
     const sql = "UPDATE DriverApplication SET applicationStatus = ?, statusReason = ? WHERE applicationID = ?";
     if(status === 'Accepted'){
-        var sql2 = "INSERT INTO DriverOrganizations (driverID, sponsorOrgID) VALUES (?, ?)"
+        var sql2 = "INSERT INTO DriverOrganizations (driverID, sponsorOrgID, driverOrgPoints) VALUES (?, ?, 0)"
     } else {
         var sql2 = "DELETE FROM DriverOrganizations WHERE driverID = ? AND sponsorOrgID = ?";
     }
@@ -1131,27 +1131,25 @@ app.get('/sponsorOrg', (req, res) => {
 app.get('/pointChanges', (req, res) => {
 
     let sql = `
-        SELECT 
-            pc.changeDate AS 'Date (M/D/Y)',
-            CONCAT(ui.firstName, ' ', ui.lastName) AS 'Driver Name',
-            so.sponsorOrgName AS 'Sponsor Name',
-            pc.sponsorID AS 'Sponsor ID',
-            r.reasonString AS 'Point Change Reason',
-            pc.changePointAmt AS 'Points Added/Reduced',
-            pc.changeCurrPointTotal AS 'Total Points',
-            pc.changeType AS 'Change Type'
-        FROM 
-            PointChange pc
-        INNER JOIN 
-            DriverUser du ON pc.driverID = du.userID
-        INNER JOIN 
-            UserInfo ui ON du.userID = ui.userID
-        INNER JOIN 
-            DriverOrganizations doz ON pc.driverID = doz.driverID
-        INNER JOIN 
-            SponsorOrganization so ON doz.sponsorOrgID = so.sponsorOrgID
-        INNER JOIN 
-            Reason r ON pc.changeReasonID = r.reasonID
+    SELECT 
+        pc.changeDate AS 'Date (M/D/Y)',
+        CONCAT(ui.firstName, ' ', ui.lastName) AS 'Driver Name',
+        so.sponsorOrgName AS 'Sponsor Name',
+        pc.sponsorID AS 'Sponsor ID',
+        r.reasonString AS 'Point Change Reason',
+        pc.changePointAmt AS 'Points Added/Reduced',
+        pc.changeCurrPointTotal AS 'Total Points',
+        pc.changeType AS 'Change Type'
+    FROM 
+        PointChange pc
+    JOIN 
+        DriverUser du ON pc.driverID = du.userID
+    JOIN 
+        UserInfo ui ON du.userID = ui.userID
+    JOIN 
+        SponsorOrganization so ON pc.sponsorID = so.sponsorOrgID
+    JOIN 
+        Reason r ON pc.changeReasonID = r.reasonID;
     `;
     
     const queryParams = [];
@@ -1195,7 +1193,7 @@ app.get('/activeSponsors', (req, res) => {
 
 app.post('/updatePointsGood', (req, res) => {
     // Extracting parameters from request body
-    const { userID, reasonID, driverPoints, changeType} = req.body;
+    const { userID, reasonID, sponsorID, driverPoints, changeType} = req.body;
     // Perform validation on parameters if necessary
     console.log(req.body)
     if (!userID || !reasonID || !driverPoints || !changeType) {
@@ -1207,7 +1205,7 @@ app.post('/updatePointsGood', (req, res) => {
     const values = [driverPointsInt, userID]; 
 
     console.log(driverPointsInt);
-    const data = {userID, driverPointsInt, reasonID, changeType, driverPointsInt, userID}
+    const data = {userID, driverPointsInt, reasonID, changeType, driverPointsInt, sponsorID}
     console.log(data)
 
     // Check if driverPointsInt is a valid integer
@@ -1215,27 +1213,28 @@ app.post('/updatePointsGood', (req, res) => {
         return res.status(400).json({ error: "Invalid driverPoints value" });
     }
 
-    const sql1 = 'UPDATE DriverUser SET driverPoints = driverPoints + ? WHERE userID = ?;'
+    const sql1 = 'UPDATE DriverOrganizations SET driverOrgPoints = driverOrgPoints + ? WHERE driverID = ? AND sponsorOrgID = ?;'
     //const values = [driverPointsInt, userID]; 
 
     const sql2 = `
-    INSERT INTO PointChange (driverID, changeDate, changePointAmt, changeReasonID, changeType, changeCurrPointTotal) 
+    INSERT INTO PointChange (driverID, sponsorID, changeDate, changePointAmt, changeReasonID, changeType, changeCurrPointTotal) 
         VALUES (
             (SELECT userID FROM DriverUser WHERE userID = ?), 
+            ?,
             NOW(), 
             ?, 
             ?, 
             ?, 
-            (SELECT driverPoints + ? FROM DriverUser WHERE userID = ? LIMIT 1)
+            ((SELECT driverOrgPoints FROM DriverOrganizations WHERE driverID = ? AND sponsorOrgID = ?)+?)
         );
     `;
 
-    db.query(sql2, [userID, driverPointsInt, reasonID, changeType, driverPointsInt, userID], (err, result2) => {
+    db.query(sql2, [userID, sponsorID, driverPointsInt, reasonID, changeType, userID, sponsorID, driverPointsInt], (err, result2) => {
         if (err) {
             console.error('Error updating user:', err);
             res.status(500).json({ error: 'Error updating user' });
         } else {
-            db.query(sql1, values, (err, result1) => {
+            db.query(sql1, [driverPointsInt, userID, sponsorID], (err, result1) => {
                 if (err) {
                     console.error('Error inserting point change:', err);
                     res.status(500).json({ error: 'Error inserting point change' });
@@ -1249,8 +1248,7 @@ app.post('/updatePointsGood', (req, res) => {
 
 
 app.post('/updatePointsBad', (req, res) => {
-    // Extracting parameters from request body
-    const { userID, reasonID, driverPoints, changeType} = req.body;
+    const { userID, reasonID, sponsorID, driverPoints, changeType} = req.body;
     // Perform validation on parameters if necessary
     console.log(req.body)
     if (!userID || !reasonID || !driverPoints || !changeType) {
@@ -1262,7 +1260,7 @@ app.post('/updatePointsBad', (req, res) => {
     const values = [driverPointsInt, userID]; 
 
     console.log(driverPointsInt);
-    const data = {userID, driverPointsInt, reasonID, changeType, driverPointsInt, userID}
+    const data = {userID, driverPointsInt, reasonID, changeType, driverPointsInt, sponsorID}
     console.log(data)
 
     // Check if driverPointsInt is a valid integer
@@ -1270,27 +1268,28 @@ app.post('/updatePointsBad', (req, res) => {
         return res.status(400).json({ error: "Invalid driverPoints value" });
     }
 
-    const sql1 = 'UPDATE DriverUser SET driverPoints = driverPoints + ? WHERE userID = ?;'
+    const sql1 = 'UPDATE DriverOrganizations SET driverOrgPoints = driverOrgPoints + ? WHERE driverID = ? AND sponsorOrgID = ?;'
     //const values = [driverPointsInt, userID]; 
 
     const sql2 = `
-    INSERT INTO PointChange (driverID, changeDate, changePointAmt, changeReasonID, changeType, changeCurrPointTotal) 
+    INSERT INTO PointChange (driverID, sponsorID, changeDate, changePointAmt, changeReasonID, changeType, changeCurrPointTotal) 
         VALUES (
             (SELECT userID FROM DriverUser WHERE userID = ?), 
+            ?,
             NOW(), 
             ?, 
             ?, 
             ?, 
-            (SELECT driverPoints + ? FROM DriverUser WHERE userID = ? LIMIT 1)
+            ((SELECT driverOrgPoints FROM DriverOrganizations WHERE driverID = ? AND sponsorOrgID = ?)+?)
         );
     `;
 
-    db.query(sql2, [userID, driverPointsInt, reasonID, changeType, driverPointsInt, userID], (err, result2) => {
+    db.query(sql2, [userID, sponsorID, driverPointsInt, reasonID, changeType, userID, sponsorID, driverPointsInt], (err, result2) => {
         if (err) {
             console.error('Error updating user:', err);
             res.status(500).json({ error: 'Error updating user' });
         } else {
-            db.query(sql1, values, (err, result1) => {
+            db.query(sql1, [driverPointsInt, userID, sponsorID], (err, result1) => {
                 if (err) {
                     console.error('Error inserting point change:', err);
                     res.status(500).json({ error: 'Error inserting point change' });

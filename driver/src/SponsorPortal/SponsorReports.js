@@ -182,23 +182,26 @@ export default function SponsorReports({inheritedSub}) {
             }
         })
         .then(data => {
-          /*
-          console.log(data)
-          console.log("sponsor" + sponsorOrgID)
-          const filteredChanges = data.filter(change => {
-            console.log("change: " + change['Sponsor ID']); // Log the Sponsor ID value
-            return change['Sponsor ID'] === sponsorOrgID;
-          });*/
-          
-          //const filteredChanges = data.filter(change => change['Sponsor Name'] === sponsorOrgName);
-          if(!sponsorOrgName){
-            setChanges(data);
-          }
-          else{
-            const filteredChanges = data.filter(change => change['Sponsor Name'] === sponsorOrgName);
-            setChanges(filteredChanges);
+          if(Array.isArray(data)){
+            /*
+            console.log(data)
+            console.log("sponsor" + sponsorOrgID)
+            const filteredChanges = data.filter(change => {
+              console.log("change: " + change['Sponsor ID']); // Log the Sponsor ID value
+              return change['Sponsor ID'] === sponsorOrgID;
+            });*/
+            
+            //const filteredChanges = data.filter(change => change['Sponsor Name'] === sponsorOrgName);
+            if(!sponsorOrgName){
+              setChanges(data);
+            }
+            else{
+              const filteredChanges = data.filter(change => change['Sponsor Name'] === sponsorOrgName);
+              setChanges(filteredChanges);
+            }
           }
         })
+      
         .catch(error => {
             console.error('Error retrieving data:', error);
         });
@@ -335,8 +338,8 @@ export default function SponsorReports({inheritedSub}) {
     return color;
   };
   useEffect(() => {
-    if (canvasRef.current) {
-        // Get the canvas context
+    if (Array.isArray(changes) && changes.length > 0 && canvasRef.current) {
+      // Get the canvas context
         const ctx = canvasRef.current.getContext('2d');
         // Group changes by driver name
         const groupedChanges = {};
