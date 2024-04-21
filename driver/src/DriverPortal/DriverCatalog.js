@@ -377,7 +377,7 @@ export default function DriverCatalog({inheritedSub}){
                         <Grid item>
                             <Button variant='contained' onClick={handleCatalog}>Search</Button>
                         </Grid>
-                            <Grid item justifyContent="flex-end">
+                            {/*<Grid item justifyContent="flex-end">
                                 <Button style={{ border: 'none', background: 'none', cursor: 'pointer' }} onClick={handleSort}>
                                     <SortIcon style={{ fontSize: '2rem' }} />
                                 </Button>
@@ -386,7 +386,7 @@ export default function DriverCatalog({inheritedSub}){
                                 <Button style={{ border: 'none', background: 'none', cursor: 'pointer' }} onClick={handleFilter}>
                                     <FilterIcon style={{ fontSize: '2rem' }} />
                                 </Button>
-                            </Grid>
+                                </Grid>*/}
                             <Grid item justifyContent="flex-end">
                                 <Button style={{ border: 'none', background: 'none', cursor: 'pointer' }} onClick={handleCart}>
                                     <ShoppingCartIcon style={{ fontSize: '2rem' }} />
@@ -534,7 +534,7 @@ export default function DriverCatalog({inheritedSub}){
                         </Box>
                     </Modal>
                     {/* Filter Operations */}
-                    <Modal
+                    {/*<Modal
                         open={isFilterOpen}
                         onClose={handleCloseFilter}
                         aria-labelledby="filter-options"
@@ -559,7 +559,7 @@ export default function DriverCatalog({inheritedSub}){
                         <Button variant="contained" style={{ cursor: 'pointer', marginTop: '15px' }} color="primary" onClick={handleApplyFilter}>Apply Filter</Button>
                         <Button variant="contained" style={{ cursor: 'pointer', marginTop: '15px' }} color="primary" onClick={handleUndoSort}>Undo Filter</Button>
                         </Box>
-                    </Modal>
+                        </Modal>*/}
                 </Paper>
             </Box>
             
