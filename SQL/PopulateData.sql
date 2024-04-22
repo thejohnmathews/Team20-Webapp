@@ -8,7 +8,7 @@ USE DriverApp;
 -- Begin inserting data
 INSERT INTO About
 VALUES 
-	(20, "Bezo's Bunch", 0.1, "2024-04-30" ,"DriveTrack");
+	(20, "Bezo's Bunch", 1.0, "2024-04-30" ,"DriveTrack");
     
 INSERT INTO SponsorOrganization (sponsorOrgName, sponsorOrgDescription) VALUES
 ("Amazon", "This is amazon"),
