@@ -46,10 +46,11 @@ export default function AdminSales(){
     const [reportTypeBool, setReportTypeBool] = useState(false)
     const [sponsorOrgID, setSponsorOrgID] = React.useState(null);
     const [totalCost, setTotalCost] = React.useState(0)
+    const [totalEarnings, setTotalEarnings] = useState(0)
     const [totalDriverCost, setTotalDriverCost] = React.useState(0)
     const [value, setValue] = React.useState(0);  
     const [disabledSponsorSelect, setDisabledSponsorSelect] = React.useState(false);
-    const [disabledDriverSelect, setDisabledDriverSelect] = React.useState(false);    
+    const [disabledDriverSelect, setDisabledDriverSelect] = React.useState(false);
 
     const canvasRef = useRef(null);
     const chartRef = useRef(null);
@@ -239,6 +240,10 @@ export default function AdminSales(){
     }, [renderedList])
 
     useEffect(() => {
+        setTotalEarnings((totalCost*0.03).toFixed(2))
+    }, [totalCost])
+
+    useEffect(() => {
         let totalCtr = 0
         for (let i = 0; i < renderedDriver.length; i++) {
             totalCtr += renderedDriver[i].purchaseCost
@@ -332,10 +337,17 @@ export default function AdminSales(){
                         ))}
                         <TableRow
                             key={0}
-                            sx={{ '&:last-child td, &:last-child th': { border: 0, backgroundColor: "#eeeeee"} }}
+                            sx={{ border: 0, backgroundColor: "#eeeeee"} }
                             >
-                            <TableCell component="th" align="center" scope="row">TOTAL</TableCell>
+                            <TableCell component="th" align="center" scope="row">TOTAL COST</TableCell>
                             <TableCell align="center">{totalCost}</TableCell>
+                        </TableRow>
+                        <TableRow
+                            key={-1}
+                            sx={{ border: 0, backgroundColor: "#eeeeee"} }
+                            >
+                            <TableCell component="th" align="center" scope="row">TOTAL EARNINGS</TableCell>
+                            <TableCell align="center">{totalEarnings}</TableCell>
                             </TableRow> 
                         </TableBody>
                     </Table>}
@@ -365,16 +377,27 @@ export default function AdminSales(){
                             <TableCell align="right">{row.sponsorOrgName}</TableCell>
                             </TableRow> 
                         ))}
-                        <TableRow
-                            key={0}
-                            sx={{ '&:last-child td, &:last-child th': { border: 0, backgroundColor: "#eeeeee"} }}
-                            >
-                            <TableCell component="th" scope="row">TOTAL</TableCell>
-                            <TableCell align="center"></TableCell>
-                            <TableCell align="right">$</TableCell>
-                            <TableCell align="right">{totalCost}</TableCell>
-                            <TableCell align="right"></TableCell>
-                            <TableCell align="right"></TableCell>
+                            <TableRow
+                                key={0}
+                                sx={{ border: 0, backgroundColor: "#eeeeee"} }
+                                >
+                                <TableCell component="th" scope="row">TOTAL COST</TableCell>
+                                <TableCell align="center"></TableCell>
+                                <TableCell align="right">$</TableCell>
+                                <TableCell align="right">{totalCost}</TableCell>
+                                <TableCell align="right"></TableCell>
+                                <TableCell align="right"></TableCell>
+                            </TableRow>
+                            <TableRow
+                                key={0}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0, backgroundColor: "#eeeeee"} }}
+                                >
+                                <TableCell component="th" scope="row">TOTAL EARNINGS</TableCell>
+                                <TableCell align="center"></TableCell>
+                                <TableCell align="right">$</TableCell>
+                                <TableCell align="right">{totalEarnings}</TableCell>
+                                <TableCell align="right"></TableCell>
+                                <TableCell align="right"></TableCell>
                             </TableRow> 
                         </TableBody>
                     </Table>}
