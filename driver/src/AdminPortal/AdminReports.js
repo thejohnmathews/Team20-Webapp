@@ -210,7 +210,7 @@ useEffect(() => {
         let newList = []
         let checkDate = ""
         for (let i = 0; i < driverApp.length; i++) {
-            checkDate = new Date(driverApp[i].loginAttemptDate)
+            checkDate = new Date(driverApp[i].dateOfApplication)
             console.log("date: " + checkDate)
             if (checkDate >= dateA && checkDate <= dateB) {
                 newList.push(driverApp[i])
@@ -237,7 +237,7 @@ const handleDateSortPassword = () => {
       let newList = []
       let checkDate = ""
       for (let i = 0; i < passwordChange.length; i++) {
-          checkDate = new Date(passwordChange[i].loginAttemptDate)
+          checkDate = new Date(passwordChange[i].changeDate)
           console.log("date: " + checkDate)
           if (checkDate >= dateA && checkDate <= dateB) {
               newList.push(passwordChange[i])
