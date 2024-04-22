@@ -54,6 +54,7 @@ export default function AdminSales(){
 
     const canvasRef = useRef(null);
     const chartRef = useRef(null);
+    
     useEffect(() => {
         if (canvasRef.current) {
             // Get the canvas context
@@ -65,17 +66,24 @@ export default function AdminSales(){
             const purchaseDates = renderedInvoiceList.map(purchase => new Date(purchase.purchaseDate).toLocaleDateString());
             console.log("date:" + purchaseDates);
 
+            if (chartRef.current) {
+                // Destroy the previous chart instance
+                chartRef.current.destroy();
+            }
             // Create the chart
-            const chart = new Chart(ctx, {
+            const chartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: purchaseDates,
                     datasets: [{
                         label: 'Purchase Cost',
                         data: purchaseCosts,
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1,
-                        fill: false
+                        borderColor: 'rgba(0, 255, 0, 1)',
+                        pointBorderwidth: 3,
+                        pointRadius: 5,
+                        pointBackgroundColor: 'rgba(0, 255, 0, 1)'
+                        //borderWidth: 1,
+                        
                     }]
                 },
                 options: {
@@ -96,16 +104,20 @@ export default function AdminSales(){
                 }
             });
 
+            chartRef.current = chartInstance;
+
             // Return a cleanup function to destroy the chart when the component unmounts
             return () => {
-                chart.destroy();
+                if (chartRef.current) {
+                    chartRef.current.destroy();
+                }
             };
         }
-    }, [renderedInvoiceList]);
+    });
+    
 
     useEffect(() => {
         userAttributes != null ? setLoading(false) : setLoading(true);
-        
     }, [userAttributes]); 
 
     useEffect(() => {
@@ -120,6 +132,7 @@ export default function AdminSales(){
             //console.log(purchases)
             //console.log(driverList)
             //console.log(loginAttempts)
+            
         }
     }, [userAttributes]);
 
@@ -262,31 +275,31 @@ export default function AdminSales(){
         console.log(sortDirection)
         setRenderedInvoiceList(sortedList);
         setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-      };
+    };
 
-      const sortSponsorsByDate = () => {
+    const sortSponsorsByDate = () => {
 
-        const sortedList = [...renderedList].sort((a, b) => {
-            const dateA = new Date(a.purchaseDate);
-            const dateB = new Date(b.purchaseDate);
-            return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
-        });
-        console.log(sortDirection)
-        setRenderedList(sortedList);
-        setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-      };
+    const sortedList = [...renderedList].sort((a, b) => {
+        const dateA = new Date(a.purchaseDate);
+        const dateB = new Date(b.purchaseDate);
+        return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+    });
+    console.log(sortDirection)
+    setRenderedList(sortedList);
+    setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    };
 
-      const sortDriversByDate = () => {
+    const sortDriversByDate = () => {
 
-        const sortedList = [...renderedDriver].sort((a, b) => {
-            const dateA = new Date(a.purchaseDate);
-            const dateB = new Date(b.purchaseDate);
-            return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
-        });
-        console.log(sortDirection)
-        setRenderedDriver(sortedList);
-        setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-      };
+    const sortedList = [...renderedDriver].sort((a, b) => {
+        const dateA = new Date(a.purchaseDate);
+        const dateB = new Date(b.purchaseDate);
+        return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+    });
+    console.log(sortDirection)
+    setRenderedDriver(sortedList);
+    setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    };
 
 
 	return(
@@ -371,7 +384,7 @@ export default function AdminSales(){
                             >
                             <TableCell component="th" scope="row">{row.purchaseName}</TableCell>
                             <TableCell align="center">{row.purchaseStatus}</TableCell>
-                            <TableCell align="center">{row.purchaseDate}</TableCell>
+                            <TableCell align="center">{new Date(row.purchaseDate).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric'})}</TableCell>
                             <TableCell align="right">{row.purchaseCost}</TableCell>
                             <TableCell align="right">{row.userUsername}</TableCell>
                             <TableCell align="right">{row.sponsorOrgName}</TableCell>
@@ -457,7 +470,7 @@ export default function AdminSales(){
                             <TableCell align="right">{row.sponsorOrgName}</TableCell>
                             <TableCell component="th" scope="row">{row.purchaseName}</TableCell>
                             <TableCell align="center">{row.purchaseStatus}</TableCell>
-                            <TableCell align="center">{row.purchaseDate}</TableCell>
+                            <TableCell align="center">{new Date(row.purchaseDate).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric'})}</TableCell>
                             <TableCell align="right">{row.purchaseCost}</TableCell>
                             <TableCell align="right">{row.userUsername}</TableCell>
                             </TableRow> 
@@ -577,7 +590,7 @@ export default function AdminSales(){
                             <TableCell align="right">{row.userUsername}</TableCell>
                             <TableCell component="th" scope="row">{row.purchaseName}</TableCell>
                             <TableCell align="center">{row.purchaseStatus}</TableCell>
-                            <TableCell align="center">{row.purchaseDate}</TableCell>
+                            <TableCell align="center">{new Date(row.purchaseDate).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric'})}</TableCell>
                             <TableCell align="right">{row.purchaseCost}</TableCell>
                             <TableCell align="right">{row.sponsorOrgName}</TableCell>
                             </TableRow> 
