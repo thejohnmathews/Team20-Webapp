@@ -1,12 +1,14 @@
 import AdminAppBar from "./AdminAppBar";
 import React, { useEffect, useState, useRef } from 'react'; 
-import {Box, Tabs, Tab, Typography, Paper, TableRow, TableHead, TableContainer, TableCell, TableBody, Table, Button} from '@mui/material';
+import {Box, Tabs, Tab, Typography, Paper, TableRow, TableHead, TextField, TableContainer, TableCell, TableBody, Table, Button} from '@mui/material';
 import { useFetchUserAttributes } from '../CognitoAPI';
 import { csv } from '../ConvertCSV';
 import BaseURL from "../BaseURL";
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
+import IconButton from '@mui/material/IconButton';
+import ClearIcon from '@mui/icons-material/Clear';
 import { Chart } from "chart.js";
 
 export default function AdminSales(){
@@ -44,6 +46,7 @@ export default function AdminSales(){
     const [driverName, setDriverName] = useState("")
     const [reportType, setReportType] = useState("")
     const [reportTypeBool, setReportTypeBool] = useState(false)
+    const [dateSelectOpen, setDateSelectOpen] = useState(false)
     const [sponsorOrgID, setSponsorOrgID] = React.useState(null);
     const [totalCost, setTotalCost] = React.useState(0)
     const [totalEarnings, setTotalEarnings] = useState(0)
@@ -51,6 +54,8 @@ export default function AdminSales(){
     const [value, setValue] = React.useState(0);  
     const [disabledSponsorSelect, setDisabledSponsorSelect] = React.useState(false);
     const [disabledDriverSelect, setDisabledDriverSelect] = React.useState(false);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
 
     const canvasRef = useRef(null);
     const chartRef = useRef(null);
@@ -143,6 +148,91 @@ export default function AdminSales(){
         .then(data => setPurchases(data))
         .catch(err => console.log(err));
 
+    }
+
+    const handleDateSort = () => {
+        //console.log(startDate)
+        //console.log(endDate)
+        const dateA = new Date(startDate);
+        const dateB = new Date(endDate);
+        dateA.setDate(dateA.getDate() + 1)
+        dateB.setDate(dateB.getDate() + 1)
+        console.log(dateA)
+        console.log(dateB)
+        //if (startDate && endDate) {
+            let newList = []
+            let checkDate = ""
+            for (let i = 0; i < purchases.length; i++) {
+                checkDate = new Date(purchases[i].purchaseDate)
+                console.log("date: " + checkDate)
+                if (checkDate >= dateA && checkDate <= dateB) {
+                    newList.push(purchases[i])
+                }
+            }
+            setRenderedInvoiceList(newList)
+        //}
+    }
+
+    const handleDateReset = () => {
+        setRenderedInvoiceList(purchases)
+    }
+
+    const handleDateSortDrivers = () => {
+        //console.log(startDate)
+        //console.log(endDate)
+        const dateA = new Date(startDate);
+        const dateB = new Date(endDate);
+        dateA.setDate(dateA.getDate() + 1)
+        dateB.setDate(dateB.getDate() + 1)
+        console.log(dateA)
+        console.log(dateB)
+        //if (startDate && endDate) {
+            let newList = []
+            let checkDate = ""
+            for (let i = 0; i < purchases.length; i++) {
+                checkDate = new Date(purchases[i].purchaseDate)
+                console.log("date: " + checkDate)
+                if (checkDate >= dateA && checkDate <= dateB) {
+                    newList.push(purchases[i])
+                }
+            }
+            setRenderedDriver(newList)
+        //}
+    }
+
+    const handleDateResetDrivers = () => {
+        setRenderedDriver(purchases)
+    }
+
+    const handleDateSortSponsor = () => {
+        //console.log(startDate)
+        //console.log(endDate)
+        const dateA = new Date(startDate);
+        const dateB = new Date(endDate);
+        dateA.setDate(dateA.getDate() + 1)
+        dateB.setDate(dateB.getDate() + 1)
+        console.log(dateA)
+        console.log(dateB)
+        //if (startDate && endDate) {
+            let newList = []
+            let checkDate = ""
+            for (let i = 0; i < purchases.length; i++) {
+                checkDate = new Date(purchases[i].purchaseDate)
+                console.log("date: " + checkDate)
+                if (checkDate >= dateA && checkDate <= dateB) {
+                    newList.push(purchases[i])
+                }
+            }
+            setRenderedList(newList)
+        //}
+    }
+
+    const handleDateResetSponsor = () => {
+        setRenderedList(purchases)
+    }
+
+    const handleDateOpen = () => {
+        setDateSelectOpen(!dateSelectOpen)
     }
 
     const getSponsors = () => {
@@ -313,8 +403,58 @@ export default function AdminSales(){
                             <MenuItem value={"Detailed Report"}>Detailed Report</MenuItem>
                         </Select>
                     </div>
-                    <Button onClick={sortRowsByDate}>Sort by Date ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
+                    <Button onClick={handleDateOpen}>Select Date Range</Button>
+                    <Button onClick={sortRowsByDate}>Sort by Date Order ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
                 </div>
+                {dateSelectOpen && 
+                    <div>
+                        <TextField
+                            id="start-date"
+                            label="Start Date"
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            InputProps={{ // Add InputProps for the clear button
+                                endAdornment: (
+                                    <IconButton
+                                        aria-label="clear start date"
+                                        //onClick={handleDateSelect} // Clear the value when clicked
+                                        size="small"
+                                    >
+                                        <ClearIcon />
+                                    </IconButton>
+                                ),
+                            }}
+                            style={{ marginTop: '20px' }}
+                        />
+                        <TextField
+                            id="end-date"
+                            label="End Date"
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            InputProps={{ // Add InputProps for the clear button
+                                endAdornment: (
+                                    <IconButton
+                                        aria-label="clear end date"
+                                        //onClick={handleDateSelect}  // Clear the value when clicked
+                                        size="small"
+                                    >
+                                        <ClearIcon />
+                                    </IconButton>
+                                ),
+                            }}
+                            style={{ marginTop: '20px' }}
+                        />
+                        <Button onClick={handleDateSort}>SORT</Button>
+                        <Button sx={{color: "red"}} onClick={handleDateReset}>RESET</Button>
+                    </div>}
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <TableContainer component={Paper}>
                     {!reportTypeBool &&
@@ -432,8 +572,58 @@ export default function AdminSales(){
                         ))}
                         </Select>
                     </div>
+                    <Button onClick={handleDateOpen}>Select Date Range</Button>
                     <Button onClick={sortSponsorsByDate}>Sort by Date ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
                 </div>
+                {dateSelectOpen && 
+                    <div>
+                        <TextField
+                            id="start-date"
+                            label="Start Date"
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            InputProps={{ // Add InputProps for the clear button
+                                endAdornment: (
+                                    <IconButton
+                                        aria-label="clear start date"
+                                        //onClick={handleDateSelect} // Clear the value when clicked
+                                        size="small"
+                                    >
+                                        <ClearIcon />
+                                    </IconButton>
+                                ),
+                            }}
+                            style={{ marginTop: '20px' }}
+                        />
+                        <TextField
+                            id="end-date"
+                            label="End Date"
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            InputProps={{ // Add InputProps for the clear button
+                                endAdornment: (
+                                    <IconButton
+                                        aria-label="clear end date"
+                                        //onClick={handleDateSelect}  // Clear the value when clicked
+                                        size="small"
+                                    >
+                                        <ClearIcon />
+                                    </IconButton>
+                                ),
+                            }}
+                            style={{ marginTop: '20px' }}
+                        />
+                        <Button onClick={handleDateSortSponsor}>SORT</Button>
+                        <Button sx={{color: "red"}} onClick={handleDateResetSponsor}>RESET</Button>
+                    </div>}
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <TableContainer component={Paper}>
                     {reportTypeBool && 
@@ -552,8 +742,58 @@ export default function AdminSales(){
                         </Select>
                     </div>
                     <Button style={{color: "red"}} onClick={handleReset}>RESET DRIVER/SPONSOR</Button>
+                    <Button onClick={handleDateOpen}>Select Date Range</Button>
                     <Button onClick={sortDriversByDate}>Sort by Date ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
                 </div>
+                {dateSelectOpen && 
+                    <div>
+                        <TextField
+                            id="start-date"
+                            label="Start Date"
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            InputProps={{ // Add InputProps for the clear button
+                                endAdornment: (
+                                    <IconButton
+                                        aria-label="clear start date"
+                                        //onClick={handleDateSelect} // Clear the value when clicked
+                                        size="small"
+                                    >
+                                        <ClearIcon />
+                                    </IconButton>
+                                ),
+                            }}
+                            style={{ marginTop: '20px' }}
+                        />
+                        <TextField
+                            id="end-date"
+                            label="End Date"
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            InputProps={{ // Add InputProps for the clear button
+                                endAdornment: (
+                                    <IconButton
+                                        aria-label="clear end date"
+                                        //onClick={handleDateSelect}  // Clear the value when clicked
+                                        size="small"
+                                    >
+                                        <ClearIcon />
+                                    </IconButton>
+                                ),
+                            }}
+                            style={{ marginTop: '20px' }}
+                        />
+                        <Button onClick={handleDateSortDrivers}>SORT</Button>
+                        <Button sx={{color: "red"}} onClick={handleDateResetDrivers}>RESET</Button>
+                    </div>}
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <TableContainer component={Paper}>
                     {reportTypeBool &&
