@@ -354,16 +354,16 @@ export default function SponsorReports({inheritedSub}) {
 
     console.error("Failed to generate a color with sufficient contrast after", MAX_ATTEMPTS, "attempts.");
     // If MAX_ATTEMPTS is reached without finding a suitable color, log an error and return a default color
-    const isBlackIncluded = generatedColors.some(existingColor => existingColor === '#A9A9A9');
+    const isGrayIncluded = generatedColors.some(existingColor => existingColor === '#A9A9A9');
 
-    // If black is not included, add it to the generatedColors array
-    if (!isBlackIncluded) {
+    // If gray is not included, add it to the generatedColors array
+    if (!isGrayIncluded) {
         generatedColors.push('#A9A9A9');
         return '#A9A9A9'; // Return white
     }
 
     // If white is already included, return a default color
-    return '#000000'; // Fallback to black if no suitable color is found
+    return getRandomColor(); // Fallback to black if no suitable color is found
   };
   const calculateLuminance = (color) => {
     const rgb = parseInt(color.substring(1), 16); // Convert hex to RGB
