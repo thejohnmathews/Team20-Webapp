@@ -2,10 +2,11 @@ import { Heading } from "@aws-amplify/ui-react";
 import AdminAppBar from "./AdminAppBar";
 import React, { useEffect, useState } from 'react'; 
 import { Box, Tabs, Tab, Typography, Container } from '@mui/material';
-import {Paper, TableRow, TableHead, TableContainer, TableCell, TableBody, Table, Button} from '@mui/material';
+import {Paper, TableRow, TableHead, TableContainer, TextField, TableCell, TableBody, Table, Button} from '@mui/material';
 import { useFetchUserAttributes } from '../CognitoAPI';
 import { csv } from '../ConvertCSV';
-
+import IconButton from '@mui/material/IconButton';
+import ClearIcon from '@mui/icons-material/Clear';
 import BaseURL from "../BaseURL";
 
 function TabPanel(props) {
@@ -35,6 +36,13 @@ export default function AdminReports(){
     const [passwordChange, setPasswordChange] = React.useState([]);
     const [driverApp, setDriverApp] = React.useState([]);
     const [pointChange, setPointChange] = React.useState([]);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [dateSelectOpen, setDateSelectOpen] = useState(false)
+
+    const [renderedLogins, setRenderedLogins] = useState([])
+    const [renderedDriverApp, setRenderedDriverApp] = useState([])
+    const [renderedPasswordChange, setRenderedPasswordChange] = useState([])
 
     const userAttributes = useFetchUserAttributes();
 
@@ -53,6 +61,27 @@ export default function AdminReports(){
             //console.log(loginAttempts)
         }
     }, [userAttributes]);
+
+    useEffect(() => {
+      if (loginAttempts !== null) {
+          setRenderedLogins(loginAttempts)
+          //console.log(loginAttempts)
+      }
+  }, [loginAttempts]);
+
+  useEffect(() => {
+    if (driverApp !== null) {
+        setRenderedDriverApp(driverApp)
+        //console.log(loginAttempts)
+    }
+}, [driverApp]);
+
+useEffect(() => {
+  if (passwordChange !== null) {
+      setRenderedPasswordChange(passwordChange)
+      //console.log(loginAttempts)
+  }
+}, [passwordChange]);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -100,7 +129,7 @@ export default function AdminReports(){
           const dateB = new Date(b.loginAttemptDate);
           return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
       });
-      setLoginAttempts(sortedList);
+      setRenderedLogins(sortedList);
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     };
     
@@ -111,7 +140,7 @@ export default function AdminReports(){
           const dateB = new Date(b.dateOfApplication);
           return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
       });
-      setDriverApp(sortedList);
+      setRenderedDriverApp(sortedList);
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     };
 
@@ -122,7 +151,7 @@ export default function AdminReports(){
           const dateB = new Date(b.changeDate);
           return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
       });
-      setPasswordChange(sortedList);
+      setRenderedPasswordChange(sortedList);
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     };
 
@@ -136,6 +165,92 @@ export default function AdminReports(){
       setPointChange(sortedList);
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     };
+
+    const handleDateOpen = () => {
+      setDateSelectOpen(!dateSelectOpen)
+  }
+
+    const handleDateSortLogin = () => {
+      //console.log(startDate)
+      //console.log(endDate)
+      const dateA = new Date(startDate);
+      const dateB = new Date(endDate);
+      dateA.setDate(dateA.getDate() + 1)
+      dateB.setDate(dateB.getDate() + 1)
+      console.log(dateA)
+      console.log(dateB)
+      //if (startDate && endDate) {
+          let newList = []
+          let checkDate = ""
+          for (let i = 0; i < loginAttempts.length; i++) {
+              checkDate = new Date(loginAttempts[i].loginAttemptDate)
+              console.log("date: " + checkDate)
+              if (checkDate >= dateA && checkDate <= dateB) {
+                  newList.push(loginAttempts[i])
+              }
+          }
+          setRenderedLogins(newList)
+      //}
+  }
+
+  const handleDateResetLogin = () => {
+    setRenderedLogins(loginAttempts)
+  }
+
+  const handleDateSortDriver = () => {
+    //console.log(startDate)
+    //console.log(endDate)
+    const dateA = new Date(startDate);
+    const dateB = new Date(endDate);
+    dateA.setDate(dateA.getDate() + 1)
+    dateB.setDate(dateB.getDate() + 1)
+    console.log(dateA)
+    console.log(dateB)
+    //if (startDate && endDate) {
+        let newList = []
+        let checkDate = ""
+        for (let i = 0; i < driverApp.length; i++) {
+            checkDate = new Date(driverApp[i].loginAttemptDate)
+            console.log("date: " + checkDate)
+            if (checkDate >= dateA && checkDate <= dateB) {
+                newList.push(driverApp[i])
+            }
+        }
+        setRenderedDriverApp(newList)
+    //}
+}
+
+const handleDateResetDriver = () => {
+  setRenderedDriverApp(driverApp)
+}
+
+const handleDateSortPassword = () => {
+  //console.log(startDate)
+  //console.log(endDate)
+  const dateA = new Date(startDate);
+  const dateB = new Date(endDate);
+  dateA.setDate(dateA.getDate() + 1)
+  dateB.setDate(dateB.getDate() + 1)
+  console.log(dateA)
+  console.log(dateB)
+  //if (startDate && endDate) {
+      let newList = []
+      let checkDate = ""
+      for (let i = 0; i < passwordChange.length; i++) {
+          checkDate = new Date(passwordChange[i].loginAttemptDate)
+          console.log("date: " + checkDate)
+          if (checkDate >= dateA && checkDate <= dateB) {
+              newList.push(passwordChange[i])
+          }
+      }
+      setRenderedPasswordChange(newList)
+  //}
+}
+
+const handleDateResetPassword = () => {
+  setRenderedPasswordChange(passwordChange)
+}
+
 	return(
 		<div>
 			<AdminAppBar/>
@@ -151,6 +266,56 @@ export default function AdminReports(){
                   <TabPanel value={value} index={0}>
                       {!loading && loginAttempts.length > 0 &&  
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <Button onClick={handleDateOpen}>Select Date Range</Button>
+                {dateSelectOpen && 
+                    <div>
+                        <TextField
+                            id="start-date"
+                            label="Start Date"
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            InputProps={{ // Add InputProps for the clear button
+                                endAdornment: (
+                                    <IconButton
+                                        aria-label="clear start date"
+                                        //onClick={handleDateSelect} // Clear the value when clicked
+                                        size="small"
+                                    >
+                                        <ClearIcon />
+                                    </IconButton>
+                                ),
+                            }}
+                            style={{ marginTop: '20px' }}
+                        />
+                        <TextField
+                            id="end-date"
+                            label="End Date"
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            InputProps={{ // Add InputProps for the clear button
+                                endAdornment: (
+                                    <IconButton
+                                        aria-label="clear end date"
+                                        //onClick={handleDateSelect}  // Clear the value when clicked
+                                        size="small"
+                                    >
+                                        <ClearIcon />
+                                    </IconButton>
+                                ),
+                            }}
+                            style={{ marginTop: '20px' }}
+                        />
+                        <Button onClick={handleDateSortLogin}>SORT</Button>
+                        <Button sx={{color: "red"}} onClick={handleDateResetLogin}>RESET</Button>
+                    </div>}
                       <Button onClick={sortLoginByDate}>Sort by Date ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
                       <TableContainer component={Paper}>
                         <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -164,11 +329,11 @@ export default function AdminReports(){
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {loginAttempts.map((row) => (
+                            {renderedLogins.map((row) => (
                               <TableRow
                                 key={row.loginAttemptID}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                              >
+                              >  
                                 <TableCell component="th" scope="row">
                                   {row.userName}
                                 </TableCell>
@@ -191,6 +356,56 @@ export default function AdminReports(){
                   <TabPanel value={value} index={1}>
                   {!loading && driverApp.length > 0 && 
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <Button onClick={handleDateOpen}>Select Date Range</Button>
+                {dateSelectOpen && 
+                    <div>
+                        <TextField
+                            id="start-date"
+                            label="Start Date"
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            InputProps={{ // Add InputProps for the clear button
+                                endAdornment: (
+                                    <IconButton
+                                        aria-label="clear start date"
+                                        //onClick={handleDateSelect} // Clear the value when clicked
+                                        size="small"
+                                    >
+                                        <ClearIcon />
+                                    </IconButton>
+                                ),
+                            }}
+                            style={{ marginTop: '20px' }}
+                        />
+                        <TextField
+                            id="end-date"
+                            label="End Date"
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            InputProps={{ // Add InputProps for the clear button
+                                endAdornment: (
+                                    <IconButton
+                                        aria-label="clear end date"
+                                        //onClick={handleDateSelect}  // Clear the value when clicked
+                                        size="small"
+                                    >
+                                        <ClearIcon />
+                                    </IconButton>
+                                ),
+                            }}
+                            style={{ marginTop: '20px' }}
+                        />
+                        <Button onClick={handleDateSortDriver}>SORT</Button>
+                        <Button sx={{color: "red"}} onClick={handleDateResetDriver}>RESET</Button>
+                    </div>}
                       <Button onClick={sortAppByDate}>Sort by Date ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
                       <TableContainer component={Paper}>
                         <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -205,7 +420,7 @@ export default function AdminReports(){
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {driverApp.map((row) => (
+                            {renderedDriverApp.map((row) => (
                               <TableRow
                                 key={row.applicationID}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -231,6 +446,56 @@ export default function AdminReports(){
                   <TabPanel value={value} index={2}>
                   {!loading && passwordChange.length > 0 && 
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <Button onClick={handleDateOpen}>Select Date Range</Button>
+                {dateSelectOpen && 
+                    <div>
+                        <TextField
+                            id="start-date"
+                            label="Start Date"
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            InputProps={{ // Add InputProps for the clear button
+                                endAdornment: (
+                                    <IconButton
+                                        aria-label="clear start date"
+                                        //onClick={handleDateSelect} // Clear the value when clicked
+                                        size="small"
+                                    >
+                                        <ClearIcon />
+                                    </IconButton>
+                                ),
+                            }}
+                            style={{ marginTop: '20px' }}
+                        />
+                        <TextField
+                            id="end-date"
+                            label="End Date"
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            InputProps={{ // Add InputProps for the clear button
+                                endAdornment: (
+                                    <IconButton
+                                        aria-label="clear end date"
+                                        //onClick={handleDateSelect}  // Clear the value when clicked
+                                        size="small"
+                                    >
+                                        <ClearIcon />
+                                    </IconButton>
+                                ),
+                            }}
+                            style={{ marginTop: '20px' }}
+                        />
+                        <Button onClick={handleDateSortPassword}>SORT</Button>
+                        <Button sx={{color: "red"}} onClick={handleDateResetPassword}>RESET</Button>
+                    </div>}
                       <Button onClick={sortPassByDate}>Sort by Date ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
                       <TableContainer component={Paper}>
                         <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -244,7 +509,7 @@ export default function AdminReports(){
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {passwordChange.map((row) => (
+                            {renderedPasswordChange.map((row) => (
                               <TableRow
                                 key={row.passwordChangeID}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
