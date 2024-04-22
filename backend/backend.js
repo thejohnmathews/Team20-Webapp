@@ -88,7 +88,8 @@ app.get('/allPasswordChanges', (req, res) => {
     })
 })
 app.get('/allDriverApps', (req, res) => {
-    const sql = "SELECT * FROM DriverApplication;"
+    const sql = "SELECT d.applicationID, d.dateOfApplication, d.applicationStatus, d.statusReason, d.userID, d.sponsorOrgID, u.userUsername \
+    FROM DriverApplication d JOIN UserInfo u on d.userID = u.userID"
     db.query(sql, (err, data) => {
         if(err) {
             return res.json(err);
