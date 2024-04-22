@@ -72,13 +72,6 @@ export default function SponsorReports({inheritedSub}) {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
-    
-    // get the sponsor first using the user sub
-    useEffect(() => {
-        if (userAttributes && sponsorOrgID === null) {
-            getAssociatedSponsor();
-        }
-    }, [userAttributes]); 
 
     // once the sponsor is set get the audit info
     useEffect(() => {
@@ -87,6 +80,8 @@ export default function SponsorReports({inheritedSub}) {
             getPasswordChange();
             getDriverAppInfo();
         }
+        updateRows();
+        renderChart();
     
     }, [sponsorOrgID]); 
 
@@ -160,10 +155,6 @@ export default function SponsorReports({inheritedSub}) {
 //BELOW ARE USED FOR POINT TRACKING REPORTING
     const [changes, setChanges] = useState([]);
     const [changeTypes, setChangeTypes] = useState([]);
-
-    useEffect(() => {
-        updateRows();
-    }, []);
 
     const updateRows = () => {
         fetch(BaseURL + '/pointChanges', {
@@ -325,10 +316,16 @@ export default function SponsorReports({inheritedSub}) {
     setSelectedDriver(null)
     updateRows();
   };
+  useEffect(() => {
+    renderChart();
+  })
 
   //CHARTS
   const canvasRef = useRef(null);
   const chartRef = useRef(null);
+  const generatedColors = [];
+  const MIN_CONTRAST = 5;
+  const MAX_ATTEMPTS = 100000;
   const getRandomColor = () => {
     const letters = '0123456789ABCDEF';
     let color = '#';
@@ -337,8 +334,56 @@ export default function SponsorReports({inheritedSub}) {
     }
     return color;
   };
-  useEffect(() => {
+  const getRandomColorWithTracking = () => {
+    let attempts = 0;
+    let color;
+
+    do {
+        color = getRandomColor();
+        const luminance = calculateLuminance(color);
+        const hasSufficientContrast = !generatedColors.some(existingColor => calculateContrastRatio(luminance, existingColor) < MIN_CONTRAST);
+
+
+        if (hasSufficientContrast) {
+            generatedColors.push(color);
+            return color; // Return the color if it has sufficient contrast
+        }
+
+        attempts++;
+    } while (attempts < MAX_ATTEMPTS);
+
+    console.error("Failed to generate a color with sufficient contrast after", MAX_ATTEMPTS, "attempts.");
+    // If MAX_ATTEMPTS is reached without finding a suitable color, log an error and return a default color
+    const isBlackIncluded = generatedColors.some(existingColor => existingColor === '#A9A9A9');
+
+    // If black is not included, add it to the generatedColors array
+    if (!isBlackIncluded) {
+        generatedColors.push('#A9A9A9');
+        return '#A9A9A9'; // Return white
+    }
+
+    // If white is already included, return a default color
+    return '#000000'; // Fallback to black if no suitable color is found
+  };
+  const calculateLuminance = (color) => {
+    const rgb = parseInt(color.substring(1), 16); // Convert hex to RGB
+    const r = (rgb >> 16) & 0xff; // Extract red channel
+    const g = (rgb >> 8) & 0xff; // Extract green channel
+    const b = (rgb >> 0) & 0xff; // Extract blue channel
+    return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255; // Calculate luminance
+  };
+  const calculateContrastRatio = (luminance1, color2) => {
+    const luminance2 = calculateLuminance(color2);
+    const brighter = Math.max(luminance1, luminance2);
+    const darker = Math.min(luminance1, luminance2);
+    return (brighter + 0.05) / (darker + 0.05); // Calculate contrast ratio with a small adjustment
+  };
+  const renderChart = () => {
     if (Array.isArray(changes) && changes.length > 0 && canvasRef.current) {
+      if (chartRef.current) {
+        // If a chart exists, destroy it before creating a new one
+        chartRef.current.destroy();
+      }
       // Get the canvas context
         const ctx = canvasRef.current.getContext('2d');
         // Group changes by driver name
@@ -355,16 +400,25 @@ export default function SponsorReports({inheritedSub}) {
         Object.entries(groupedChanges).forEach(([driverName, driverChanges]) => {
             datasets.push({
                 label: driverName,
-                data: driverChanges.map(change => parseInt(change['Total Points'])),
-                borderColor: getRandomColor(), // Define a function to generate random colors
+                data: driverChanges.map(change => ({
+                  x: new Date(change['Date (M/D/Y)']).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }),
+                  y: parseInt(change['Total Points'])
+                })),     
+                borderColor: getRandomColorWithTracking(), // Define a function to generate random colors
+                //borderWidth: 1,
+                pointBackgroundColor: 'white', // Set point background color to white
+                //pointBorderColor: 'black', // Set point border color to black
+                pointBorderWidth: 3, // Set point border width
+                pointRadius: 5, // Increase point radius for better visibility
                 tension: 0.1
             });
+            
         });
         // Create the chart
         const chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: changes.map(change => new Date(change['Date (M/D/Y)']).toLocaleDateString()),
+                //labels: changes.map(change => new Date(change['Date (M/D/Y)']).toLocaleDateString()),
                 datasets: datasets
             }
         });
@@ -373,7 +427,7 @@ export default function SponsorReports({inheritedSub}) {
             chart.destroy();
         };
     }
-  }, [changes]);
+  };
       
         return (
           <div>
@@ -575,7 +629,7 @@ export default function SponsorReports({inheritedSub}) {
                               <Button onClick={sortRowsByChangePointAmt}>Sort by Point Change Amount ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
                               <Button style={{marginBottom: "10px"}}onClick={sortRowsByDriverName}>Sort by Driver Name ({sortDirection === 'asc' ? '▲' : '▼'})</Button>
                               <div style={{ position: 'absolute', marginTop: '10px', right: '40px' }}>
-                                  <a href='#' onClick={() => csv(passwordChange)}>Download as CSV</a>
+                                  <a href='#' onClick={() => csv(changes)}>Download as CSV</a>
                               </div>
                               <Button onClick={handleFilterDialogOpen}>Filter</Button>
                               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>

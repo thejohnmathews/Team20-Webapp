@@ -185,6 +185,7 @@ export default function DriverPoints({ inheritedSub }){
 
     const canvasRef = useRef(null); // Create a ref for the canvas element
     const chartRef = useRef(null); // Create a ref for the Chart instance
+    const generatedColors = [];
 
     useEffect(() => {
         if (canvasRef.current) {
@@ -194,23 +195,57 @@ export default function DriverPoints({ inheritedSub }){
             }
     
             const ctx = canvasRef.current.getContext('2d');
+            const uniqueSponsors = [...new Set(changes.map(change => change['Sponsor Name']))];
+            const datasets = [];
     
-            const filteredChanges = changes.filter(change => change['Driver Name'] === `${firstName} ${lastName}`);
+            uniqueSponsors.forEach(sponsorName => {
+                const filteredChanges = changes.filter(change => change['Driver Name'] === `${firstName} ${lastName}` && change['Sponsor Name'] === sponsorName);
+    
+                datasets.push({
+                    label: sponsorName,
+                    data: filteredChanges.map(change => ({
+                        x: new Date(change['Date (M/D/Y)']).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }),
+                        y: parseInt(change['Total Points'])
+                    })),
+                    borderColor: getRandomColorWithTracking(), // You can define this function to generate random colors
+                    pointBackgroundColor: 'white', // Set point background color to white
+                    //pointBorderColor: 'black', // Set point border color to black
+                    pointBorderWidth: 3, // Set point border width
+                    pointRadius: 5, // Increase point radius for better visibility
+                    tension: 0.1
+                });
+            });
     
             chartRef.current = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: filteredChanges.map(change => new Date(change['Date (M/D/Y)']).toLocaleDateString()),
-                    datasets: [{
-                        label: 'Total Points',
-                        data: filteredChanges.map(change => parseInt(change['Total Points'])),
-                        borderColor: 'rgb(75, 192, 192)',
-                        tension: 0.1
-                    }]
+                    labels: [],
+                    datasets: datasets
                 }
             });
         }
     }, [changes, firstName, lastName]);
+    const getRandomColor = () => {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    };
+    const getRandomColorWithTracking = () => {
+        let color = getRandomColor(); // Get a random color
+    
+        // Ensure the generated color is unique
+        while (generatedColors.includes(color)) {
+            color = getRandomColor(); // If the color is not unique, generate a new one
+        }
+    
+        // Add the generated color to the array
+        generatedColors.push(color);
+    
+        return color;
+    };
 
     return (
         <div>

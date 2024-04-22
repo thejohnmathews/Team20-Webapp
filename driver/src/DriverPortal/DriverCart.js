@@ -167,7 +167,7 @@ export default function DriverCart({inheritedSub}){
             userID: ID,
             reasonID: 12,
             sponsorID: item.sponsorOrgID,
-            driverPoints: JSON.stringify(item.collectionPrice),
+            driverPoints: JSON.stringify(-1 * item.convertedPrice),
             changeType: "bad"
         };
         console.log("updateBad " + data);
