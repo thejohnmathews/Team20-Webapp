@@ -63,13 +63,13 @@ export default function SponsorCatalog({inheritedSub}) {
   }
 
   const [showAdd, setShowAdd] = useState(true)
-  const handleAdd = () => {
-    setShowAdd(!showAdd)
-  }
+//   const handleAdd = () => {
+//     setShowAdd(!showAdd)
+//   }
 
-  const handleDriverCatalog = () => {
-    navigate('/driverCatalog');
-  };
+//   const handleDriverCatalog = () => {
+//     navigate('/driverCatalog');
+//   };
 
   const userAttributes = useFetchUserAttributes();
     
@@ -391,10 +391,10 @@ export default function SponsorCatalog({inheritedSub}) {
         <div style={{ marginLeft: '25px' }}>
             <h1 className="catalog-header">Catalog Rules</h1>
             <div style={{display: 'flex'}}>
-                {rulesCheck.length != 0 &&
+                {/* {rulesCheck.length != 0 &&
             <Button onClick={handleAdd}>Change/View Rules</Button>
-                }
-            <Button onClick={handleDriverCatalog}>View As Driver</Button>
+                } */}
+            {/* <Button onClick={handleDriverCatalog}>View As Driver</Button> */}
             </div>
             {showAdd &&     
                 <div style={{display: 'flex', flexWrap: 'wrap'}}>
