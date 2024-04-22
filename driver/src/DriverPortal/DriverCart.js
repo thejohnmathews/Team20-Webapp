@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import DriverAppBar from "./DriverAppBar";
-import CartPage from "../CartPage";
 import DriverCatalog from "./DriverCatalog"
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Grid, TextField, Select, MenuItem, Typography } from '@mui/material';
 import BaseURL from '../BaseURL';
@@ -192,8 +191,7 @@ export default function DriverCart({inheritedSub}){
 
     return (
         <div>
-            <DriverAppBar />
-            <CartPage />
+            <DriverAppBar inheritedSub={inheritedSub}/>
             <div style={{ marginLeft: '25px', maxWidth: '600px', margin: '0 auto' }}>
             <Typography variant="h2" align="center">Cart</Typography>
                 {cartItems.length === 0 ? (

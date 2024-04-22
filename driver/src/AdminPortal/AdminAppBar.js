@@ -54,9 +54,9 @@ export default function AdminAppBar() {
     navigate('/adminDriverApplicaitons');
   };
 
-  const handlePointChanges = () => {
-    navigate('/AdminPointChanges');
-  };
+  // const handlePointChanges = () => {
+  //   navigate('/AdminPointChanges');
+  // };
 
   const handleReports = () => {
     navigate('/adminReports')
@@ -91,14 +91,14 @@ export default function AdminAppBar() {
             <ListItemText primary={"Pending Driver Applications"} />
           </ListItemButton>
         </ListItem>
-        <ListItem key={"Point Changes"} disablePadding>
+        {/* <ListItem key={"Point Changes"} disablePadding>
           <ListItemButton onClick={handlePointChanges}>
             <ListItemIcon>
               <PointOfSaleIcon/>
             </ListItemIcon>
             <ListItemText primary={"Point Changes"} />
           </ListItemButton>
-        </ListItem>
+        </ListItem> */}
         <ListItem key={"Organization Management"} disablePadding>
           <ListItemButton onClick={handleOrgManagement}>
             <ListItemIcon>
